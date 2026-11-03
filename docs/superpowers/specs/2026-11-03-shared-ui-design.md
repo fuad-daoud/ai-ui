@@ -205,11 +205,12 @@ concatenate the files into one request, and CI checks that the output is fresh.
 ## 6. Go adapter (`package ui`)
 
 ```go
-// Assets holds css, js and fonts (dist/ui.css, js/*, fonts/*).
+// Assets holds the published files under their public names (ui.css, theme.js, …).
 var Assets fs.FS
 
-// Handler serves Assets; mount it at Prefix. Responses carry
-// Cache-Control: public, max-age=31536000, immutable.
+// Handler serves Assets; mount it at Prefix. A request whose ?v= matches the
+// asset's hash gets Cache-Control: public, max-age=31536000, immutable; any other
+// request gets no-cache, so a link written without Href is never pinned stale.
 func Handler() http.Handler
 const Prefix = "/_ui/"
 
@@ -218,7 +219,12 @@ const Prefix = "/_ui/"
 func Href(name string) string
 
 // Parse adds the ui.* partials and the helper funcs (dict, href) to t.
+// The partials call only ui_* helpers, so an app that later redefines
+// dict or href does not break them.
 func Parse(t *template.Template) (*template.Template, error)
+
+// Option is one <option> of a select field.
+type Option struct{ Value, Label string }
 ```
 
 Usage in an app:
@@ -234,12 +240,16 @@ tmpl = template.Must(tmpl.ParseFS(pages, "*.html"))
 {{template "ui.field" (dict "Label" "Email" "Name" "email" "Type" "email" "Error" .Errs.Email)}}
 ```
 
-**Which components get a partial.** Only those whose markup is more than a
-root class: field (and its controls), dialog, drawer, menu, tabs, segmented
-control, pill, toast, theme switcher. Containers such as card, callout,
-table, the page shell, disclosure and the empty state stay plain markup with
-classes. `html/template` cannot pass a child block to a partial, and
-open/close partial pairs would make the adapter heavier than the CSS it wraps.
+**Which components get a partial.** Only leaf components, whose markup is
+more than a root class and which have no child content: button (and its
+link form), field (input, select, textarea), check (checkbox, radio), pill;
+later menu, tabs, segmented control, toast and theme switcher. Anything that
+wraps child content stays plain markup with classes: card, callout, table,
+disclosure, the page shell, the empty state, and also dialog and drawer.
+`html/template` cannot pass a child block to a partial, and open/close
+partial pairs would make the adapter heavier than the CSS it wraps. A
+container's exact markup is documented in `DESIGN.md` and pinned by a golden
+in `testdata/parity/` (§8.1).
 
 **Argument errors.** `dict` returns an error on an odd number of arguments or
 a non-string key. A partial given an unknown `Variant` or `Size` value renders
@@ -249,10 +259,10 @@ the default and adds nothing.
 
 - **Install:** `"ai-ui": "github:fuad-daoud/ai-ui#v0.1.0"`, plus `transpilePackages: ["ai-ui"]` in the Next config. React 19 is a peer dependency. There is no build step: the TSX ships as source.
 - **Styles:** `import "ai-ui/ui.css"` and `import "ai-ui/theme.css"` in the root stylesheet or layout.
-- **Components:** `ai-ui/react` exports `Button`, `Field`, `Input`, `Select`, `Textarea`, `Checkbox`, `Radio`, `Switch`, `Pill`, `Dialog`, `Drawer`, `Menu`, `Tabs`, `SegmentedControl`, `Toast`, `ThemeSwitcher`. That is the same set that has Go partials.
+- **Components:** `ai-ui/react` exports one component per Go partial (`Button`, `ButtonLink`, `Field`, `Check`, `Pill`, later `Menu`, `Tabs`, `SegmentedControl`, `Toast`, `ThemeSwitcher`), plus components for the containers whose markup has wiring to get right (`Dialog`, later `Drawer`).
 - **Rules for every component:**
-  - It renders exactly the markup of its Go partial (enforced by §8.1).
-  - It forwards `className` (appended after the library class) and `ref`, and spreads the rest of the props onto the root element.
+  - It renders exactly the markup of its Go partial or its documented golden (enforced by §8.1).
+  - It forwards `className` (appended after the library class) to the root element. It spreads the rest of the props, including `ref`, onto the element that carries the component's behaviour: the root for most components, the form control for `Field` and `Check`.
   - It contains no styling logic, only class and attribute mapping.
   - Only components that need effects (`Toast`, `Tabs`, `ThemeSwitcher`) are `'use client'`.
 - Containers stay plain JSX with classes, the same as in Go.
@@ -261,18 +271,18 @@ the default and adds nothing.
 
 ### 8.1 Markup parity
 
-Each case in `testdata/parity/` has a fixture `<case>.json` (`{"component": "field", "props": {…}}`) and a golden `<case>.html`.
+Each case in `testdata/parity/` is a fixture `<case>.json` with a `go` part (`{"template": "ui.field", "args": {…}}`), a `react` part (`{"component": "Field", "props": {…}}`), or both, and a golden `<case>.html`. A case may instead name an `error` that both sides must raise.
 
-- A Go test renders each fixture through its partial.
-- A Node test (vitest) renders the TSX with `renderToStaticMarkup`.
-- Both sides normalise their output (whitespace collapsed, attributes sorted, boolean attributes canonicalised) and must equal the golden.
-- Goldens are regenerated only with an explicit `-update` flag.
+- A Go test renders each `go` part through its partial.
+- A Node test (vitest) renders each `react` part with `renderToStaticMarkup`.
+- Both sides put the output and the golden into one canonical form and compare them. The canonical form: parsed as a `<body>` fragment, attributes sorted, empty-valued attributes printed bare, `class` whitespace normalised, text trimmed with HTML-whitespace runs collapsed, whitespace-only text and comments dropped, and one escaping. The two canonicalisers (Go and TypeScript) are pinned by shared vectors in `testdata/canon/`.
+- Goldens for Go cases are regenerated only with an explicit `-update` flag. Goldens for container markup (react-only cases) are written by hand, and the gallery's Go-rendered dialog is checked against the same golden.
 
 ### 8.2 Gallery, visual regression and accessibility
 
 - `go run ./gallery` serves one page per palette × mode with every component in every variant, size and state.
 - Playwright screenshots each page, which gives visual regression, and runs axe on each, which fails on any violation.
-- Like all Node and e2e work in this setup, this runs on contabo through `dev run`.
+- Like all Node and e2e work in this setup, this runs on contabo through `dev run`. It is not part of CI (§8.4): screenshots are only comparable on the machine that made the baselines.
 
 ### 8.3 Contrast
 
@@ -280,8 +290,8 @@ A Go test parses `css/tokens.css`, resolves each `light-dark()` pair, and
 checks WCAG contrast at 4.5:1 or better in both modes and every built-in palette for:
 
 - `ink`, `ink-2` and `ink-3` on `paper`, `band` and `sheet`;
-- `on-primary` on `primary`, and on `primary-hover`;
-- `link` on `paper` and `sheet`;
+- `on-primary` on `primary`, on `primary-hover` and on `bad` (the danger button);
+- `link` on `paper`, `band` and `sheet`;
 - `good`, `warning` and `bad` on their `-bg`.
 
 `rule-field` must reach 3:1 or better on `sheet` (non-text contrast).
