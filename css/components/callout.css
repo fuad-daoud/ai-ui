@@ -1,0 +1,15 @@
+.ui-callout {
+  --ui-callout-bg: var(--band);
+  --ui-callout-fg: var(--ink);
+  --ui-callout-accent: var(--link);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--rule-soft);
+  border-inline-start: 3px solid var(--ui-callout-accent);
+  border-radius: var(--radius-md);
+  background: var(--ui-callout-bg);
+  color: var(--ui-callout-fg);
+}
+.ui-callout-title { margin-block-end: var(--space-1); font-weight: 650; color: var(--ui-callout-accent); }
+.ui-callout[data-variant="good"] { --ui-callout-bg: var(--good-bg); --ui-callout-accent: var(--good); }
+.ui-callout[data-variant="warning"] { --ui-callout-bg: var(--warning-bg); --ui-callout-accent: var(--warning); }
+.ui-callout[data-variant="bad"] { --ui-callout-bg: var(--bad-bg); --ui-callout-accent: var(--bad); }
