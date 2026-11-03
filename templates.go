@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
+	"strings"
 )
 
 //go:embed templates/*.tmpl
@@ -26,12 +27,15 @@ func Parse(t *template.Template) (*template.Template, error) {
 }
 
 var funcs = template.FuncMap{
-	"dict":        dict,
-	"href":        Href,
-	"ui_str":      str,
-	"ui_or":       or,
-	"ui_variant":  variant,
-	"ui_required": required,
+	"dict":           dict,
+	"href":           Href,
+	"ui_str":         str,
+	"ui_or":          or,
+	"ui_variant":     variant,
+	"ui_required":    required,
+	"ui_id":          fieldID,
+	"ui_describedby": describedBy,
+	"ui_selected":    selected,
 }
 
 func dict(kv ...any) (map[string]any, error) {
@@ -87,4 +91,33 @@ func required(component, key string, v any) (string, error) {
 		return s, nil
 	}
 	return "", fmt.Errorf("%s: %s is required", component, key)
+}
+
+// fieldID is ID if set, else Name. A field with neither cannot be labelled.
+func fieldID(component string, id, name any) (string, error) {
+	if s := str(id); s != "" {
+		return s, nil
+	}
+	if s := str(name); s != "" {
+		return s, nil
+	}
+	return "", fmt.Errorf("%s: needs ID or Name", component)
+}
+
+// describedBy lists the hint and error ids that are present, in that order.
+func describedBy(id string, hint, err any) string {
+	var ids []string
+	if str(hint) != "" {
+		ids = append(ids, id+"-hint")
+	}
+	if str(err) != "" {
+		ids = append(ids, id+"-error")
+	}
+	return strings.Join(ids, " ")
+}
+
+// selected reports whether an option is the field's value. A field with no
+// Value (nil) selects nothing.
+func selected(value, option any) bool {
+	return value != nil && str(value) == str(option)
 }

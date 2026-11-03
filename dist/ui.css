@@ -207,6 +207,58 @@ small { font-size: var(--text-sm); }
 .ui-btn[data-size="lg"] { --ui-btn-height: 3rem; --ui-btn-pad: var(--space-5); --ui-btn-font-size: var(--text-lg); }
 .ui-btn:disabled,
 .ui-btn[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+/* css/components/field.css */
+.ui-field { --ui-field-gap: var(--space-2); display: grid; gap: var(--ui-field-gap); }
+.ui-field-label { font-size: var(--text-sm); font-weight: 600; color: var(--ink); }
+.ui-field-hint { font-size: var(--text-sm); color: var(--ink-3); }
+.ui-field-error { font-size: var(--text-sm); font-weight: 500; color: var(--bad); }
+
+.ui-input,
+.ui-select,
+.ui-textarea {
+  --ui-input-bg: var(--sheet);
+  --ui-input-fg: var(--ink);
+  --ui-input-border: var(--rule-field);
+  --ui-input-radius: var(--radius-md);
+  --ui-input-height: 2.5rem;
+
+  inline-size: 100%;
+  min-block-size: var(--ui-input-height);
+  padding: var(--space-2) var(--space-3);
+  background-color: var(--ui-input-bg);
+  color: var(--ui-input-fg);
+  border: 1px solid var(--ui-input-border);
+  border-radius: var(--ui-input-radius);
+  transition: border-color var(--dur) var(--ease);
+}
+.ui-textarea { min-block-size: calc(var(--ui-input-height) * 2); resize: vertical; line-height: 1.5; }
+.ui-select {
+  appearance: none;
+  padding-inline-end: 2.25rem;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--ink-3) 50%),
+    linear-gradient(135deg, var(--ink-3) 50%, transparent 50%);
+  background-position: right 1.05rem center, right 0.75rem center;
+  background-size: 0.3rem 0.3rem, 0.3rem 0.3rem;
+  background-repeat: no-repeat;
+}
+.ui-input::placeholder,
+.ui-textarea::placeholder { color: var(--ink-3); opacity: 1; }
+.ui-input:hover,
+.ui-select:hover,
+.ui-textarea:hover { border-color: var(--ink-3); }
+.ui-input:focus-visible,
+.ui-select:focus-visible,
+.ui-textarea:focus-visible { outline: 2px solid var(--focus); outline-offset: 0; border-color: var(--focus); }
+.ui-input[aria-invalid="true"],
+.ui-select[aria-invalid="true"],
+.ui-textarea[aria-invalid="true"] { border-color: var(--bad); }
+.ui-input:disabled,
+.ui-select:disabled,
+.ui-textarea:disabled { background-color: var(--band); color: var(--ink-3); cursor: not-allowed; }
+
+.ui-form-row { display: flex; flex-wrap: wrap; align-items: end; gap: var(--space-4); }
+.ui-form-row > * { flex: 1 1 14rem; }
 }
 
 @layer ui.utilities {

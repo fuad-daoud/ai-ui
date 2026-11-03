@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.field", "args": { "Label": "Notes", "Name": "notes", "Control": "textarea", "Rows": 4, "Value": "Line one", "Disabled": true } },
+  "react": { "component": "Field", "props": { "label": "Notes", "name": "notes", "control": "textarea", "rows": 4, "defaultValue": "Line one", "disabled": true } }
+}

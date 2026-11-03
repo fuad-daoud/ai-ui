@@ -1,0 +1,5 @@
+{
+  "go": { "template": "ui.field", "args": { "Label": "Email" } },
+  "react": { "component": "Field", "props": { "label": "Email" } },
+  "error": "ui.field: needs ID or Name"
+}

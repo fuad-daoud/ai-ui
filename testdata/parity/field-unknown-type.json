@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.field", "args": { "Label": "Colour", "Name": "c", "Type": "color", "Control": "slider" } },
+  "react": { "component": "Field", "props": { "label": "Colour", "name": "c", "type": "color", "control": "slider" } }
+}
