@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en" data-theme="{{.Mode}}"{{if ne .Palette "blue"}} data-palette="{{.Palette}}"{{end}}>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ai-ui gallery: {{.Palette}} {{.Mode}}</title>
+<link rel="stylesheet" href="{{href "ui.css"}}">
+<style>
+  .gallery { max-width: 60rem; margin-inline: auto; padding: var(--space-6) var(--space-4) var(--space-8); }
+  .gallery > section { margin-block-start: var(--space-7); }
+  .gallery > section > h2 { margin-block-end: var(--space-4); font-size: var(--text-xl); }
+  .gallery-nav a[aria-current="page"] { font-weight: 700; }
+  .gallery-form { max-width: 34rem; }
+</style>
+</head>
+<body>
+<main class="gallery">
+  <h1>ai-ui gallery</h1>
+  <nav class="gallery-nav ui-cluster" aria-label="Palettes and modes">
+    {{- range .Links}}
+    <a href="{{.Href}}"{{if .Current}} aria-current="page"{{end}}>{{.Label}}</a>
+    {{- end}}
+  </nav>
+
+  <section aria-labelledby="s-buttons">
+    <h2 id="s-buttons">Buttons</h2>
+    <div class="ui-stack">
+      <div class="ui-cluster">
+        {{template "ui.button" (dict "Label" "Primary")}}
+        {{template "ui.button" (dict "Label" "Secondary" "Variant" "secondary")}}
+        {{template "ui.button" (dict "Label" "Ghost" "Variant" "ghost")}}
+        {{template "ui.button" (dict "Label" "Danger" "Variant" "danger")}}
+        {{template "ui.button" (dict "Label" "Disabled" "Disabled" true)}}
+        {{template "ui.button" (dict "Label" "Link button" "Href" "#s-buttons" "Variant" "secondary")}}
+      </div>
+      <div class="ui-cluster">
+        {{template "ui.button" (dict "Label" "Small" "Size" "sm")}}
+        {{template "ui.button" (dict "Label" "Medium")}}
+        {{template "ui.button" (dict "Label" "Large" "Size" "lg")}}
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="s-fields">
+    <h2 id="s-fields">Fields</h2>
+    <form class="gallery-form ui-stack" action="#">
+      {{template "ui.field" (dict "Label" "Full name" "Name" "name" "Autocomplete" "name" "Placeholder" "Ada Lovelace")}}
+      {{template "ui.field" (dict "Label" "Email" "Name" "email" "Type" "email" "Value" "ada@example" "Hint" "We only use it to sign you in." "Error" "Enter a full email address." "Required" true)}}
+      <div class="ui-form-row">
+        {{template "ui.field" (dict "Label" "Amount" "Name" "amount" "Type" "number" "Value" "120")}}
+        {{template "ui.field" (dict "Label" "Currency" "Name" "currency" "Control" "select" "Value" "jod" "Options" .Currencies)}}
+      </div>
+      {{template "ui.field" (dict "Label" "Notes" "Name" "notes" "Control" "textarea" "Rows" 3 "Hint" "Optional.")}}
+      {{template "ui.field" (dict "Label" "Account ID" "Name" "account" "Value" "acc_2041" "Disabled" true)}}
+      <fieldset class="ui-stack">
+        <legend class="ui-field-label">Billing period</legend>
+        {{template "ui.check" (dict "Label" "Monthly" "Name" "period" "Value" "m" "Type" "radio" "Checked" true)}}
+        {{template "ui.check" (dict "Label" "Yearly" "Name" "period" "Value" "y" "Type" "radio")}}
+      </fieldset>
+      {{template "ui.check" (dict "Label" "Email me a receipt" "Name" "receipt" "Value" "1" "Checked" true)}}
+      {{template "ui.check" (dict "Label" "Locked option" "Name" "locked" "Disabled" true)}}
+    </form>
+  </section>
+
+  <section aria-labelledby="s-pills">
+    <h2 id="s-pills">Pills</h2>
+    <div class="ui-cluster">
+      {{template "ui.pill" (dict "Label" "Draft")}}
+      {{template "ui.pill" (dict "Label" "Syncing" "Variant" "info")}}
+      {{template "ui.pill" (dict "Label" "Paid" "Variant" "good")}}
+      {{template "ui.pill" (dict "Label" "Due soon" "Variant" "warning")}}
+      {{template "ui.pill" (dict "Label" "Failed" "Variant" "bad")}}
+    </div>
+  </section>
+
+  <section aria-labelledby="s-callouts">
+    <h2 id="s-callouts">Callouts</h2>
+    <div class="ui-stack">
+      <div class="ui-callout"><p class="ui-callout-title">Heads up</p><p>Statements import overnight.</p></div>
+      <div class="ui-callout" data-variant="good"><p class="ui-callout-title">Saved</p><p>Your resume was rebuilt.</p></div>
+      <div class="ui-callout" data-variant="warning"><p class="ui-callout-title">Check this</p><p>Two transactions look like duplicates.</p></div>
+      <div class="ui-callout" data-variant="bad"><p class="ui-callout-title">Build failed</p><p>The gate found 3 unsupported claims.</p></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="s-table">
+    <h2 id="s-table">Table</h2>
+    <div class="ui-table-wrap">
+      <table class="ui-table">
+        <caption>October spending</caption>
+        <thead><tr><th scope="col">Category</th><th scope="col">Status</th><th scope="col" class="ui-num">Amount</th></tr></thead>
+        <tbody>
+          <tr><td>Groceries</td><td>{{template "ui.pill" (dict "Label" "On budget" "Variant" "good")}}</td><td class="ui-num">212.40</td></tr>
+          <tr><td>Dining</td><td>{{template "ui.pill" (dict "Label" "Over" "Variant" "bad")}}</td><td class="ui-num">96.15</td></tr>
+          <tr><td>Transport</td><td>{{template "ui.pill" (dict "Label" "Watch" "Variant" "warning")}}</td><td class="ui-num">58.00</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="s-disclosure">
+    <h2 id="s-disclosure">Disclosure</h2>
+    <div>
+      <details class="ui-disclosure" name="faq" open><summary class="ui-disclosure-summary">Where is my data stored?</summary><div class="ui-disclosure-body"><p>On your own server, in one SQLite file.</p></div></details>
+      <details class="ui-disclosure" name="faq"><summary class="ui-disclosure-summary">Can I export it?</summary><div class="ui-disclosure-body"><p>Yes, as CSV or JSON.</p></div></details>
+    </div>
+  </section>
+
+  <section aria-labelledby="s-card">
+    <h2 id="s-card">Card</h2>
+    <div class="ui-card ui-stack">
+      <h3>Net worth</h3>
+      <p class="ui-muted">Updated 3 November</p>
+      <p><strong>JOD 48,210</strong></p>
+    </div>
+  </section>
+
+  <section aria-labelledby="s-dialog">
+    <h2 id="s-dialog">Dialog</h2>
+    {{template "ui.button" (dict "Label" "Delete resume" "Variant" "danger" "Command" "show-modal" "CommandFor" "confirm")}}
+    <dialog class="ui-dialog" id="confirm" aria-labelledby="confirm-title">
+      <header class="ui-dialog-head">
+        <h2 class="ui-dialog-title" id="confirm-title">Delete resume?</h2>
+        <button class="ui-dialog-x" type="button" command="close" commandfor="confirm" aria-label="Close">×</button>
+      </header>
+      <div class="ui-dialog-body">This cannot be undone.</div>
+    </dialog>
+  </section>
+</main>
+{{if .Dialog}}<script>document.getElementById("confirm").showModal();</script>{{end}}
+</body>
+</html>

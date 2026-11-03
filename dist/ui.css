@@ -260,6 +260,7 @@ small { font-size: var(--text-sm); }
   --ui-dialog-pad: var(--space-5);
   inline-size: min(var(--ui-dialog-width), calc(100vw - 2 * var(--space-4)));
   max-block-size: calc(100dvh - 2 * var(--space-4));
+  margin: auto; /* the reset zeroes margins; a modal is centred by margin: auto */
   padding: 0;
   border: 1px solid var(--rule-soft);
   border-radius: var(--ui-dialog-radius);
