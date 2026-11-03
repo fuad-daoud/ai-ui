@@ -4,3 +4,5 @@ export { Field } from "./field";
 export type { FieldOption, FieldProps, InputType } from "./field";
 export { Check } from "./check";
 export type { CheckProps } from "./check";
+export { Pill } from "./pill";
+export type { PillProps, PillVariant } from "./pill";

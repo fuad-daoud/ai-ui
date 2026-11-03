@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.pill", "args": { "Label": "Paid", "Variant": "good" } },
+  "react": { "component": "Pill", "props": { "variant": "good", "children": "Paid" } }
+}
