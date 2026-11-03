@@ -1,0 +1,12 @@
+[
+  { "name": "sorts attributes", "in": "<a href=\"/x\" class=\"b\">x</a>", "out": "<a class=\"b\" href=\"/x\">x</a>" },
+  { "name": "prints an empty value bare", "in": "<input disabled=\"\" type=\"text\">", "out": "<input disabled type=\"text\">" },
+  { "name": "keeps a bare boolean bare", "in": "<input disabled type=text>", "out": "<input disabled type=\"text\">" },
+  { "name": "collapses and trims text", "in": "<p>\n  Hello   world \n</p>", "out": "<p>Hello world</p>" },
+  { "name": "drops whitespace-only text and comments", "in": "<div>\n <!-- x --> <span>a</span>\n</div>", "out": "<div><span>a</span></div>" },
+  { "name": "normalises class whitespace", "in": "<b class=\"  x   y \">t</b>", "out": "<b class=\"x y\">t</b>" },
+  { "name": "escapes one way", "in": "<p title='a&quot;b&#39;c'>&amp; &lt;x&gt; &#39;</p>", "out": "<p title=\"a&quot;b'c\">&amp; &lt;x&gt; '</p>" },
+  { "name": "writes void elements without a close tag", "in": "<br><img alt=\"\" src=\"a.png\">", "out": "<br><img alt src=\"a.png\">" },
+  { "name": "joins text split by React's comment markers", "in": "<span>a<!-- -->b</span>", "out": "<span>ab</span>" },
+  { "name": "keeps a non-breaking space", "in": "<p>a&nbsp;b</p>", "out": "<p>a\u00a0b</p>" }
+]
