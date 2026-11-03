@@ -207,6 +207,25 @@ small { font-size: var(--text-sm); }
 .ui-btn[data-size="lg"] { --ui-btn-height: 3rem; --ui-btn-pad: var(--space-5); --ui-btn-font-size: var(--text-lg); }
 .ui-btn:disabled,
 .ui-btn[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+/* css/components/check.css */
+.ui-check {
+  --ui-check-size: 1.125rem;
+  --ui-check-accent: var(--primary);
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  color: var(--ink);
+  cursor: pointer;
+}
+.ui-check-input {
+  flex: none;
+  inline-size: var(--ui-check-size);
+  block-size: var(--ui-check-size);
+  margin: 0.2em 0 0;
+  accent-color: var(--ui-check-accent);
+  cursor: inherit;
+}
+.ui-check:has(.ui-check-input:disabled) { color: var(--ink-3); cursor: not-allowed; }
 /* css/components/field.css */
 .ui-field { --ui-field-gap: var(--space-2); display: grid; gap: var(--ui-field-gap); }
 .ui-field-label { font-size: var(--text-sm); font-weight: 600; color: var(--ink); }

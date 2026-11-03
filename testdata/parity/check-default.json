@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.check", "args": { "Label": "Remember me", "Name": "remember", "Value": "1" } },
+  "react": { "component": "Check", "props": { "label": "Remember me", "name": "remember", "value": "1" } }
+}

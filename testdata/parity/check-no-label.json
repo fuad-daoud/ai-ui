@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.check", "args": { "Name": "x" } },
+  "error": "ui.check: Label is required"
+}

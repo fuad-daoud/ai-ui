@@ -1,0 +1,18 @@
+.ui-check {
+  --ui-check-size: 1.125rem;
+  --ui-check-accent: var(--primary);
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  color: var(--ink);
+  cursor: pointer;
+}
+.ui-check-input {
+  flex: none;
+  inline-size: var(--ui-check-size);
+  block-size: var(--ui-check-size);
+  margin: 0.2em 0 0;
+  accent-color: var(--ui-check-accent);
+  cursor: inherit;
+}
+.ui-check:has(.ui-check-input:disabled) { color: var(--ink-3); cursor: not-allowed; }

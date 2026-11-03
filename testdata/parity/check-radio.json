@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.check", "args": { "Label": "Monthly", "Name": "period", "Value": "m", "Type": "radio", "Checked": true, "ID": "period-m", "Disabled": true } },
+  "react": { "component": "Check", "props": { "label": "Monthly", "name": "period", "value": "m", "type": "radio", "defaultChecked": true, "id": "period-m", "disabled": true } }
+}
