@@ -1,0 +1,4 @@
+@import "../../react/theme.css";
+@import "tailwindcss";
+@import "../../dist/ui.css";
+@source "./page.html";
