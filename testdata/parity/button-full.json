@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.button", "args": { "Label": "Delete", "Variant": "danger", "Size": "sm", "Type": "submit", "Name": "action", "Value": "delete" } },
+  "react": { "component": "Button", "props": { "variant": "danger", "size": "sm", "type": "submit", "name": "action", "value": "delete", "children": "Delete" } }
+}

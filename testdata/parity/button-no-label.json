@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.button", "args": {} },
+  "error": "ui.button: Label is required"
+}

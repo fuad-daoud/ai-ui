@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.button", "args": { "Label": "Go", "Variant": "huge", "Size": "md", "Type": "weird" } },
+  "react": { "component": "Button", "props": { "variant": "huge", "size": "md", "type": "weird", "children": "Go" } }
+}
