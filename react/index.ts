@@ -6,3 +6,5 @@ export { Check } from "./check";
 export type { CheckProps } from "./check";
 export { Pill } from "./pill";
 export type { PillProps, PillVariant } from "./pill";
+export { Dialog } from "./dialog";
+export type { DialogProps } from "./dialog";
