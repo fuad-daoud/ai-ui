@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.button", "args": { "Label": "Docs", "Href": "/docs", "Disabled": true } },
+  "react": { "component": "ButtonLink", "props": { "href": "/docs", "disabled": true, "children": "Docs" } }
+}

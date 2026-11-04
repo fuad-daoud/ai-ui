@@ -1,0 +1,3 @@
+{
+  "react": { "component": "Dialog", "props": { "id": "confirm", "title": "Delete resume?", "children": "This cannot be undone." } }
+}

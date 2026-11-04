@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.button", "args": { "Label": "Open", "Command": "show-modal", "CommandFor": "confirm", "Disabled": true } },
+  "react": { "component": "Button", "props": { "command": "show-modal", "commandFor": "confirm", "disabled": true, "children": "Open" } }
+}

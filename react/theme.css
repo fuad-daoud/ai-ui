@@ -1,0 +1,38 @@
+/* ai-ui for Tailwind v4. In the app stylesheet, import in this order:
+     @import "ai-ui/layers.css";
+     @import "tailwindcss";
+     @import "ai-ui/theme.css";
+     @import "ai-ui/ui.css";
+   layers.css fixes the layer order, so Tailwind utilities beat the ui
+   components (class="ui-btn rounded-none" works) and the components beat
+   Tailwind's base. This file must come after tailwindcss: Tailwind writes every
+   theme variable at the first @theme it meets, and before tailwindcss that
+   block lands outside @layer theme, where Tailwind's defaults beat ai-ui's.
+   Fonts, radii and text sizes are not remapped: ai-ui defines --font-sans,
+   --radius-md, --text-sm and friends itself in ui.base, which outranks
+   Tailwind's theme layer, so font-sans, rounded-md and text-sm resolve to the
+   ai-ui values. */
+@theme inline {
+  --color-paper: var(--paper);
+  --color-band: var(--band);
+  --color-sheet: var(--sheet);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-rule: var(--rule);
+  --color-rule-soft: var(--rule-soft);
+  --color-rule-field: var(--rule-field);
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-link: var(--link);
+  --color-focus: var(--focus);
+  --color-accent: var(--accent);
+  --color-good: var(--good);
+  --color-good-bg: var(--good-bg);
+  --color-warning: var(--warning);
+  --color-warning-bg: var(--warning-bg);
+  --color-bad: var(--bad);
+  --color-bad-bg: var(--bad-bg);
+  --color-mark-bg: var(--mark-bg);
+}

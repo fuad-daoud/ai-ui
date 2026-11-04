@@ -1,0 +1,21 @@
+.ui-pill {
+  --ui-pill-bg: var(--band);
+  --ui-pill-fg: var(--ink-2);
+  --ui-pill-border: var(--rule-soft);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0.125rem var(--space-2);
+  border: 1px solid var(--ui-pill-border);
+  border-radius: 999px;
+  background: var(--ui-pill-bg);
+  color: var(--ui-pill-fg);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.ui-pill[data-variant="info"] { --ui-pill-bg: var(--sheet); --ui-pill-fg: var(--link); --ui-pill-border: var(--link); }
+.ui-pill[data-variant="good"] { --ui-pill-bg: var(--good-bg); --ui-pill-fg: var(--good); --ui-pill-border: transparent; }
+.ui-pill[data-variant="warning"] { --ui-pill-bg: var(--warning-bg); --ui-pill-fg: var(--warning); --ui-pill-border: transparent; }
+.ui-pill[data-variant="bad"] { --ui-pill-bg: var(--bad-bg); --ui-pill-fg: var(--bad); --ui-pill-border: transparent; }

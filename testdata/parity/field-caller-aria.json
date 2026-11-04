@@ -1,0 +1,3 @@
+{
+  "react": { "component": "Field", "props": { "label": "Email", "name": "email", "hint": "We never share it.", "aria-describedby": "email-rules", "aria-invalid": true } }
+}

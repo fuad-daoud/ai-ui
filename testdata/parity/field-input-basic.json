@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.field", "args": { "Label": "Email", "Name": "email", "Type": "email" } },
+  "react": { "component": "Field", "props": { "label": "Email", "name": "email", "type": "email" } }
+}

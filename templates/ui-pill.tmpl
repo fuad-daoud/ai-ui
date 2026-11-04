@@ -1,0 +1,3 @@
+{{define "ui.pill" -}}
+<span class="ui-pill"{{with ui_variant (index . "Variant") "info" "good" "warning" "bad"}} data-variant="{{.}}"{{end}}>{{ui_required "ui.pill" "Label" (index . "Label")}}</span>
+{{- end}}

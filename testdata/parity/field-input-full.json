@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.field", "args": { "Label": "Email", "Name": "email", "ID": "signup-email", "Type": "email", "Value": "a@b.co", "Placeholder": "you@example.com", "Autocomplete": "email", "Hint": "We never share it.", "Error": "That address bounced.", "Required": true } },
+  "react": { "component": "Field", "props": { "label": "Email", "name": "email", "id": "signup-email", "type": "email", "defaultValue": "a@b.co", "placeholder": "you@example.com", "autoComplete": "email", "hint": "We never share it.", "error": "That address bounced.", "required": true } }
+}

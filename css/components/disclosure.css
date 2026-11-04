@@ -1,0 +1,24 @@
+.ui-disclosure { border-block-end: 1px solid var(--rule-soft); }
+.ui-disclosure-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-block: var(--space-3);
+  font-weight: 600;
+  list-style: none;
+  cursor: pointer;
+}
+.ui-disclosure-summary::-webkit-details-marker { display: none; }
+.ui-disclosure-summary::after {
+  content: "";
+  flex: none;
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  border-inline-end: 2px solid var(--ink-3);
+  border-block-end: 2px solid var(--ink-3);
+  transform: rotate(45deg);
+  transition: transform var(--dur) var(--ease);
+}
+.ui-disclosure[open] > .ui-disclosure-summary::after { transform: rotate(-135deg); }
+.ui-disclosure-body { padding-block-end: var(--space-4); color: var(--ink-2); }

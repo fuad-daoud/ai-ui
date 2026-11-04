@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.field", "args": { "Label": "Currency", "Name": "cur", "Control": "select", "Value": "jod", "Options": [{ "Value": "usd", "Label": "US dollar" }, { "Value": "jod", "Label": "Jordanian dinar" }], "Hint": "Used for totals." } },
+  "react": { "component": "Field", "props": { "label": "Currency", "name": "cur", "control": "select", "defaultValue": "jod", "options": [{ "value": "usd", "label": "US dollar" }, { "value": "jod", "label": "Jordanian dinar" }], "hint": "Used for totals." } }
+}

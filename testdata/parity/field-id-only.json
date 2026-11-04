@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.field", "args": { "Label": "Search", "ID": "q" } },
+  "react": { "component": "Field", "props": { "label": "Search", "id": "q" } }
+}

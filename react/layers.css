@@ -1,0 +1,3 @@
+/* ai-ui for Tailwind v4: the layer order. Import it before tailwindcss so the
+   ui layer sits between Tailwind's base and components (see theme.css). */
+@layer theme, base, ui, components, utilities;

@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.button", "args": { "Label": "Save & \"quit\" <now> it's" } },
+  "react": { "component": "Button", "props": { "children": "Save & \"quit\" <now> it's" } }
+}
