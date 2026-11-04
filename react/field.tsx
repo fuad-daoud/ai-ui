@@ -20,20 +20,24 @@ export type TextareaFieldProps = FieldBase & { control: "textarea" } & Omit<Comp
 export type SelectFieldProps = FieldBase & { control: "select"; options: readonly FieldOption[] } & Omit<ComponentPropsWithRef<"select">, Own>;
 export type FieldProps = InputFieldProps | TextareaFieldProps | SelectFieldProps;
 
-type Wiring = { id: string; name?: string; "aria-describedby"?: string; "aria-invalid"?: "true" };
+type Wiring = { id: string; name?: string; "aria-describedby"?: string; "aria-invalid"?: ControlAria["aria-invalid"] };
+type ControlAria = Pick<ComponentPropsWithRef<"input">, "aria-describedby" | "aria-invalid">;
 
 export function Field(props: FieldProps) {
   const { label, name, id: idProp, hint, error, className, ...controlProps } = props;
+  const { "aria-describedby": callerDescribedBy, "aria-invalid": callerInvalid } = controlProps as ControlAria;
   const id = idProp || name;
   if (!id) throw new Error("ui.field: needs ID or Name");
   const hasHint = present(hint);
   const hasError = present(error);
-  const describedBy = [hasHint ? `${id}-hint` : "", hasError ? `${id}-error` : ""].filter(Boolean).join(" ");
+  // The caller's own describedby ids follow the hint and error, and a caller's
+  // aria-invalid stands when there is no error (client-side validation).
+  const describedBy = [hasHint ? `${id}-hint` : "", hasError ? `${id}-error` : "", callerDescribedBy ?? ""].filter(Boolean).join(" ");
   const wiring: Wiring = {
     id,
     name,
     "aria-describedby": describedBy || undefined,
-    "aria-invalid": hasError ? "true" : undefined,
+    "aria-invalid": hasError ? "true" : callerInvalid,
   };
   return (
     <div className={cx("ui-field", className)}>

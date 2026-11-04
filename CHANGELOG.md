@@ -11,5 +11,5 @@ First release.
 - Tokens with the `blue` (default) and `mono` palettes, light and dark through `light-dark()`.
 - Layered CSS: reset, base, utilities; button, field (input, select, textarea), check, pill, dialog, callout, table, disclosure, card.
 - Go: `ui.Handler`, `ui.Href`, `ui.Parse`, and the partials `ui.button`, `ui.field`, `ui.check`, `ui.pill`.
-- React: `Button`, `ButtonLink`, `Field`, `Check`, `Pill`, `Dialog`; Tailwind v4 mapping in `theme.css`.
+- React: `Button`, `ButtonLink`, `Field`, `Check`, `Pill`, `Dialog`; Tailwind v4 layer order in `layers.css` and token mapping in `theme.css`.
 - `theme.js`: pre-paint theme and palette, persisted, with `data-ui-set-*` buttons.
