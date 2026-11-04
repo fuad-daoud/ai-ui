@@ -444,4 +444,8 @@ small { font-size: var(--text-sm); }
 }
 .ui-stack { display: flex; flex-direction: column; gap: var(--ui-stack-gap, var(--space-4)); }
 .ui-cluster { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ui-cluster-gap, var(--space-3)); }
+/* Author display rules in any layer beat the browser's own [hidden] rule, so
+   restate it here, in the last layer: it beats the components, and app CSS can
+   still override it. */
+[hidden]:not([hidden="until-found"]) { display: none; }
 }

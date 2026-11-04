@@ -24,3 +24,21 @@ for (const path of paths) {
     expect(violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).join(", ")}`)).toEqual([]);
   });
 }
+
+test("hidden hides every component root", async ({ page }) => {
+  await page.goto("/p/blue/light");
+  // Author display rules in any layer beat the UA's [hidden] rule, so the library
+  // must restate it.
+  const shown = await page.evaluate(() =>
+    [".ui-btn", ".ui-field", ".ui-check", ".ui-pill", ".ui-stack", ".ui-cluster", ".ui-callout", ".ui-card"]
+      .map((sel) => {
+        const el = document.querySelector<HTMLElement>(sel)!;
+        el.hidden = true;
+        const display = getComputedStyle(el).display;
+        el.hidden = false;
+        return `${sel}: ${display}`;
+      })
+      .filter((s) => !s.endsWith(": none")),
+  );
+  expect(shown).toEqual([]);
+});
