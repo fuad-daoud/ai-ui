@@ -1,15 +1,17 @@
 /* ai-ui for Tailwind v4. In the app stylesheet, import in this order:
-     @import "ai-ui/theme.css";
+     @import "ai-ui/layers.css";
      @import "tailwindcss";
+     @import "ai-ui/theme.css";
      @import "ai-ui/ui.css";
-   The first import fixes the layer order, so Tailwind utilities beat the
-   ui components (class="ui-btn rounded-none" works) and the components beat
-   Tailwind's base. Fonts, radii and text sizes are not remapped: ai-ui
-   defines --font-sans, --radius-md, --text-sm and friends itself, in a later
-   layer than Tailwind's theme, so Tailwind's font-sans, rounded-md and
-   text-sm utilities already resolve to the ai-ui values. */
-@layer theme, base, ui, components, utilities;
-
+   layers.css fixes the layer order, so Tailwind utilities beat the ui
+   components (class="ui-btn rounded-none" works) and the components beat
+   Tailwind's base. This file must come after tailwindcss: Tailwind writes every
+   theme variable at the first @theme it meets, and before tailwindcss that
+   block lands outside @layer theme, where Tailwind's defaults beat ai-ui's.
+   Fonts, radii and text sizes are not remapped: ai-ui defines --font-sans,
+   --radius-md, --text-sm and friends itself in ui.base, which outranks
+   Tailwind's theme layer, so font-sans, rounded-md and text-sm resolve to the
+   ai-ui values. */
 @theme inline {
   --color-paper: var(--paper);
   --color-band: var(--band);

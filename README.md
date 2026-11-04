@@ -42,8 +42,9 @@ export default { transpilePackages: ["ai-ui"] };
 
 ```css
 /* app/globals.css: this order matters */
-@import "ai-ui/theme.css";
+@import "ai-ui/layers.css";
 @import "tailwindcss";
+@import "ai-ui/theme.css";
 @import "ai-ui/ui.css";
 ```
 

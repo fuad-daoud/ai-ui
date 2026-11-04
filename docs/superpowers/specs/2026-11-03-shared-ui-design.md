@@ -102,11 +102,11 @@ money. An app override is one line that covers both modes.
 
 ### 3.6 Tailwind mapping
 
-`react/theme.css` maps the tokens into Tailwind v4:
+`react/layers.css` (imported before `tailwindcss`) fixes the layer order, and `react/theme.css` (imported after it, so Tailwind's defaults stay inside `@layer theme`) maps the tokens into Tailwind v4:
 
 ```css
-@layer theme, base, ui, components, utilities;
-@theme inline {
+@layer theme, base, ui, components, utilities;   /* layers.css */
+@theme inline {                                  /* theme.css */
   --color-paper: var(--paper); --color-sheet: var(--sheet);
   --color-ink: var(--ink); --color-ink-2: var(--ink-2); /* … every colour token … */
   --font-sans: var(--font-sans); --font-mono: var(--font-mono);
@@ -189,9 +189,9 @@ ai-ui/
   js/theme.js js/ui.js
   fonts/                  IBM Plex Sans + IBM Plex Mono, latin subset, woff2, + plex.css (optional)
   templates/*.tmpl        Go partials, {{define "ui.<name>"}}
-  package.json            name "ai-ui"; exports ./ui.css ./theme.css ./theme.js ./ui.js ./react
+  package.json            name "ai-ui"; exports ./ui.css ./layers.css ./theme.css ./theme.js ./ui.js ./react
   react/
-    index.ts *.tsx theme.css
+    index.ts *.tsx layers.css theme.css
   testdata/parity/        fixtures (*.json) + golden HTML (*.html)
   gallery/                main.go: renders every component × palette × mode
   cmd/build/              generates dist/ui.css from css/
@@ -258,7 +258,7 @@ the default and adds nothing.
 ## 7. React adapter
 
 - **Install:** `"ai-ui": "github:fuad-daoud/ai-ui#v0.1.0"`, plus `transpilePackages: ["ai-ui"]` in the Next config. React 19 is a peer dependency. There is no build step: the TSX ships as source.
-- **Styles:** `import "ai-ui/ui.css"` and `import "ai-ui/theme.css"` in the root stylesheet or layout.
+- **Styles:** `@import "ai-ui/layers.css"`, then `tailwindcss`, then `ai-ui/theme.css` and `ai-ui/ui.css` in the root stylesheet.
 - **Components:** `ai-ui/react` exports one component per Go partial (`Button`, `ButtonLink`, `Field`, `Check`, `Pill`, later `Menu`, `Tabs`, `SegmentedControl`, `Toast`, `ThemeSwitcher`), plus components for the containers whose markup has wiring to get right (`Dialog`, later `Drawer`).
 - **Rules for every component:**
   - It renders exactly the markup of its Go partial or its documented golden (enforced by §8.1).

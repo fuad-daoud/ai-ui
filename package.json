@@ -7,6 +7,7 @@
   "repository": "github:fuad-daoud/ai-ui",
   "exports": {
     "./ui.css": "./dist/ui.css",
+    "./layers.css": "./react/layers.css",
     "./theme.css": "./react/theme.css",
     "./theme.js": "./js/theme.js",
     "./react": "./react/index.ts"
