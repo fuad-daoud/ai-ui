@@ -72,8 +72,16 @@ func mustCanon(t *testing.T, s string) string {
 	return c
 }
 
+// TestParityGo renders every fixture under each missingkey option an app may
+// set on its template set: the option is shared with the partials.
 func TestParityGo(t *testing.T) {
-	tmpl, err := ui.Parse(template.New("parity"))
+	for _, opt := range []string{"missingkey=default", "missingkey=zero", "missingkey=error"} {
+		t.Run(opt, func(t *testing.T) { parityGo(t, opt, *update && opt == "missingkey=default") })
+	}
+}
+
+func parityGo(t *testing.T, opt string, update bool) {
+	tmpl, err := ui.Parse(template.New("parity").Option(opt))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -100,7 +108,7 @@ func TestParityGo(t *testing.T) {
 			}
 			got := mustCanon(t, b.String())
 			golden := key + ".html"
-			if *update {
+			if update {
 				if err := os.WriteFile(golden, []byte(got+"\n"), 0o644); err != nil {
 					t.Fatal(err)
 				}

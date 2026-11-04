@@ -18,7 +18,8 @@ type Option struct{ Value, Label string }
 //
 // App templates get dict (build a map for a partial's arguments) and href
 // (ui.Href). The partials call only the ui_* helpers, so an app that later
-// redefines dict or href does not break them.
+// redefines dict or href does not break them. They read their arguments with
+// index, so a set parsed with Option("missingkey=error") still renders them.
 func Parse(t *template.Template) (*template.Template, error) {
 	if t == nil {
 		return nil, errors.New("ui: Parse needs a template")

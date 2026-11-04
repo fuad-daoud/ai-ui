@@ -1,4 +1,4 @@
 {{define "ui.check" -}}
-{{- $label := ui_required "ui.check" "Label" .Label -}}
-<label class="ui-check"><input class="ui-check-input" type="{{ui_or (ui_variant .Type "radio") "checkbox"}}"{{with ui_str .ID}} id="{{.}}"{{end}}{{with ui_str .Name}} name="{{.}}"{{end}}{{with ui_str .Value}} value="{{.}}"{{end}}{{if .Checked}} checked{{end}}{{if .Required}} required{{end}}{{if .Disabled}} disabled{{end}}><span class="ui-check-label">{{$label}}</span></label>
+{{- $label := ui_required "ui.check" "Label" (index . "Label") -}}
+<label class="ui-check"><input class="ui-check-input" type="{{ui_or (ui_variant (index . "Type") "radio") "checkbox"}}"{{with ui_str (index . "ID")}} id="{{.}}"{{end}}{{with ui_str (index . "Name")}} name="{{.}}"{{end}}{{with ui_str (index . "Value")}} value="{{.}}"{{end}}{{if (index . "Checked")}} checked{{end}}{{if (index . "Required")}} required{{end}}{{if (index . "Disabled")}} disabled{{end}}><span class="ui-check-label">{{$label}}</span></label>
 {{- end}}

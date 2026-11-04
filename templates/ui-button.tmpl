@@ -1,10 +1,10 @@
 {{define "ui.button" -}}
-{{- $label := ui_required "ui.button" "Label" .Label -}}
-{{- $variant := ui_variant .Variant "secondary" "ghost" "danger" -}}
-{{- $size := ui_variant .Size "sm" "lg" -}}
-{{- if .Href -}}
-<a class="ui-btn"{{if .Disabled}} aria-disabled="true"{{else}} href="{{.Href}}"{{end}}{{with $variant}} data-variant="{{.}}"{{end}}{{with $size}} data-size="{{.}}"{{end}}>{{$label}}</a>
+{{- $label := ui_required "ui.button" "Label" (index . "Label") -}}
+{{- $variant := ui_variant (index . "Variant") "secondary" "ghost" "danger" -}}
+{{- $size := ui_variant (index . "Size") "sm" "lg" -}}
+{{- if (index . "Href") -}}
+<a class="ui-btn"{{if (index . "Disabled")}} aria-disabled="true"{{else}} href="{{(index . "Href")}}"{{end}}{{with $variant}} data-variant="{{.}}"{{end}}{{with $size}} data-size="{{.}}"{{end}}>{{$label}}</a>
 {{- else -}}
-<button class="ui-btn" type="{{ui_or (ui_variant .Type "submit" "reset") "button"}}"{{with ui_str .Name}} name="{{.}}"{{end}}{{with ui_str .Value}} value="{{.}}"{{end}}{{with ui_str .Command}} command="{{.}}"{{end}}{{with ui_str .CommandFor}} commandfor="{{.}}"{{end}}{{with $variant}} data-variant="{{.}}"{{end}}{{with $size}} data-size="{{.}}"{{end}}{{if .Disabled}} disabled{{end}}>{{$label}}</button>
+<button class="ui-btn" type="{{ui_or (ui_variant (index . "Type") "submit" "reset") "button"}}"{{with ui_str (index . "Name")}} name="{{.}}"{{end}}{{with ui_str (index . "Value")}} value="{{.}}"{{end}}{{with ui_str (index . "Command")}} command="{{.}}"{{end}}{{with ui_str (index . "CommandFor")}} commandfor="{{.}}"{{end}}{{with $variant}} data-variant="{{.}}"{{end}}{{with $size}} data-size="{{.}}"{{end}}{{if (index . "Disabled")}} disabled{{end}}>{{$label}}</button>
 {{- end -}}
 {{- end}}
