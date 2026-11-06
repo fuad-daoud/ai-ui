@@ -1,5 +1,6 @@
-// Package build concatenates the css/ sources into dist/ui.css, wrapping each
-// group in its cascade layer (spec §4.1). Sources contain no @layer of their own.
+// Package build concatenates the css/ sources into dist/ui.css and
+// dist/ui-scoped.css, wrapping each group in its cascade layer (spec §4.1).
+// Sources contain no @layer of their own.
 package build
 
 import (
@@ -15,6 +16,20 @@ var Layers = []string{"ui.reset", "ui.base", "ui.components", "ui.utilities"}
 
 // CSS returns the content of dist/ui.css built from fsys (the repository root).
 func CSS(fsys fs.FS) ([]byte, error) {
+	return render(fsys, nil)
+}
+
+// ScopedCSS returns the content of dist/ui-scoped.css: the same sources, with the
+// reset and base limited to library markup. Tokens, components and utilities are
+// unchanged, so library markup looks the same under either file.
+func ScopedCSS(fsys fs.FS) ([]byte, error) {
+	return render(fsys, map[string]func(string) (string, error){
+		"css/reset.css": scopeRules,
+		"css/base.css":  scopeRules,
+	})
+}
+
+func render(fsys fs.FS, rewrite map[string]func(string) (string, error)) ([]byte, error) {
 	comps, err := fs.Glob(fsys, "css/components/*.css")
 	if err != nil {
 		return nil, fmt.Errorf("build: %w", err)
@@ -38,6 +53,13 @@ func CSS(fsys fs.FS) ([]byte, error) {
 			src, err := fs.ReadFile(fsys, f)
 			if err != nil {
 				return nil, fmt.Errorf("build: %w", err)
+			}
+			if fn := rewrite[f]; fn != nil {
+				out, err := fn(string(src))
+				if err != nil {
+					return nil, fmt.Errorf("build: %s: %w", f, err)
+				}
+				src = []byte(out)
 			}
 			fmt.Fprintf(&b, "/* %s */\n", f)
 			b.Write(bytes.TrimRight(src, "\n"))

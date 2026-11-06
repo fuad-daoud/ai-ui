@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ai-ui fixture: a document with bare CSS</title>
+{{if ne .Sheet "none"}}<link rel="stylesheet" href="{{href .Sheet}}">{{end}}
+<!-- Styled the way a résumé is: bare element rules that state only some properties. -->
+<style>
+  :root { color-scheme: light; }
+  body { font-family: Georgia, serif; max-width: 40rem; }
+  h1 { font-size: 22px; }
+  h2 { font-size: 14px; border-bottom: 1px solid #333; }
+  p, li { font-size: 12px; }
+  table { width: 100%; }
+  a { color: #123; }
+</style>
+</head>
+<body>
+<main id="document">
+  <h1>Sam Invented</h1>
+  <p>sam@example.org · <a href="#document">example.org</a></p>
+  <h2>Experience</h2>
+  <h3>Example Corp</h3>
+  <p>Built things that <mark>mattered</mark>, in <code>Go</code>.</p>
+  <ul><li>One thing</li><li>Another thing</li></ul>
+  <table><tr><td>A</td><td>B</td></tr></table>
+  <button>A plain button</button> <input value="a plain field">
+  <img alt="" width="20" height="20" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=">
+</main>
+</body>
+</html>

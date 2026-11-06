@@ -19,6 +19,12 @@ import (
 //go:embed page.html
 var pageSrc string
 
+//go:embed fixture_library.html
+var fixtureLibrarySrc string
+
+//go:embed fixture_document.html
+var fixtureDocumentSrc string
+
 var (
 	palettes   = []string{"blue", "mono"}
 	modes      = []string{"light", "dark"}
@@ -29,6 +35,12 @@ type link struct {
 	Href, Label string
 	Current     bool
 }
+
+// fixtureSheets are the sheets a fixture page can load. "none" loads no library
+// CSS, for comparing a document with and without it.
+var fixtureSheets = []string{"none", "ui.css", "ui-scoped.css"}
+
+type fixture struct{ Sheet, Density string }
 
 type page struct {
 	Palette, Mode string
@@ -53,8 +65,14 @@ func newHandler() (http.Handler, error) {
 	if err != nil {
 		return nil, err
 	}
-	if _, err := set.New("page").Parse(pageSrc); err != nil {
-		return nil, err
+	for name, src := range map[string]string{
+		"page":             pageSrc,
+		"fixture-library":  fixtureLibrarySrc,
+		"fixture-document": fixtureDocumentSrc,
+	} {
+		if _, err := set.New(name).Parse(src); err != nil {
+			return nil, err
+		}
 	}
 	mux := http.NewServeMux()
 	mux.Handle(ui.Prefix, http.StripPrefix(ui.Prefix, ui.Handler()))
@@ -80,6 +98,25 @@ func newHandler() (http.Handler, error) {
 	}
 	mux.HandleFunc("GET /p/{palette}/{mode}", serve(false))
 	mux.HandleFunc("GET /p/{palette}/{mode}/dialog", serve(true))
+	serveFixture := func(name string) http.HandlerFunc {
+		return func(w http.ResponseWriter, r *http.Request) {
+			sheet := r.PathValue("sheet")
+			if !slices.Contains(fixtureSheets, sheet) {
+				http.NotFound(w, r)
+				return
+			}
+			var b bytes.Buffer
+			data := fixture{Sheet: sheet, Density: r.URL.Query().Get("density")}
+			if err := set.ExecuteTemplate(&b, name, data); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			_, _ = b.WriteTo(w)
+		}
+	}
+	mux.HandleFunc("GET /fixture/library/{sheet}", serveFixture("fixture-library"))
+	mux.HandleFunc("GET /fixture/document/{sheet}", serveFixture("fixture-document"))
 	return mux, nil
 }
 

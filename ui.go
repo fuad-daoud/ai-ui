@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-//go:embed dist/ui.css js/theme.js
+//go:embed dist/ui.css dist/ui-scoped.css js/theme.js
 var raw embed.FS
 
 // Prefix is the path Handler expects to be mounted under:
@@ -23,8 +23,9 @@ const Prefix = "/_ui/"
 
 // published maps each public asset name to its file in the repository.
 var published = map[string]string{
-	"ui.css":   "dist/ui.css",
-	"theme.js": "js/theme.js",
+	"ui.css":        "dist/ui.css",
+	"ui-scoped.css": "dist/ui-scoped.css",
+	"theme.js":      "js/theme.js",
 }
 
 var contentTypes = map[string]string{
@@ -54,7 +55,7 @@ func loadAssets() map[string]asset {
 }
 
 // Assets holds the published files, opened by their public names
-// ("ui.css", "theme.js").
+// ("ui.css", "ui-scoped.css", "theme.js").
 var Assets fs.FS = publicFS{}
 
 type publicFS struct{}
@@ -73,7 +74,7 @@ func (publicFS) Open(name string) (fs.File, error) {
 func Href(name string) string {
 	a, ok := assets[name]
 	if !ok {
-		panic(fmt.Sprintf("ui: unknown asset %q (published: ui.css, theme.js)", name))
+		panic(fmt.Sprintf("ui: unknown asset %q (published: ui.css, ui-scoped.css, theme.js)", name))
 	}
 	return Prefix + name + "?v=" + a.hash
 }
