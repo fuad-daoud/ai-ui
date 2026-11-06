@@ -34,7 +34,7 @@ The plans' code was generated from trial trees, not retyped, and each round's tr
 | Check | Result |
 |---|---|
 | Round 1 alone | Go, vet, gofmt, `tsc`, 45 vitest, 16 browser tests pass. `ui.css` byte-identical to `v0.1.1`. |
-| Round 2 | Go, vet, gofmt, `tsc`, 45 vitest, 30 browser tests pass, including axe on 8 new compact pages and their 8 dialogs. |
+| Round 2 | Go, vet, gofmt, `tsc`, 45 vitest, 30 browser tests pass, including axe on 8 new compact runs: 4 pages and 4 dialogs. |
 | Field fix at the default size | Measured: a 40px input and select beside a 40px button. |
 
 Each break below was made on purpose, and the named tests failed:
@@ -61,7 +61,7 @@ A `check: none` chain runs no gate of its own, and the builder's report isn't pr
    `npx playwright test --update-snapshots`. Bring back `e2e/__screenshots__/` with `scp`.
    - The 8 existing shots may change only where a field sits. Look at one pair, and check that the
      difference starts at the first field and that the page above it is identical.
-   - The 8 compact shots and 8 compact dialog shots are new. Look at one of each.
+   - The 4 compact shots and 4 compact dialog shots are new. Look at one of each.
    - Re-run without `--ignore-snapshots`: all 30 pass.
 4. **Commit the baselines** on the chain's branch. Check for stray runs with `pgrep -af playwright`
    on contabo.
