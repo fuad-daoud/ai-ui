@@ -45,6 +45,7 @@ type fixture struct{ Sheet, Density string }
 type page struct {
 	Palette, Mode string
 	Dialog        bool
+	Compact       bool
 	Links         []link
 	Currencies    []ui.Option
 }
@@ -79,7 +80,7 @@ func newHandler() (http.Handler, error) {
 	mux.HandleFunc("GET /{$}", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/p/blue/light", http.StatusFound)
 	})
-	serve := func(dialog bool) http.HandlerFunc {
+	serve := func(dialog, compact bool) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
 			p, m := r.PathValue("palette"), r.PathValue("mode")
 			if !slices.Contains(palettes, p) || !slices.Contains(modes, m) {
@@ -87,7 +88,7 @@ func newHandler() (http.Handler, error) {
 				return
 			}
 			var b bytes.Buffer
-			data := page{Palette: p, Mode: m, Dialog: dialog, Links: links(p, m), Currencies: currencies}
+			data := page{Palette: p, Mode: m, Dialog: dialog, Compact: compact, Links: links(p, m), Currencies: currencies}
 			if err := set.ExecuteTemplate(&b, "page", data); err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
@@ -96,8 +97,10 @@ func newHandler() (http.Handler, error) {
 			_, _ = b.WriteTo(w)
 		}
 	}
-	mux.HandleFunc("GET /p/{palette}/{mode}", serve(false))
-	mux.HandleFunc("GET /p/{palette}/{mode}/dialog", serve(true))
+	mux.HandleFunc("GET /p/{palette}/{mode}", serve(false, false))
+	mux.HandleFunc("GET /p/{palette}/{mode}/dialog", serve(true, false))
+	mux.HandleFunc("GET /p/{palette}/{mode}/compact", serve(false, true))
+	mux.HandleFunc("GET /p/{palette}/{mode}/compact/dialog", serve(true, true))
 	serveFixture := func(name string) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
 			sheet := r.PathValue("sheet")

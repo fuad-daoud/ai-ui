@@ -2,7 +2,12 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 const paths = ["blue", "mono"].flatMap((p) =>
-  ["light", "dark"].flatMap((m) => [`/p/${p}/${m}`, `/p/${p}/${m}/dialog`]),
+  ["light", "dark"].flatMap((m) => [
+    `/p/${p}/${m}`,
+    `/p/${p}/${m}/dialog`,
+    `/p/${p}/${m}/compact`,
+    `/p/${p}/${m}/compact/dialog`,
+  ]),
 );
 
 for (const path of paths) {
