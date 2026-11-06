@@ -1,0 +1,19 @@
+/* Compact density (DESIGN.md). Every rule sits under the attribute, so a page
+   without it renders as before. Tokens are redefined here, in a later layer than
+   their definition, and an app's unlayered override still beats all of this. */
+[data-density="compact"] {
+  --text-md: 0.875rem;
+  --text-sm: 0.8125rem;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+}
+/* Not on :root: font-size there would shrink rem, and every rem-sized control
+   with it. On the root, body picks up --text-md through its own rule. */
+[data-density="compact"]:not(:root) { font-size: var(--text-md); }
+[data-density="compact"] .ui-btn { --ui-btn-height: 2rem; --ui-btn-pad: var(--space-3); }
+[data-density="compact"] .ui-btn[data-size="sm"] { --ui-btn-height: 1.75rem; --ui-btn-pad: 0.625rem; }
+[data-density="compact"] .ui-btn[data-size="lg"] { --ui-btn-height: 2.75rem; --ui-btn-pad: 1.25rem; --ui-btn-font-size: 1rem; }
+[data-density="compact"] :is(.ui-input, .ui-select) { --ui-input-height: 2rem; }
+[data-density="compact"] .ui-field { --ui-field-gap: var(--space-1); }
+[data-density="compact"] .ui-pill { border-radius: var(--radius-sm); }
+[data-density="compact"] .ui-table { font-size: var(--text-md); }

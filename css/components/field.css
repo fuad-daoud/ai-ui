@@ -21,6 +21,10 @@
   border-radius: var(--ui-input-radius);
   transition: border-color var(--dur) var(--ease);
 }
+/* A single-line control is centred by its height, so block padding would only make it taller
+   than a button beside it. A multi-select lists rows, and keeps its padding. */
+.ui-input,
+.ui-select:not([multiple]) { padding-block: 0; }
 .ui-textarea { min-block-size: calc(var(--ui-input-height) * 2); resize: vertical; line-height: 1.5; }
 .ui-select {
   appearance: none;

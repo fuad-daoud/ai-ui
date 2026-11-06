@@ -88,6 +88,62 @@ served no longer match a hash taken over the source.
 
 Delete the compat sheet once no legacy markup is left.
 
+## Density
+
+Controls are 40px at 16px by default. Working tools can ask for compact, on the page or on one part of it:
+
+```html
+<html data-density="compact">          <!-- the whole page -->
+<div data-density="compact">…</div>    <!-- one part of a page -->
+```
+
+| | Default | Compact |
+|---|---|---|
+| Button | 40px, 16px text | 32px, 14px text, 12px side padding |
+| Button `data-size="sm"` | 32px, 14px | 28px, 13px, 10px side padding |
+| Button `data-size="lg"` | 48px, 18px | 44px, 16px, 20px side padding |
+| Input, select | 40px, 16px | 32px, 14px |
+| Textarea | 80px, 16px | 80px, 14px |
+| Field label, hint, error | 14px | 13px |
+| Field gap | 8px | 4px |
+| Controls, callout, table wrap | 6px corners | 4px corners |
+| Card, dialog | 10px corners | 8px corners |
+| Pill | fully round | 4px corners |
+| Table text | 14px | 14px |
+| Body text (attribute on the page) | 16px | 14px |
+
+Headings and the spacing tokens don't change. `compact` is the only value, and a default region
+nested inside a compact one isn't supported. Inside the attribute, `--text-md`, `--text-sm`,
+`--radius-md` and `--radius-lg` take compact values, so an app rule that reads them follows along.
+An unlayered app rule still beats all of this.
+
+## Choosing a stylesheet
+
+Two files are published, and a page loads one of them:
+
+- **`ui.css`** is the normal choice. Its reset and base style the whole page.
+- **`ui-scoped.css`** styles library markup only, meaning an element with a `ui-*` class and
+  everything inside it. Use it on a page whose other content must stay exactly as it is, such as a
+  document drawn under your nav. Don't give your own classes the `ui-` prefix, because they would
+  count as library markup.
+
+```html
+<link rel="stylesheet" href="{{href "ui-scoped.css"}}">
+```
+
+Library markup looks the same under either file. With `ui-scoped.css`, the page gives up:
+
+- **Page-level styling.** `body` gets no background, font or colour, and links outside library
+  markup get no colour.
+- **An inherited font.** Library markup takes its font from around it, so the surrounding app sets
+  `font-family`.
+- **Page-level compact.** With no `body` rule, `<html data-density="compact">` doesn't set body
+  text, so put the attribute on the element that holds the library markup.
+
+Tokens still apply to `:root`, including `color-scheme: light dark`. A page that sets no
+`color-scheme` of its own follows the system's dark mode for its default colours, so set one if
+the page must not.
+
 ## Tokens
 
 | Group | Tokens |

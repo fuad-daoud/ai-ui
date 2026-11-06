@@ -124,3 +124,30 @@ func TestAssetsOpensByPublicName(t *testing.T) {
 		t.Errorf("Open(dist/ui.css) err = %v, want fs.ErrNotExist", err)
 	}
 }
+
+func TestScopedStylesheetIsPublished(t *testing.T) {
+	rec := get(t, mux(), ui.Href("ui-scoped.css"), nil)
+	if rec.Code != http.StatusOK {
+		t.Fatalf("status %d", rec.Code)
+	}
+	if ct := rec.Header().Get("Content-Type"); ct != "text/css; charset=utf-8" {
+		t.Errorf("Content-Type = %q", ct)
+	}
+	if cc := rec.Header().Get("Cache-Control"); cc != "public, max-age=31536000, immutable" {
+		t.Errorf("Cache-Control = %q", cc)
+	}
+	want, err := os.ReadFile("dist/ui-scoped.css")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if rec.Body.String() != string(want) {
+		t.Error("body differs from dist/ui-scoped.css")
+	}
+	got, err := fs.ReadFile(ui.Assets, "ui-scoped.css")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(got) != string(want) {
+		t.Error("Assets ui-scoped.css differs from dist/ui-scoped.css")
+	}
+}

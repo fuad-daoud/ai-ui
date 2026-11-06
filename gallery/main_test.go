@@ -24,7 +24,7 @@ func TestGalleryPages(t *testing.T) {
 	}
 	for _, p := range palettes {
 		for _, m := range modes {
-			for _, suffix := range []string{"", "/dialog"} {
+			for _, suffix := range []string{"", "/dialog", "/compact", "/compact/dialog"} {
 				path := "/p/" + p + "/" + m + suffix
 				rec := fetch(t, h, path)
 				if rec.Code != http.StatusOK {
@@ -42,8 +42,11 @@ func TestGalleryPages(t *testing.T) {
 				if strings.Contains(body, "no value") {
 					t.Errorf("%s: a missing key leaked into the markup", path)
 				}
-				if opens := strings.Contains(body, "showModal()"); opens != (suffix == "/dialog") {
+				if opens := strings.Contains(body, "showModal()"); opens != strings.HasSuffix(suffix, "/dialog") {
 					t.Errorf("%s: showModal present = %v", path, opens)
+				}
+				if compact := strings.Contains(body, `data-density="compact"`); compact != strings.HasPrefix(suffix, "/compact") {
+					t.Errorf("%s: data-density present = %v", path, compact)
 				}
 			}
 		}
@@ -55,7 +58,7 @@ func TestGalleryRoutes(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, path := range []string{"/p/rose/light", "/p/blue/sepia", "/p/blue"} {
+	for _, path := range []string{"/p/rose/light", "/p/blue/sepia", "/p/blue", "/p/blue/light/compact/x", "/fixture/library/other.css", "/fixture/document/theme.js"} {
 		if rec := fetch(t, h, path); rec.Code != http.StatusNotFound {
 			t.Errorf("%s: status %d, want 404", path, rec.Code)
 		}
@@ -92,5 +95,30 @@ func TestGalleryDialogMatchesGolden(t *testing.T) {
 	}
 	if got != want {
 		t.Errorf("gallery dialog differs from the documented markup\n got: %s\nwant: %s", got, want)
+	}
+}
+
+func TestFixturePages(t *testing.T) {
+	h, err := newHandler()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for path, want := range map[string]string{
+		"/fixture/library/ui.css":                   `/_ui/ui.css?v=`,
+		"/fixture/library/ui-scoped.css":            `/_ui/ui-scoped.css?v=`,
+		"/fixture/library/ui.css?density=root":      `<html lang="en" data-density="compact">`,
+		"/fixture/library/ui.css?density=container": `class="ui-stack" data-density="compact"`,
+		"/fixture/document/ui-scoped.css":           `/_ui/ui-scoped.css?v=`,
+	} {
+		rec := fetch(t, h, path)
+		if rec.Code != http.StatusOK {
+			t.Fatalf("%s: status %d: %s", path, rec.Code, rec.Body)
+		}
+		if !strings.Contains(rec.Body.String(), want) {
+			t.Errorf("%s: missing %s", path, want)
+		}
+	}
+	if body := fetch(t, h, "/fixture/document/none").Body.String(); strings.Contains(body, "/_ui/") {
+		t.Error("/fixture/document/none links a library sheet")
 	}
 }

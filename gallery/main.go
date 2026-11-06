@@ -19,6 +19,12 @@ import (
 //go:embed page.html
 var pageSrc string
 
+//go:embed fixture_library.html
+var fixtureLibrarySrc string
+
+//go:embed fixture_document.html
+var fixtureDocumentSrc string
+
 var (
 	palettes   = []string{"blue", "mono"}
 	modes      = []string{"light", "dark"}
@@ -30,9 +36,16 @@ type link struct {
 	Current     bool
 }
 
+// fixtureSheets are the sheets a fixture page can load. "none" loads no library
+// CSS, for comparing a document with and without it.
+var fixtureSheets = []string{"none", "ui.css", "ui-scoped.css"}
+
+type fixture struct{ Sheet, Density string }
+
 type page struct {
 	Palette, Mode string
 	Dialog        bool
+	Compact       bool
 	Links         []link
 	Currencies    []ui.Option
 }
@@ -53,15 +66,21 @@ func newHandler() (http.Handler, error) {
 	if err != nil {
 		return nil, err
 	}
-	if _, err := set.New("page").Parse(pageSrc); err != nil {
-		return nil, err
+	for name, src := range map[string]string{
+		"page":             pageSrc,
+		"fixture-library":  fixtureLibrarySrc,
+		"fixture-document": fixtureDocumentSrc,
+	} {
+		if _, err := set.New(name).Parse(src); err != nil {
+			return nil, err
+		}
 	}
 	mux := http.NewServeMux()
 	mux.Handle(ui.Prefix, http.StripPrefix(ui.Prefix, ui.Handler()))
 	mux.HandleFunc("GET /{$}", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/p/blue/light", http.StatusFound)
 	})
-	serve := func(dialog bool) http.HandlerFunc {
+	serve := func(dialog, compact bool) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
 			p, m := r.PathValue("palette"), r.PathValue("mode")
 			if !slices.Contains(palettes, p) || !slices.Contains(modes, m) {
@@ -69,7 +88,7 @@ func newHandler() (http.Handler, error) {
 				return
 			}
 			var b bytes.Buffer
-			data := page{Palette: p, Mode: m, Dialog: dialog, Links: links(p, m), Currencies: currencies}
+			data := page{Palette: p, Mode: m, Dialog: dialog, Compact: compact, Links: links(p, m), Currencies: currencies}
 			if err := set.ExecuteTemplate(&b, "page", data); err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
@@ -78,8 +97,29 @@ func newHandler() (http.Handler, error) {
 			_, _ = b.WriteTo(w)
 		}
 	}
-	mux.HandleFunc("GET /p/{palette}/{mode}", serve(false))
-	mux.HandleFunc("GET /p/{palette}/{mode}/dialog", serve(true))
+	mux.HandleFunc("GET /p/{palette}/{mode}", serve(false, false))
+	mux.HandleFunc("GET /p/{palette}/{mode}/dialog", serve(true, false))
+	mux.HandleFunc("GET /p/{palette}/{mode}/compact", serve(false, true))
+	mux.HandleFunc("GET /p/{palette}/{mode}/compact/dialog", serve(true, true))
+	serveFixture := func(name string) http.HandlerFunc {
+		return func(w http.ResponseWriter, r *http.Request) {
+			sheet := r.PathValue("sheet")
+			if !slices.Contains(fixtureSheets, sheet) {
+				http.NotFound(w, r)
+				return
+			}
+			var b bytes.Buffer
+			data := fixture{Sheet: sheet, Density: r.URL.Query().Get("density")}
+			if err := set.ExecuteTemplate(&b, name, data); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			_, _ = b.WriteTo(w)
+		}
+	}
+	mux.HandleFunc("GET /fixture/library/{sheet}", serveFixture("fixture-library"))
+	mux.HandleFunc("GET /fixture/document/{sheet}", serveFixture("fixture-document"))
 	return mux, nil
 }
 

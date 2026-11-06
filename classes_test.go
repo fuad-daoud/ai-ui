@@ -3,6 +3,7 @@ package ui_test
 import (
 	"os"
 	"regexp"
+	"strings"
 	"testing"
 )
 
@@ -31,5 +32,17 @@ func TestDocumentedClassesExist(t *testing.T) {
 		if !regexp.MustCompile(`\.` + regexp.QuoteMeta(c) + `[\s,.:{\[>)]`).Match(css) {
 			t.Errorf(".%s is documented but not defined in dist/ui.css", c)
 		}
+	}
+}
+
+// The compact density is part of the contract (DESIGN.md), and the default rules
+// must not depend on it.
+func TestCompactDensityIsDefined(t *testing.T) {
+	css, err := os.ReadFile("dist/ui.css")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(css), `[data-density="compact"]`) {
+		t.Error(`[data-density="compact"] is documented but not defined in dist/ui.css`)
 	}
 }

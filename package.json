@@ -1,12 +1,13 @@
 {
   "name": "ai-ui",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Shared UI for Fuad's platforms: tokens, layered CSS, Go partials and React components.",
   "license": "MIT",
   "type": "module",
   "repository": "github:fuad-daoud/ai-ui",
   "exports": {
     "./ui.css": "./dist/ui.css",
+    "./ui-scoped.css": "./dist/ui-scoped.css",
     "./layers.css": "./react/layers.css",
     "./theme.css": "./react/theme.css",
     "./theme.js": "./js/theme.js",
