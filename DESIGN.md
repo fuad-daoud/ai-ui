@@ -26,6 +26,68 @@ You can override at three levels:
 
 Tokens that belong to one app are named `--app-*`. The library never defines or reads them.
 
+## Adopting ai-ui in an app that has its own CSS
+
+A new app needs none of this. An app with existing markup does, because `ui.reset` and
+`ui.base` change every element its CSS says nothing about: list bullets, heading sizes, button
+frames. A compat layer between `ui.base` and `ui.components` keeps those elements as they were
+and lets the app move one component at a time. money moved this way, and the only pixels that
+changed were the focus ring on its buttons, which it chose to take.
+
+Load the compat sheet first, then `ui.css`, then the app's own CSS. The first line has to come
+before `ui.css`, because a layer's place is fixed the first time it is named:
+
+```css
+@layer ui.reset, ui.base, ui.compat, ui.components, ui.utilities;
+@layer ui.compat {
+  :not(svg, svg *, [class^="ui-"], [class^="ui-"] *, [class*=" ui-"], [class*=" ui-"] *),
+  :not(svg, svg *, [class^="ui-"], [class^="ui-"] *, [class*=" ui-"], [class*=" ui-"] *)::before,
+  :not(svg, svg *, [class^="ui-"], [class^="ui-"] *, [class*=" ui-"], [class*=" ui-"] *)::after,
+  :not(svg, svg *, [class^="ui-"], [class^="ui-"] *, [class*=" ui-"], [class*=" ui-"] *)::selection { all: revert; }
+  svg:not([class^="ui-"] *, [class*=" ui-"] *) { display: revert; max-width: revert; }
+}
+```
+
+Each exclusion is there for a reason:
+
+- **`svg`:** `all` also wipes an SVG's presentation attributes, so icons and charts would lose
+  their fills and strokes.
+- **`ui-*` subtrees:** library markup needs the reset. This means a `ui-*` element skips the
+  layer, so a heading with a `ui-*` class takes the library's heading rules, not the browser's.
+
+Don't reach for the two obvious alternatives. Wrapping the app's old CSS in a layer below `ui`
+fails because a later layer wins whatever the specificity, so the reset overrides the app.
+Unlayered "fix" rules fail because they also beat the components.
+
+**App markup inside a library container** skips the layer too, because it sits in a `ui-*`
+subtree. Give those containers a rule of their own, listing the ones you use, above the `svg`
+line. Keep `[class^="ui-"]` and `[class*=" ui-"]` in it, and add the subtrees of any library
+component that goes inside the container:
+
+```css
+:is(.ui-callout, .ui-dialog) :not(svg, svg *, [class^="ui-"], [class*=" ui-"], .ui-btn *, .ui-pill *) { all: revert; }
+```
+
+**Moving a component.** Unlayered app rules beat the library on every property they state,
+including its state rules, so renaming a class keeps most of an app's rule. To keep the app's
+look, override only what the library sets and the app doesn't:
+
+- **Pin those overrides with a test.** Removing one can leave every other test green, and only a
+  browser notices. Many read like dead code, because they only cancel a library rule.
+- **Keep a variant's class in its selector:** `.ui-callout[data-variant="bad"]`, never a bare
+  `[data-variant="bad"]`. A bare rule is global and unlayered, so it also repaints every other
+  component with that variant. Screenshots can't catch this until something else uses the value.
+- **State `font-family` beside a `font` shorthand.** The app's shorthand beats `.ui-mono`, so
+  write `.ui-input.ui-mono { font-family: var(--font-mono); }` if you use both.
+- **Compare computed styles as well as pixels,** with one control focused or hovered at a time.
+  A screenshot with nothing focused can't show a focus ring.
+
+**If you serve `ui.css` inline** under a hash-based CSP from Go's `html/template`, pass it as a
+`template.CSS` value. Literal text in a template has its CSS comments stripped, so the bytes
+served no longer match a hash taken over the source.
+
+Delete the compat sheet once no legacy markup is left.
+
 ## Tokens
 
 | Group | Tokens |
