@@ -7,7 +7,7 @@ the Next.js apps. Both render the same markup. See [DESIGN.md](DESIGN.md) for th
 ## Go apps
 
 ```bash
-go get github.com/fuad-daoud/ai-ui@v0.1.1
+go get github.com/fuad-daoud/ai-ui@v0.2.0
 ```
 
 ```go
@@ -32,7 +32,7 @@ tmpl = template.Must(tmpl.ParseFS(pages, "*.html"))
 ## Next.js apps
 
 ```json
-"dependencies": { "ai-ui": "github:fuad-daoud/ai-ui#v0.1.1" }
+"dependencies": { "ai-ui": "github:fuad-daoud/ai-ui#v0.2.0" }
 ```
 
 ```ts

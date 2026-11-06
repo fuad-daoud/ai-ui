@@ -4,6 +4,17 @@ Breaking changes come first in each entry. Renaming or removing a token,
 class, data-attribute value, knob, partial name or argument, or React prop
 is breaking.
 
+## 0.2.0 (2026-11-06)
+
+No breaking changes. One visible change at the default density:
+
+- Inputs and selects are now 40px, the same as a button. They were about 44px, because their padding and line height added up to more than their minimum height. A multi-select and a textarea keep their padding.
+
+New:
+
+- `data-density="compact"`: 32px controls, 14px text and 4px corners, on the page or on one part of it.
+- `ui-scoped.css`: styles library markup only, for a page whose other content must stay untouched. Generated from the same sources as `ui.css`.
+
 ## 0.1.1 (2026-11-06)
 
 Docs only. `ui.css`, the templates and the React components do not change.
