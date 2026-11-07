@@ -138,14 +138,19 @@ func TestReleaseNotesShowEveryVersion(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	page := text(parse(t, filepath.Join(out, "releases/index.html")))
+	headings := map[string]bool{} // heading text, for those with an anchor
+	walk(parse(t, filepath.Join(out, "releases/index.html")), func(n *html.Node) {
+		if n.Type == html.ElementNode && n.Data == "h2" && attr(n, "id") != "" {
+			headings[strings.Fields(text(n))[0]] = true
+		}
+	})
 	versions := regexp.MustCompile(`(?m)^## (\S+)`).FindAllStringSubmatch(string(changelog), -1)
 	if len(versions) == 0 {
 		t.Fatal("no versions found in CHANGELOG.md")
 	}
 	for _, v := range versions {
-		if !strings.Contains(page, v[1]) {
-			t.Errorf("release notes are missing %s", v[1])
+		if !headings[v[1]] {
+			t.Errorf("release notes have no anchored heading for %s", v[1])
 		}
 	}
 }
@@ -157,9 +162,39 @@ func TestFooterNamesCurrentVersion(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, p := range pages {
-		if !strings.Contains(text(parse(t, filepath.Join(out, p))), "v"+version) {
-			t.Errorf("%s doesn't name v%s", p, version)
+		found := false
+		walk(parse(t, filepath.Join(out, p)), func(n *html.Node) {
+			if n.Type == html.ElementNode && n.Data == "footer" && strings.Contains(text(n), "v"+version) {
+				found = true
+			}
+		})
+		if !found {
+			t.Errorf("%s: footer doesn't name v%s", p, version)
 		}
+	}
+}
+
+// The site links into these headings on GitHub, and a rename would break them quietly.
+func TestLinkedHeadingsExist(t *testing.T) {
+	for file, heading := range map[string]string{
+		"../DESIGN.md":    "## Components",
+		"../README.md":    "## Go apps",
+		"../CHANGELOG.md": "# Changelog",
+	} {
+		raw, err := os.ReadFile(file)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !regexp.MustCompile(`(?m)^` + regexp.QuoteMeta(heading) + `$`).Match(raw) {
+			t.Errorf("%s has no %q", file, heading)
+		}
+	}
+	readme, err := os.ReadFile("../README.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(readme), "## Next.js apps") {
+		t.Error(`README.md has no "## Next.js apps"`)
 	}
 }
 

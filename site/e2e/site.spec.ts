@@ -42,11 +42,13 @@ for (const [name, path] of [["home", home], ["release notes", releases]]) {
   });
 }
 
-test("no duplicate IDs", async ({ page }) => {
-  await page.goto(home);
-  const ids = await page.evaluate(() => [...document.querySelectorAll("[id]")].map((e) => e.id));
-  expect(ids.filter((id, i) => ids.indexOf(id) !== i)).toEqual([]);
-});
+for (const path of [home, releases]) {
+  test(`no duplicate IDs on ${path}`, async ({ page }) => {
+    await page.goto(path);
+    const ids = await page.evaluate(() => [...document.querySelectorAll("[id]")].map((e) => e.id));
+    expect(ids.filter((id, i) => ids.indexOf(id) !== i)).toEqual([]);
+  });
+}
 
 test("the fall ends within five seconds", async ({ page }) => {
   await page.goto(home);
@@ -113,7 +115,9 @@ for (const width of [320, 360, 768, 1151, 1152, 1280, 1920]) {
         el.scrollIntoView({ block: "center" });
         const r = el.getBoundingClientRect();
         const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
-        if (hit !== el && !el.contains(hit) && !hit?.contains(el)) {
+        // Its own item is fine. Anything else means it's covered, or clipped below the floor.
+        const own = hit === el || el.contains(hit) || (hit?.contains(el) && hit.closest(".it") === el.closest(".it"));
+        if (!own) {
           problems.push(`${el.textContent!.trim()}: covered by ${hit?.textContent?.trim().slice(0, 30)}`);
         }
       }
@@ -142,10 +146,13 @@ test("Tab reaches every control in the pile", async ({ page }) => {
 test("under reduced motion the components are in place and Drop it again is hidden", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto(home);
-  const running = await page.evaluate(() => document.getAnimations().filter((a) => a.playState === "running").length);
-  expect(running).toBe(0);
+  // Not "none running": a slow load could read that before the fall starts.
+  const animations = await page.evaluate(() => document.getAnimations().length);
+  expect(animations).toBe(0);
   await expect(page.locator("#drop")).toBeHidden();
-  await expect(page.locator("#pile-email")).toBeVisible();
+  await expect(page.locator("#pile-email")).toBeInViewport({ ratio: 0 });
+  const name = await page.locator(".i-save").evaluate((el) => getComputedStyle(el).animationName);
+  expect(name).toBe("none");
 });
 
 test("Copy puts the exact prompt on the clipboard", async ({ page, context }) => {
@@ -155,16 +162,23 @@ test("Copy puts the exact prompt on the clipboard", async ({ page, context }) =>
   expect(prompt).toContain("AGENTS.md");
   await page.locator("[data-copy]").first().click();
   await expect(page.locator("[data-copy]").first()).toHaveText("Copied");
+  await expect(page.locator("#copy-status")).toHaveText("Copied");
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(prompt);
 });
 
-test("a refused clipboard says so, and the prompt stays visible", async ({ page }) => {
+test("a refused clipboard says so, even on a phone, and the prompt stays visible", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 800 });
   await page.addInitScript(() => {
     navigator.clipboard.writeText = () => Promise.reject(new Error("refused"));
   });
   await page.goto(home);
   await page.locator("[data-copy]").first().click();
-  await expect(page.locator("[data-copy]").first()).toHaveText(/select the text/);
+  const button = page.locator("[data-copy]").first();
+  await expect(button).toHaveText(/see below/);
+  const box = (await button.boundingBox())!;
+  expect(box.x).toBeGreaterThanOrEqual(0);
+  expect(box.x + box.width).toBeLessThanOrEqual(360);
+  await expect(page.locator("#copy-status")).toHaveText(/see below/);
   await expect(page.locator("#prompt")).toBeVisible();
 });
 

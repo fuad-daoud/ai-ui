@@ -104,8 +104,9 @@ library markup, which is how the library ships them. Dialog is new compared with
 as a static panel using the dialog's classes, so the pile holds the whole library. Sample content is
 generic invoicing data.
 
-**Everything in the pile works.** That's the point of the draft, so the components stay clickable,
-typeable and reachable by keyboard, and screen readers announce the pile as a labelled group. Items
+**The pile is real.** That's the point of the draft, so the components stay clickable, typeable and
+reachable by keyboard, though the sample buttons do nothing and the dialog is static, and the page
+doesn't promise more than that, and screen readers announce the pile as a labelled group. Items
 lift slightly on hover and on focus. Hand placement has to leave every control usable, which a browser
 test checks at both desktop and phone widths (§8).
 
@@ -233,6 +234,9 @@ A new `.github/workflows/pages.yml` runs on pushes to `main` and on demand. It b
 `actions/deploy-pages`. Pages' source is set to GitHub Actions, once, on the repository.
 
 The address is `https://fuad-daoud.github.io/ai-ui/`.
+
+Pages has to be enabled before the first merge, or that first deploy fails. Enabling it serves nothing
+until a deploy runs.
 
 The work goes through a pull request. **Merging it makes the site and the rewritten docs public**, so
 the merge is the point of no return for the first version, and it's Fuad's to make. The Pages setting

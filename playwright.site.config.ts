@@ -16,7 +16,8 @@ export default defineConfig({
     launchOptions: { executablePath },
   },
   webServer: {
-    command: "go run . -out out -serve 127.0.0.1:4318",
+    // Starts clean, so "every asset loads" can't pass on a stale file.
+    command: "rm -rf out && go run . -out out -serve 127.0.0.1:4318",
     cwd: "site",
     url: "http://127.0.0.1:4318/ai-ui/",
     reuseExistingServer: false,

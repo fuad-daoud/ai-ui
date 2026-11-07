@@ -3,18 +3,21 @@
 (function () {
   "use strict";
 
+  var status = document.getElementById("copy-status");
+
   document.querySelectorAll("[data-copy]").forEach(function (button) {
     var label = button.textContent;
     var timer;
     function say(text) {
       button.textContent = text;
+      status.textContent = text;
       clearTimeout(timer);
       timer = setTimeout(function () { button.textContent = label; }, 2500);
     }
     button.hidden = false;
     button.addEventListener("click", function () {
       var text = document.getElementById("prompt").textContent.trim();
-      var fail = function () { say("Couldn't copy, select the text below"); };
+      var fail = function () { say("Couldn't copy, see below"); };
       if (!navigator.clipboard) { fail(); return; }
       navigator.clipboard.writeText(text).then(function () { say("Copied"); }, fail);
     });

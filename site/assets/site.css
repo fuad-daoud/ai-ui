@@ -55,6 +55,8 @@ body { overflow-x: clip; }
   transition: translate 180ms var(--ease);
 }
 .it:hover, .it:focus-within { translate: 0 -6px; z-index: 30; }
+/* Fills the gap the lift opens, so a pointer on the bottom edge doesn't make it jitter. */
+.it:hover::after { content: ""; position: absolute; inset-inline: 0; inset-block-start: 100%; block-size: 6px; }
 .run-a .it { animation-name: drop-a; }
 .run-b .it { animation-name: drop-b; }
 

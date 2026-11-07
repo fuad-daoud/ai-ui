@@ -5,8 +5,12 @@ layered CSS, Go `html/template` partials and React components. Go and React rend
 
 ## Before you write any UI
 
-Read the contract. It names every token, class, knob, partial argument and React prop:
+Read the contract. It's the library's public API: tokens, classes, knobs, partial arguments and
+React props:
 https://raw.githubusercontent.com/fuad-daoud/ai-ui/main/DESIGN.md
+
+It doesn't list every option yet, a disabled checkbox for one. Before deciding the library can't do
+something, check its partials in `templates/` and its components in `react/`.
 
 ## Install
 
@@ -23,7 +27,10 @@ import ui "github.com/fuad-daoud/ai-ui"
 
 mux.Handle(ui.Prefix, http.StripPrefix(ui.Prefix, ui.Handler()))
 tmpl := template.Must(ui.Parse(template.New("app")))
+tmpl = template.Must(tmpl.ParseFS(pages, "*.html"))
 ```
+
+Parse the app's own templates after `ui.Parse`, because that call is what defines `href` and `dict`.
 
 ```html
 <script src="{{href "theme.js"}}"></script>
@@ -31,6 +38,8 @@ tmpl := template.Must(ui.Parse(template.New("app")))
 ```
 
 ### Next.js
+
+This needs React 19.
 
 ```json
 "dependencies": { "ai-ui": "github:fuad-daoud/ai-ui#v0.2.0" }
@@ -41,6 +50,8 @@ tmpl := template.Must(ui.Parse(template.New("app")))
 export default { transpilePackages: ["ai-ui"] };
 ```
 
+If the project uses Tailwind v4:
+
 ```css
 /* app/globals.css: this order matters */
 @import "ai-ui/layers.css";
@@ -48,6 +59,9 @@ export default { transpilePackages: ["ai-ui"] };
 @import "ai-ui/theme.css";
 @import "ai-ui/ui.css";
 ```
+
+If it doesn't use Tailwind, import only `ai-ui/ui.css`, and don't add Tailwind for this. `layers.css`
+and `theme.css` exist only for Tailwind v4. Tailwind v3 isn't covered, so ask before going further.
 
 ```tsx
 import { Button, Field } from "ai-ui/react";
@@ -59,8 +73,8 @@ yourself if the project needs a stored theme choice.
 ## Rules
 
 - Use a library component before writing your own.
-- Use only names in the contract. Never invent a `ui-*` class, and don't give your own classes that
-  prefix.
+- Use names from the contract or the library's source. Never invent a `ui-*` class, and don't give
+  your own classes that prefix.
 - Don't write a default as an attribute. An unknown value renders the default, so a typo fails
   quietly: check names against the contract.
 - Theme through tokens and knobs in the app's own unlayered CSS. Name tokens that belong to the app

@@ -2,7 +2,7 @@
 
 This file is the contract between ai-ui and the apps that use it. A change
 that renames or removes anything named here is a breaking change (see
-CHANGELOG.md and spec §9).
+CHANGELOG.md).
 
 ## Override model
 

@@ -9,6 +9,7 @@
       <button class="ui-btn" type="button" data-size="lg" data-variant="secondary" id="drop" hidden>Drop it again</button>
       <a href="{{.ContractURL}}#components">Browse the components</a>
     </div>
+    <p class="ui-vh" role="status" id="copy-status"></p>
   </div>
 
   <div class="wrap">
@@ -31,7 +32,7 @@
       <div class="it i-preview">{{template "ui.button" (dict "Label" "Preview" "Variant" "secondary" "Size" "lg")}}</div>
       <div class="it i-delete">{{template "ui.button" (dict "Label" "Delete" "Variant" "danger" "Size" "lg")}}</div>
       <div class="it i-currency panel">{{template "ui.field" (dict "Label" "Currency" "ID" "pile-currency" "Control" "select" "Options" .Currencies)}}</div>
-      <div class="it i-check panel">{{template "ui.check" (dict "Label" "Send a receipt" "ID" "pile-receipt" "Checked" true)}}</div>
+      <div class="it i-check panel">{{template "ui.check" (dict "Label" "Send a receipt" "Name" "receipt" "Checked" true)}}</div>
       <div class="it i-dialog"><div class="ui-dialog" role="group" aria-labelledby="pile-dialog-title"><div class="ui-dialog-head"><h2 class="ui-dialog-title" id="pile-dialog-title">Delete invoice?</h2></div><div class="ui-dialog-body">This cannot be undone.</div></div></div>
       <div class="it i-paid big-pill">{{template "ui.pill" (dict "Label" "Paid" "Variant" "good")}}</div>
       <div class="it i-overdue big-pill">{{template "ui.pill" (dict "Label" "Overdue" "Variant" "bad")}}</div>
@@ -40,7 +41,7 @@
       <div class="it i-disclosure panel"><details class="ui-disclosure"><summary class="ui-disclosure-summary">Can I export it?</summary><div class="ui-disclosure-body">Yes, as CSV.</div></details></div>
       <div class="it i-cancel">{{template "ui.button" (dict "Label" "Cancel" "Variant" "ghost")}}</div>
     </div>
-    <p class="pile-note">Everything in the pile still works. Try one.</p>
+    <p class="pile-note">These are the real components, not pictures. Type in one.</p>
   </div>
 
   <section class="wrap hand-over" aria-labelledby="hand-over-title">

@@ -59,10 +59,10 @@ step is yours.
 ## Developing
 
 - `go test ./...`: contrast, build freshness, Go parity, handler, gallery.
-- `dev run npx vitest run`: theme.js, TS canon, React parity, Tailwind mapping.
-- `dev run npx tsc --noEmit`: typecheck.
-- `dev run npx playwright test`: gallery screenshots and axe (contabo only).
+- `npx vitest run`: theme.js, TS canon, React parity, Tailwind mapping.
+- `npx tsc --noEmit`: typecheck.
+- `npx playwright test`: gallery screenshots and axe. The baselines were made on Linux with `/usr/bin/chromium`, so screenshots may differ elsewhere.
 - Site: `cd site && go test ./... && go run . -out out -serve 127.0.0.1:4318`, then open http://127.0.0.1:4318/ai-ui/.
-- `dev run npm run e2e:site`: the site in a browser.
+- `npm run e2e:site`: the site in a browser.
 - After editing `css/`: `go run ./cmd/build`, then commit `dist/ui.css` too.
 - After changing a partial on purpose: `go test . -run TestParityGo -update`, then read the diff.
