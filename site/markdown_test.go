@@ -1,6 +1,7 @@
 package main
 
 import (
+	"regexp"
 	"strings"
 	"testing"
 )
@@ -69,6 +70,66 @@ func TestSectionRewritesRelativeLinksOnly(t *testing.T) {
 	}
 }
 
+func TestSectionRewritesEveryKindOfLink(t *testing.T) {
+	src := "## Links\n\n[a](CHANGELOG.md#x) [b](./docs/x.md) [c](/README.md) [d](//example.com/y) [e](mailto:a@b.c) ![i](img/p.png) [f](#links) [g](#sub) [h](#elsewhere)\n\n### Sub\n"
+	s, err := findSection([]byte(src), "DESIGN.md", "Links", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	body := string(s.Body)
+	for _, want := range []string{
+		`href="https://github.com/fuad-daoud/ai-ui/blob/main/CHANGELOG.md#x"`,
+		`href="https://github.com/fuad-daoud/ai-ui/blob/main/docs/x.md"`,
+		`href="https://github.com/fuad-daoud/ai-ui/blob/main/README.md"`,
+		`href="//example.com/y"`,
+		`href="mailto:a@b.c"`,
+		`src="https://raw.githubusercontent.com/fuad-daoud/ai-ui/main/img/p.png"`,
+		`href="#links"`,
+		`href="#sub"`,
+		// A fragment the section doesn't hold points at the whole file on GitHub.
+		`href="https://github.com/fuad-daoud/ai-ui/blob/main/DESIGN.md#elsewhere"`,
+	} {
+		if !strings.Contains(body, want) {
+			t.Errorf("body lacks %s:\n%s", want, body)
+		}
+	}
+}
+
+func TestSectionRewritesLinksInItsHeading(t *testing.T) {
+	s, err := findSection([]byte("## See [the log](CHANGELOG.md)\n"), "x.md", "See the log", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(s.Heading), `href="https://github.com/fuad-daoud/ai-ui/blob/main/CHANGELOG.md"`) {
+		t.Errorf("heading link wasn't rewritten: %s", s.Heading)
+	}
+}
+
+func TestSectionRefusesLinksOutOfTheRepository(t *testing.T) {
+	for _, dest := range []string{"../x.md", "docs/../../x.md"} {
+		_, err := findSection([]byte("## L\n\n[a]("+dest+")\n"), "x.md", "L", false)
+		if err == nil || !strings.Contains(err.Error(), "leaves the repository") {
+			t.Errorf("%s: got %v", dest, err)
+		}
+	}
+}
+
+func TestSectionCapsHeadingsAtH6(t *testing.T) {
+	s, err := findSection([]byte("# T\n\n###### Deep\n"), "x.md", "T", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if body := string(s.Body); !strings.Contains(body, `<h6 id="deep">`) {
+		t.Errorf("want an h6:\n%s", body)
+	}
+}
+
+func TestSectionListsItsHeadingIDs(t *testing.T) {
+	if got := strings.Join(mustSection(t, "Has code in it", false).IDs, ","); got != "has-code-in-it,deeper" {
+		t.Errorf("IDs are %q", got)
+	}
+}
+
 func TestSectionDropsRawHTML(t *testing.T) {
 	if body := string(mustSection(t, "Has code in it", false).Body); strings.Contains(body, "alert(") {
 		t.Errorf("raw HTML reached the output:\n%s", body)
@@ -92,6 +153,16 @@ func TestEmptyCornerHeaderIsNotAHeader(t *testing.T) {
 	body := string(s.Body)
 	if strings.Contains(body, "<th></th>") || !strings.Contains(body, "<td></td>\n<th>Go</th>") {
 		t.Errorf("empty header cell is still a <th>:\n%s", body)
+	}
+}
+
+func TestEmptyAlignedCornerHeaderIsNotAHeader(t *testing.T) {
+	s, err := findSection([]byte("## T\n\n| | Go |\n|:--|--:|\n| Button | x |\n"), "x.md", "T", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if body := string(s.Body); regexp.MustCompile(`<th[^>]*></th>`).MatchString(body) {
+		t.Errorf("empty aligned header cell is still a <th>:\n%s", body)
 	}
 }
 

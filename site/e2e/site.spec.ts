@@ -70,6 +70,23 @@ for (const path of docs) {
   }
 }
 
+// body clips sideways overflow, so a page-width check alone can't see a table
+// pushing past the screen: measure the frame, and scroll it from the keyboard.
+test("a table wider than a phone scrolls inside its frame", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 800 });
+  await page.goto("guides/density/");
+  const frame = page.locator(".prose .ui-table-wrap").first();
+  const r = await frame.evaluate((wrap) => {
+    wrap.querySelector<HTMLElement>("td")!.style.minWidth = "60rem";
+    return { scrolls: wrap.scrollWidth > wrap.clientWidth, right: wrap.getBoundingClientRect().right, view: document.documentElement.clientWidth };
+  });
+  expect(r.scrolls).toBe(true);
+  expect(r.right).toBeLessThanOrEqual(r.view);
+  await frame.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect.poll(() => frame.evaluate((wrap) => wrap.scrollLeft)).toBeGreaterThan(0);
+});
+
 test("the nav reaches Components and Guides on the site", async ({ page }) => {
   await page.goto(home);
   const nav = page.getByRole("navigation", { name: "Main" });

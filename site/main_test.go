@@ -254,7 +254,6 @@ func TestFooterNamesCurrentVersion(t *testing.T) {
 	}
 }
 
-
 func TestPromptPointsAtAgentsFile(t *testing.T) {
 	if !strings.Contains(prompt, agentsURL) {
 		t.Errorf("prompt doesn't contain %s", agentsURL)
@@ -479,5 +478,41 @@ func TestChangelogRawHTMLIsDropped(t *testing.T) {
 	}
 	if strings.Contains(string(page), "alert(") {
 		t.Errorf("raw HTML reached the page:\n%s", page)
+	}
+}
+
+// Two parts of one guide can come from different files, and a heading both
+// files share would give the page the same id twice.
+func TestGuideRefusesRepeatedHeadingIDs(t *testing.T) {
+	src := map[string][]byte{
+		"A.md": []byte("## One\n\n### Setup\n"),
+		"B.md": []byte("## Two\n\n### Setup\n"),
+		"C.md": []byte("## Main\n"),
+	}
+	for name, g := range map[string]guide{
+		"across files":   {Slug: "x", Parts: []part{{"A.md", "One"}, {"B.md", "Two"}}},
+		"the page's own": {Slug: "x", Parts: []part{{"C.md", "Main"}}},
+	} {
+		if _, err := guideSections(g, src); err == nil || !strings.Contains(err.Error(), "used twice") {
+			t.Errorf("%s: got %v", name, err)
+		}
+	}
+	if s, err := guideSections(guide{Slug: "x", Parts: []part{{"A.md", "One"}}}, src); err != nil || len(s) != 1 {
+		t.Errorf("one part: got %d sections, %v", len(s), err)
+	}
+}
+
+func TestChangelogTablesAreFramed(t *testing.T) {
+	out := filepath.Join(t.TempDir(), "out")
+	repo := fakeRepo(t, `{"version":"1.0.0"}`, "# Changelog\n\n## 1.0.0\n\n| a | b |\n|---|---|\n| 1 | 2 |\n")
+	if err := build(out, repo); err != nil {
+		t.Fatal(err)
+	}
+	page, err := os.ReadFile(filepath.Join(out, "releases/index.html"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(page), `<div class="ui-table-wrap"`) {
+		t.Errorf("changelog table isn't framed:\n%s", page)
 	}
 }
