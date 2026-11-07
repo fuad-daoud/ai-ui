@@ -32,3 +32,100 @@ body { overflow-x: clip; }
 .prose p, .prose ul { margin-block-start: var(--space-4); color: var(--ink-2); }
 .prose li { margin-block-start: var(--space-2); }
 .prose code { padding-inline: 0.25em; background: var(--band); border-radius: var(--radius-sm); }
+.hero { padding-block: var(--space-5) 0; text-align: center; }
+.hero h1 { font-size: clamp(2.75rem, 1.25rem + 6.5vw, 7.25rem); line-height: 0.95; font-weight: 800; letter-spacing: -0.04em; }
+.lede { max-width: 38rem; margin: var(--space-5) auto 0; font-size: 1.1875rem; line-height: 1.5; color: var(--ink-2); }
+.actions { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: var(--space-3) var(--space-4); margin-block-start: var(--space-5); }
+
+/* The clip reaches far above the pile so components fall in over the headline,
+   and stops at the floor so they rest on it. */
+.pile { position: relative; height: 31rem; margin-block-start: var(--space-4); clip-path: inset(-200rem 0 0 0); border-block-end: 3px solid var(--rule); }
+.pile-note { padding-block-start: var(--space-3); text-align: center; color: var(--ink-3); font-size: var(--text-sm); }
+
+.it {
+  position: absolute;
+  inset-inline-start: var(--x);
+  bottom: var(--y);
+  inline-size: var(--w, auto);
+  rotate: var(--r);
+  z-index: var(--z, 1);
+  animation-duration: 900ms;
+  animation-delay: var(--d);
+  animation-fill-mode: both;
+  transition: translate 180ms var(--ease);
+}
+.it:hover, .it:focus-within { translate: 0 -6px; z-index: 30; }
+.run-a .it { animation-name: drop-a; }
+.run-b .it { animation-name: drop-b; }
+
+@keyframes drop-a {
+  0% { transform: translateY(calc(-100vh - 60rem)) rotate(var(--spin)); animation-timing-function: cubic-bezier(0.55, 0, 1, 0.6); }
+  68% { transform: translateY(0) rotate(0deg); animation-timing-function: cubic-bezier(0, 0.5, 0.5, 1); }
+  80% { transform: translateY(-1.1rem) rotate(-2deg); animation-timing-function: cubic-bezier(0.5, 0, 1, 0.5); }
+  92% { transform: translateY(0) rotate(0.5deg); }
+  100% { transform: none; }
+}
+@keyframes drop-b {
+  0% { transform: translateY(calc(-100vh - 60rem)) rotate(var(--spin)); animation-timing-function: cubic-bezier(0.55, 0, 1, 0.6); }
+  68% { transform: translateY(0) rotate(0deg); animation-timing-function: cubic-bezier(0, 0.5, 0.5, 1); }
+  80% { transform: translateY(-1.1rem) rotate(-2deg); animation-timing-function: cubic-bezier(0.5, 0, 1, 0.5); }
+  92% { transform: translateY(0) rotate(0.5deg); }
+  100% { transform: none; }
+}
+
+.panel { padding: var(--space-3) var(--space-4); background: var(--sheet); border: 1px solid var(--rule-soft); border-radius: var(--radius-lg); box-shadow: 0 1px 2px var(--shadow); }
+.big-pill { --text-xs: 1.1875rem; }
+.i-field .ui-card { --ui-card-pad: var(--space-4); }
+.i-dialog .ui-dialog { --ui-dialog-width: 100%; inline-size: 100%; }
+.i-save .ui-btn { --ui-btn-height: 4.25rem; --ui-btn-pad: 2.25rem; --ui-btn-font-size: 1.75rem; }
+.i-cancel .ui-btn { --ui-btn-bg: var(--band); }
+
+/* Desktop: a wide, low heap. */
+.i-table { --x: 1%; --y: 0rem; --r: -2deg; --spin: -30deg; --d: 0ms; --w: 25rem; --z: 2; }
+.i-field { --x: 34%; --y: 0rem; --r: 1deg; --spin: 25deg; --d: 80ms; --w: 21rem; --z: 3; }
+.i-callout { --x: 65%; --y: 0rem; --r: -1.5deg; --spin: -18deg; --d: 140ms; --w: 24rem; --z: 2; }
+.i-save { --x: 6%; --y: 9.5rem; --r: 6deg; --spin: 40deg; --d: 260ms; --z: 3; }
+.i-preview { --x: 21%; --y: 9rem; --r: -8deg; --spin: -50deg; --d: 320ms; --z: 3; }
+.i-delete { --x: 36%; --y: 12rem; --r: 3deg; --spin: 35deg; --d: 400ms; --z: 4; }
+.i-currency { --x: 50%; --y: 11rem; --r: -5deg; --spin: -35deg; --d: 450ms; --w: 15rem; --z: 4; }
+.i-check { --x: 71%; --y: 7.5rem; --r: 5deg; --spin: 60deg; --d: 520ms; --z: 3; }
+.i-dialog { --x: 72%; --y: 12rem; --r: -3deg; --spin: 50deg; --d: 600ms; --w: 19rem; --z: 4; }
+.i-paid { --x: 90%; --y: 8rem; --r: -9deg; --spin: -70deg; --d: 580ms; --z: 3; }
+.i-overdue { --x: 8%; --y: 16rem; --r: 11deg; --spin: 70deg; --d: 650ms; --z: 5; }
+.i-sent { --x: 28%; --y: 14rem; --r: -4deg; --spin: -40deg; --d: 700ms; --z: 5; }
+.i-due { --x: 60%; --y: 7rem; --r: 5deg; --spin: 45deg; --d: 760ms; --z: 5; }
+.i-disclosure { --x: 18%; --y: 15.5rem; --r: -6deg; --spin: -55deg; --d: 820ms; --w: 14rem; --z: 5; }
+.i-cancel { --x: 45%; --y: 17.5rem; --r: -3deg; --spin: 90deg; --d: 900ms; --z: 6; }
+
+/* Narrow: a tall heap with its own places, rather than the desktop one shrunk. */
+@media (max-width: 71.99rem) {
+  .pile { height: 49rem; max-inline-size: 24rem; margin-inline: auto; }
+  .i-table { --x: 0%; --y: 0rem; --r: -1deg; --w: 100%; }
+  .i-field { --x: 0%; --y: 8.25rem; --r: 1deg; --w: 100%; }
+  .i-callout { --x: 0%; --y: 17.75rem; --r: -1deg; --w: 100%; }
+  .i-currency { --x: 0%; --y: 24.25rem; --r: -2deg; --w: 55%; }
+  .i-check { --x: 58%; --y: 25rem; --r: 3deg; --w: 42%; }
+  .i-dialog { --x: 2%; --y: 30.5rem; --r: 1deg; --w: 96%; }
+  .i-save { --x: 2%; --y: 37.25rem; --r: 3deg; }
+  .i-save .ui-btn { --ui-btn-height: 3.25rem; --ui-btn-pad: 1.5rem; --ui-btn-font-size: 1.375rem; }
+  .i-preview { --x: 44%; --y: 37.25rem; --r: -3deg; }
+  .i-delete { --x: 58%; --y: 41.5rem; --r: 2deg; }
+  .i-disclosure { --x: 0%; --y: 41.5rem; --r: -1deg; --w: 55%; }
+  .i-cancel { --x: 66%; --y: 45.25rem; --r: -2deg; }
+  .i-paid { --x: 4%; --y: 46rem; --r: -6deg; }
+  .i-overdue { --x: 22%; --y: 46rem; --r: 5deg; }
+  .big-pill { --text-xs: 0.9375rem; }
+  .i-sent { --x: 46%; --y: 46rem; --r: -3deg; }
+  .i-due { --x: 74%; --y: 34rem; --r: 4deg; }
+}
+
+.hand-over { padding-block: var(--space-7) var(--space-5); }
+.hand-over h2 { font-size: clamp(1.75rem, 1.25rem + 2vw, 2.75rem); font-weight: 800; letter-spacing: -0.02em; }
+.prompt-box { max-width: 48rem; margin: var(--space-4) 0; background: var(--sheet); border: 1px solid var(--rule); border-radius: var(--radius-lg); }
+.prompt-box figcaption { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2) var(--space-3); padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4); border-block-end: 1px solid var(--rule-soft); color: var(--ink-3); font-size: var(--text-sm); }
+.prompt-box p { padding: var(--space-4); font-size: var(--text-sm); line-height: 1.6; overflow-wrap: anywhere; }
+
+@media (prefers-reduced-motion: reduce) {
+  .it { animation: none !important; transition: none; }
+  #drop { display: none; }
+}
