@@ -1,0 +1,35 @@
+{{define "top" -}}
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{.Title}}</title>
+<meta name="description" content="{{.Description}}">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="{{.Root}}assets/ui.css">
+<link rel="stylesheet" href="{{.Root}}assets/site.css">
+<script src="{{.Root}}assets/site.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="wrap">
+  <nav class="site-nav" aria-label="Main">
+    <a class="mark" href="{{.Root}}">ai-ui</a>
+    <a href="{{.ContractURL}}#components">Components</a>
+    <a href="{{.ContractURL}}">Guides</a>
+    <a href="{{.Root}}releases/">Release notes</a>
+    <a class="end" href="{{.RepoURL}}">GitHub</a>
+  </nav>
+</header>
+{{- end}}
+
+{{define "bottom" -}}
+<footer class="wrap site-foot">
+  <span>MIT licence</span>
+  <a href="{{.Root}}releases/">v{{.Version}}</a>
+  <a href="{{.RepoURL}}">GitHub</a>
+</footer>
+</body>
+</html>
+{{- end}}
