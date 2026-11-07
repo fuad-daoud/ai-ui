@@ -22,8 +22,6 @@ import (
 	"strings"
 
 	ui "github.com/fuad-daoud/ai-ui"
-	"github.com/yuin/goldmark"
-	"github.com/yuin/goldmark/parser"
 )
 
 //go:embed templates/*.html
@@ -177,8 +175,7 @@ func renderChangelog(repo string) (template.HTML, error) {
 		return "", errors.New("CHANGELOG.md is empty")
 	}
 	var b bytes.Buffer
-	md := goldmark.New(goldmark.WithParserOptions(parser.WithAutoHeadingID()))
-	if err := md.Convert(raw, &b); err != nil {
+	if err := markdown.Convert(raw, &b); err != nil {
 		return "", fmt.Errorf("CHANGELOG.md: %w", err)
 	}
 	return template.HTML(b.String()), nil
