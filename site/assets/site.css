@@ -30,7 +30,7 @@ body { overflow-x: clip; }
 .prose { max-width: 48rem; padding-block: var(--space-5) var(--space-7); }
 .prose h1 { font-size: clamp(2.5rem, 1.5rem + 3vw, 4rem); font-weight: 800; letter-spacing: -0.03em; }
 .prose h2 { margin-block-start: var(--space-7); padding-block-end: var(--space-2); border-block-end: 1px solid var(--rule-soft); }
-.prose p, .prose :is(ul, ol) {margin-block-start: var(--space-4); color: var(--ink-2); }
+.prose p, .prose :is(ul, ol) { margin-block-start: var(--space-4); color: var(--ink-2); }
 .prose li { margin-block-start: var(--space-2); }
 .prose code { padding-inline: 0.25em; background: var(--band); border-radius: var(--radius-sm); }
 .hero { padding-block: var(--space-5) 0; text-align: center; }

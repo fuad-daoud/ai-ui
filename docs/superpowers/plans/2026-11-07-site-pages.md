@@ -1384,3 +1384,5 @@ The minor findings were deferred:
 - a test that a wide table scrolls inside its frame
 - cross-file heading-ID collisions failing at build time rather than in tests
 - framed tables in the changelog
+
+All of these were fixed in a follow-up PR on 2026-11-07, `fix/site-minors`, each with a test that failed first.

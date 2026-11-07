@@ -22,6 +22,7 @@ import (
 	"strings"
 
 	ui "github.com/fuad-daoud/ai-ui"
+	mdtext "github.com/yuin/goldmark/text"
 )
 
 //go:embed templates/*.html
@@ -224,13 +225,8 @@ func buildGuides(set *template.Template, base page, src, files map[string][]byte
 		p.Description = g.Blurb
 		p.Root = "../../"
 		p.Guide = g
-		p.Sections = nil
-		for _, pt := range g.Parts {
-			s, err := findSection(src[pt.File], pt.File, pt.Heading, false)
-			if err != nil {
-				return err
-			}
-			p.Sections = append(p.Sections, s)
+		if p.Sections, err = guideSections(g, src); err != nil {
+			return err
 		}
 		if files["guides/"+g.Slug+"/index.html"], err = render(set, "guide.html", p); err != nil {
 			return err
@@ -265,6 +261,28 @@ func buildComponents(set *template.Template, base page, src, files map[string][]
 	return err
 }
 
+// guideSections renders a guide's parts. Parts can come from different files,
+// so it refuses a heading id the page would hold twice, counting the page's
+// own "main".
+func guideSections(g guide, src map[string][]byte) ([]section, error) {
+	seen := map[string]bool{"main": true}
+	var out []section
+	for _, pt := range g.Parts {
+		s, err := findSection(src[pt.File], pt.File, pt.Heading, false)
+		if err != nil {
+			return nil, err
+		}
+		for _, id := range s.IDs {
+			if seen[id] {
+				return nil, fmt.Errorf("guide %s: heading id %q is used twice", g.Slug, id)
+			}
+			seen[id] = true
+		}
+		out = append(out, s)
+	}
+	return out, nil
+}
+
 func render(set *template.Template, name string, data page) ([]byte, error) {
 	var b bytes.Buffer
 	if err := set.ExecuteTemplate(&b, name, data); err != nil {
@@ -288,8 +306,8 @@ func readVersion(repo string) (string, error) {
 	return pkg.Version, nil
 }
 
-// renderChangelog leaves goldmark's default in place: raw HTML in the Markdown
-// is dropped, not passed through.
+// renderChangelog renders CHANGELOG.md like every other source: raw HTML in
+// the Markdown is dropped, not passed through, and tables are framed.
 func renderChangelog(repo string) (template.HTML, error) {
 	raw, err := os.ReadFile(filepath.Join(repo, "CHANGELOG.md"))
 	if err != nil {
@@ -298,9 +316,9 @@ func renderChangelog(repo string) (template.HTML, error) {
 	if strings.TrimSpace(string(raw)) == "" {
 		return "", errors.New("CHANGELOG.md is empty")
 	}
-	var b bytes.Buffer
-	if err := markdown.Convert(raw, &b); err != nil {
+	html, err := renderMD(markdown.Parser().Parse(mdtext.NewReader(raw)), raw)
+	if err != nil {
 		return "", fmt.Errorf("CHANGELOG.md: %w", err)
 	}
-	return template.HTML(b.String()), nil
+	return html, nil
 }
