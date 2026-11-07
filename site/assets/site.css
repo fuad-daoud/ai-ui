@@ -39,7 +39,7 @@ body { overflow-x: clip; }
 
 /* The clip reaches far above the pile so components fall in over the headline,
    and stops at the floor so they rest on it. */
-.pile { position: relative; height: 31rem; margin-block-start: var(--space-4); clip-path: inset(-200rem 0 0 0); border-block-end: 3px solid var(--rule); }
+.pile { position: relative; height: 20rem; margin-block-start: var(--space-5); clip-path: inset(-200rem 0 0 0); border-block-end: 3px solid var(--rule); }
 .pile-note { padding-block-start: var(--space-3); text-align: center; color: var(--ink-3); font-size: var(--text-sm); }
 
 .it {
@@ -80,26 +80,27 @@ body { overflow-x: clip; }
 .i-save .ui-btn { --ui-btn-height: 4.25rem; --ui-btn-pad: 2.25rem; --ui-btn-font-size: 1.75rem; }
 .i-cancel .ui-btn { --ui-btn-bg: var(--band); }
 
-/* Desktop: a wide, low heap. */
-.i-table { --x: 1%; --y: 0rem; --r: -2deg; --spin: -30deg; --d: 0ms; --w: 25rem; --z: 2; }
-.i-field { --x: 34%; --y: 0rem; --r: 1deg; --spin: 25deg; --d: 80ms; --w: 21rem; --z: 3; }
-.i-callout { --x: 65%; --y: 0rem; --r: -1.5deg; --spin: -18deg; --d: 140ms; --w: 24rem; --z: 2; }
-.i-save { --x: 6%; --y: 9.5rem; --r: 6deg; --spin: 40deg; --d: 260ms; --z: 3; }
-.i-preview { --x: 21%; --y: 9rem; --r: -8deg; --spin: -50deg; --d: 320ms; --z: 3; }
-.i-delete { --x: 36%; --y: 12rem; --r: 3deg; --spin: 35deg; --d: 400ms; --z: 4; }
-.i-currency { --x: 50%; --y: 11rem; --r: -5deg; --spin: -35deg; --d: 450ms; --w: 15rem; --z: 4; }
-.i-check { --x: 71%; --y: 7.5rem; --r: 5deg; --spin: 60deg; --d: 520ms; --z: 3; }
-.i-dialog { --x: 72%; --y: 12rem; --r: -3deg; --spin: 50deg; --d: 600ms; --w: 19rem; --z: 4; }
-.i-paid { --x: 90%; --y: 8rem; --r: -9deg; --spin: -70deg; --d: 580ms; --z: 3; }
-.i-overdue { --x: 8%; --y: 16rem; --r: 11deg; --spin: 70deg; --d: 650ms; --z: 5; }
-.i-sent { --x: 28%; --y: 14rem; --r: -4deg; --spin: -40deg; --d: 700ms; --z: 5; }
-.i-due { --x: 60%; --y: 7rem; --r: 5deg; --spin: 45deg; --d: 760ms; --z: 5; }
-.i-disclosure { --x: 18%; --y: 15.5rem; --r: -6deg; --spin: -55deg; --d: 820ms; --w: 14rem; --z: 5; }
-.i-cancel { --x: 45%; --y: 17.5rem; --r: -3deg; --spin: 90deg; --d: 900ms; --z: 6; }
+/* Desktop: a wide, low heap. The wide items are sized in % so they fit from the
+   breakpoint up to the widest page. */
+.i-table { --x: 1%; --y: 0rem; --r: -2deg; --spin: -30deg; --d: 0ms; --w: 32%; --z: 2; }
+.i-field { --x: 34%; --y: 0rem; --r: 1deg; --spin: 25deg; --d: 80ms; --w: 30%; --z: 3; }
+.i-callout { --x: 65.5%; --y: 0rem; --r: -1.5deg; --spin: -18deg; --d: 140ms; --w: 33%; --z: 2; }
+.i-save { --x: 6%; --y: 7.75rem; --r: 6deg; --spin: 40deg; --d: 260ms; --z: 3; }
+.i-preview { --x: 21%; --y: 7.25rem; --r: -8deg; --spin: -50deg; --d: 320ms; --z: 3; }
+.i-delete { --x: 36%; --y: 9.75rem; --r: 3deg; --spin: 35deg; --d: 400ms; --z: 4; }
+.i-currency { --x: 50%; --y: 9.75rem; --r: -5deg; --spin: -35deg; --d: 450ms; --w: 20%; --z: 4; }
+.i-check { --x: 71%; --y: 6.25rem; --r: 5deg; --spin: 60deg; --d: 520ms; --z: 3; }
+.i-dialog { --x: 71%; --y: 10rem; --r: -3deg; --spin: 50deg; --d: 600ms; --w: 27%; --z: 4; }
+.i-paid { --x: 90%; --y: 6.5rem; --r: -9deg; --spin: -70deg; --d: 580ms; --z: 3; }
+.i-overdue { --x: 7%; --y: 13.25rem; --r: 11deg; --spin: 70deg; --d: 650ms; --z: 5; }
+.i-sent { --x: 27.5%; --y: 11rem; --r: -4deg; --spin: -40deg; --d: 700ms; --z: 5; }
+.i-due { --x: 58.5%; --y: 7.5rem; --r: 5deg; --spin: 45deg; --d: 760ms; --z: 5; }
+.i-disclosure { --x: 16%; --y: 12.75rem; --r: -6deg; --spin: -55deg; --d: 820ms; --w: 14rem; --z: 5; }
+.i-cancel { --x: 42%; --y: 14rem; --r: -3deg; --spin: 90deg; --d: 900ms; --z: 6; }
 
 /* Narrow: a tall heap with its own places, rather than the desktop one shrunk. */
 @media (max-width: 71.99rem) {
-  .pile { height: 49rem; max-inline-size: 24rem; margin-inline: auto; }
+  .pile { height: 51rem; max-inline-size: 24rem; margin-inline: auto; }
   .i-table { --x: 0%; --y: 0rem; --r: -1deg; --w: 100%; }
   .i-field { --x: 0%; --y: 8.25rem; --r: 1deg; --w: 100%; }
   .i-callout { --x: 0%; --y: 17.75rem; --r: -1deg; --w: 100%; }
@@ -112,11 +113,11 @@ body { overflow-x: clip; }
   .i-delete { --x: 58%; --y: 41.5rem; --r: 2deg; }
   .i-disclosure { --x: 0%; --y: 41.5rem; --r: -1deg; --w: 55%; }
   .i-cancel { --x: 66%; --y: 45.25rem; --r: -2deg; }
-  .i-paid { --x: 4%; --y: 46rem; --r: -6deg; }
-  .i-overdue { --x: 22%; --y: 46rem; --r: 5deg; }
+  .i-paid { --x: 4%; --y: 48rem; --r: -6deg; }
+  .i-overdue { --x: 26%; --y: 48rem; --r: 5deg; }
   .big-pill { --text-xs: 0.9375rem; }
-  .i-sent { --x: 46%; --y: 46rem; --r: -3deg; }
-  .i-due { --x: 74%; --y: 34rem; --r: 4deg; }
+  .i-sent { --x: 54%; --y: 48rem; --r: -3deg; }
+  .i-due { --x: 62%; --y: 34rem; --r: 4deg; }
 }
 
 .hand-over { padding-block: var(--space-7) var(--space-5); }
