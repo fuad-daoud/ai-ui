@@ -4,6 +4,9 @@ import { expect, test, type Page } from "@playwright/test";
 const home = "./";
 const releases = "releases/";
 const controls = "button, input, select, summary, a";
+const components = "components/";
+const guides = ["guides/", "guides/getting-started/", "guides/theming/", "guides/density/", "guides/existing-apps/"];
+const docs = [components, ...guides];
 
 // Wait until nothing is animating, so measurements see the settled pile.
 const settled = (page: Page) =>
@@ -42,13 +45,79 @@ for (const [name, path] of [["home", home], ["release notes", releases]]) {
   });
 }
 
-for (const path of [home, releases]) {
+for (const path of [home, releases, ...docs]) {
   test(`no duplicate IDs on ${path}`, async ({ page }) => {
     await page.goto(path);
     const ids = await page.evaluate(() => [...document.querySelectorAll("[id]")].map((e) => e.id));
     expect(ids.filter((id, i) => ids.indexOf(id) !== i)).toEqual([]);
   });
 }
+
+for (const path of docs) {
+  test(`axe passes on ${path}`, async ({ page }) => {
+    await page.goto(path);
+    const { violations } = await new AxeBuilder({ page }).analyze();
+    expect(violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target).join(", ")}`)).toEqual([]);
+  });
+
+  for (const width of [320, 360]) {
+    test(`${path} doesn't scroll sideways at ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 800 });
+      await page.goto(path);
+      const { scroll, client } = await page.evaluate(() => ({ scroll: document.documentElement.scrollWidth, client: document.documentElement.clientWidth }));
+      expect(scroll).toBeLessThanOrEqual(client);
+    });
+  }
+}
+
+test("the nav reaches Components and Guides on the site", async ({ page }) => {
+  await page.goto(home);
+  const nav = page.getByRole("navigation", { name: "Main" });
+  await nav.getByRole("link", { name: "Components" }).click();
+  await expect(page).toHaveURL(/\/ai-ui\/components\/$/);
+  await expect(page.locator("main h1")).toHaveText("Components");
+  await nav.getByRole("link", { name: "Guides" }).click();
+  await expect(page).toHaveURL(/\/ai-ui\/guides\/$/);
+  await page.getByRole("main").getByRole("link", { name: "Theming" }).click();
+  await expect(page).toHaveURL(/\/ai-ui\/guides\/theming\/$/);
+  await expect(page.locator("main h1")).toHaveText("Theming");
+  await expect(page.getByRole("navigation", { name: "Guides" }).getByRole("link", { name: "Theming" })).toHaveAttribute("aria-current", "page");
+});
+
+for (const scripts of [true, false]) {
+  test(`the dialog demo opens and closes${scripts ? "" : " without scripts"}`, async ({ browser, baseURL }) => {
+    const context = await browser.newContext({ javaScriptEnabled: scripts, baseURL });
+    const page = await context.newPage();
+    await page.goto(components);
+    const opener = page.getByRole("button", { name: "Delete invoice" });
+    await opener.click();
+    const dialog = page.getByRole("dialog", { name: "Delete invoice?" });
+    await expect(dialog).toBeVisible();
+    await dialog.getByRole("button", { name: "Cancel" }).click();
+    await expect(dialog).toBeHidden();
+    await expect(opener).toBeFocused();
+    await context.close();
+  });
+}
+
+test("Tab reaches the side list and every demo control on the Components page", async ({ page }) => {
+  await page.goto(components);
+  // A radio group is one tab stop, at its checked radio; disabled controls and a closed dialog's aren't stops.
+  const total = await page.evaluate(() => {
+    const els = [...document.querySelectorAll<HTMLElement>(".side a, .demo :is(a[href], button, input, select, textarea, summary)")]
+      .filter((el) => !(el as HTMLInputElement).disabled && !el.closest("dialog")
+        && !(el instanceof HTMLInputElement && el.type === "radio" && !el.checked));
+    els.forEach((el, i) => { el.dataset.want = String(i); });
+    return els.length;
+  });
+  const seen = new Set<string>();
+  for (let i = 0; i < total * 2 + 20; i++) {
+    await page.keyboard.press("Tab");
+    const want = await page.evaluate(() => (document.activeElement as HTMLElement | null)?.dataset.want ?? "");
+    if (want) seen.add(want);
+  }
+  expect(seen.size).toBe(total);
+});
 
 test("the fall ends within five seconds", async ({ page }) => {
   await page.goto(home);

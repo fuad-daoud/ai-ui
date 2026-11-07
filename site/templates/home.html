@@ -7,7 +7,7 @@
     <div class="actions">
       <button class="ui-btn" type="button" data-size="lg" data-copy hidden>Copy the prompt</button>
       <button class="ui-btn" type="button" data-size="lg" data-variant="secondary" id="drop" hidden>Drop it again</button>
-      <a href="{{.ContractURL}}#components">Browse the components</a>
+      <a href="{{.Root}}components/">Browse the components</a>
     </div>
     <p class="ui-vh" role="status" id="copy-status"></p>
   </div>
@@ -50,7 +50,7 @@
       <figcaption>Paste this into your agent <button class="ui-btn" type="button" data-size="sm" data-copy hidden>Copy the prompt</button></figcaption>
       <p class="ui-mono" id="prompt">{{.Prompt}}</p>
     </figure>
-    <p class="ui-muted">Installing it yourself? Follow the steps for <a href="{{.ReadmeURL}}#go-apps">Go</a> or <a href="{{.ReadmeURL}}#nextjs-apps">Next.js</a>.</p>
+    <p class="ui-muted">Installing it yourself? Follow the steps for <a href="{{.Root}}guides/getting-started/#go-apps">Go</a> or <a href="{{.Root}}guides/getting-started/#nextjs-apps">Next.js</a>.</p>
   </section>
 </main>
 {{template "bottom" .}}

@@ -1,0 +1,34 @@
+{{define "guides.html" -}}
+{{template "top" .}}
+<main id="main" class="wrap prose">
+<h1>Guides</h1>
+<ul class="guide-list">
+{{- range .Guides}}
+  <li><a href="{{.Slug}}/">{{.Title}}</a><p>{{.Blurb}}</p></li>
+{{- end}}
+</ul>
+</main>
+{{template "bottom" .}}
+{{- end}}
+
+{{define "guide.html" -}}
+{{template "top" .}}
+<div class="wrap doc">
+  <nav class="side" aria-label="Guides">
+    <ul>
+    {{- $current := .Guide.Slug}}
+    {{- range .Guides}}
+      <li><a href="../{{.Slug}}/"{{if eq .Slug $current}} aria-current="page"{{end}}>{{.Title}}</a></li>
+    {{- end}}
+    </ul>
+  </nav>
+  <main id="main" class="prose">
+    <h1>{{.Guide.Title}}</h1>
+    {{- range .Sections}}
+    {{.Heading}}
+    {{.Body}}
+    {{- end}}
+  </main>
+</div>
+{{template "bottom" .}}
+{{- end}}

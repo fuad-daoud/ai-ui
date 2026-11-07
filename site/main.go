@@ -22,8 +22,6 @@ import (
 	"strings"
 
 	ui "github.com/fuad-daoud/ai-ui"
-	"github.com/yuin/goldmark"
-	"github.com/yuin/goldmark/parser"
 )
 
 //go:embed templates/*.html
@@ -33,24 +31,67 @@ var templates embed.FS
 var assets embed.FS
 
 const (
-	repoURL     = "https://github.com/fuad-daoud/ai-ui"
-	contractURL = repoURL + "/blob/main/DESIGN.md"
-	readmeURL   = repoURL + "/blob/main/README.md"
-	agentsURL   = "https://raw.githubusercontent.com/fuad-daoud/ai-ui/main/AGENTS.md"
-	prompt      = "Use ai-ui for this project's UI. Read " + agentsURL + " first and follow it."
+	repoURL   = "https://github.com/fuad-daoud/ai-ui"
+	agentsURL = "https://raw.githubusercontent.com/fuad-daoud/ai-ui/main/AGENTS.md"
+	prompt    = "Use ai-ui for this project's UI. Read " + agentsURL + " first and follow it."
 )
+
+// part is one heading's section of a Markdown file in the repository.
+type part struct{ File, Heading string }
+
+// guide is a page made of parts, in order.
+type guide struct {
+	Slug, Title, Blurb string
+	Parts              []part
+}
+
+var guides = []guide{
+	{"getting-started", "Getting started", "Install it in a Go app or a Next.js app.",
+		[]part{{"README.md", "Go apps"}, {"README.md", "Next.js apps"}}},
+	{"theming", "Theming", "Tokens, knobs, light and dark, palettes, and why your CSS always wins.",
+		[]part{{"DESIGN.md", "Override model"}, {"DESIGN.md", "Tokens"}, {"DESIGN.md", "Modes and palettes"}}},
+	{"density", "Density", "A compact size for working tools, for a whole page or one part of it.",
+		[]part{{"DESIGN.md", "Density"}}},
+	{"existing-apps", "Adding to an existing app", "Bring it into an app that already has its own CSS.",
+		[]part{{"DESIGN.md", "Adopting ai-ui in an app that has its own CSS"}, {"DESIGN.md", "Choosing a stylesheet"}}},
+}
+
+// component is one ### section under ## Components in DESIGN.md. Its demo is
+// the template "demo <Name>" in templates/components.html.
+type component struct{ Name, Heading string }
+
+var components = []component{
+	{"Button", "Button: .ui-btn"},
+	{"Field", "Field: .ui-field"},
+	{"Check", "Check: .ui-check"},
+	{"Pill", "Pill: .ui-pill"},
+	{"Dialog", "Dialog: .ui-dialog"},
+	{"Containers", "Containers (plain markup in Go and React)"},
+	{"Utilities", "Utilities"},
+}
+
+// demoSection is a component's contract section with its live demo.
+type demoSection struct {
+	Name string
+	section
+	Demo template.HTML
+}
 
 // page is what every template renders from.
 type page struct {
 	Title, Description string
-	Root               string // relative path back to the site root, "./" or "../"
+	Root               string // relative path back to the site root: "./", "../" or "../../"
+	Section            string // the nav link this page sits under: "components", "guides", "releases", or "" for home
 	Version            string
 	Prompt             string
 	RepoURL            string
-	ContractURL        string
-	ReadmeURL          string
 	Changelog          template.HTML
 	Currencies         []ui.Option
+	Guides             []guide       // every guide, for the index and the side list
+	Guide              guide         // the guide this page shows
+	Sections           []section     // that guide's parts, rendered
+	Lead               template.HTML // the Components page's opening text
+	Components         []demoSection
 }
 
 func main() {
@@ -82,6 +123,10 @@ func build(out, repo string) error {
 	if err != nil {
 		return err
 	}
+	sources, err := readSources(repo)
+	if err != nil {
+		return err
+	}
 	set, err := ui.Parse(template.New("site"))
 	if err != nil {
 		return err
@@ -90,11 +135,11 @@ func build(out, repo string) error {
 		return err
 	}
 	base := page{
-		Version:     version,
-		Prompt:      prompt,
-		RepoURL:     repoURL,
-		ContractURL: contractURL,
-		ReadmeURL:   readmeURL,
+		Version:    version,
+		Prompt:     prompt,
+		RepoURL:    repoURL,
+		Guides:     guides,
+		Currencies: []ui.Option{{Value: "usd", Label: "US dollar"}, {Value: "eur", Label: "Euro"}},
 	}
 
 	files := map[string][]byte{}
@@ -103,7 +148,6 @@ func build(out, repo string) error {
 	home.Title = "ai-ui: the UI kit your agent can read"
 	home.Description = "A small pile of real, working UI components, written down in one contract your coding agent can read."
 	home.Root = "./"
-	home.Currencies = []ui.Option{{Value: "usd", Label: "US dollar"}, {Value: "eur", Label: "Euro"}}
 	if files["index.html"], err = render(set, "home.html", home); err != nil {
 		return err
 	}
@@ -112,8 +156,16 @@ func build(out, repo string) error {
 	releases.Title = "Release notes: ai-ui"
 	releases.Description = "What changed in each release of ai-ui."
 	releases.Root = "../"
+	releases.Section = "releases"
 	releases.Changelog = changelog
 	if files["releases/index.html"], err = render(set, "releases.html", releases); err != nil {
+		return err
+	}
+
+	if err := buildGuides(set, base, sources, files); err != nil {
+		return err
+	}
+	if err := buildComponents(set, base, sources, files); err != nil {
 		return err
 	}
 
@@ -141,6 +193,76 @@ func build(out, repo string) error {
 		}
 	}
 	return nil
+}
+
+// readSources reads the Markdown the guides and the Components page are built from.
+func readSources(repo string) (map[string][]byte, error) {
+	src := map[string][]byte{}
+	for _, name := range []string{"DESIGN.md", "README.md"} {
+		raw, err := os.ReadFile(filepath.Join(repo, name))
+		if err != nil {
+			return nil, err
+		}
+		src[name] = raw
+	}
+	return src, nil
+}
+
+func buildGuides(set *template.Template, base page, src, files map[string][]byte) error {
+	index := base
+	index.Title = "Guides: ai-ui"
+	index.Description = "Install ai-ui, theme it, size it, and bring it into an app that has its own CSS."
+	index.Root = "../"
+	index.Section = "guides"
+	var err error
+	if files["guides/index.html"], err = render(set, "guides.html", index); err != nil {
+		return err
+	}
+	for _, g := range guides {
+		p := index
+		p.Title = g.Title + ": ai-ui"
+		p.Description = g.Blurb
+		p.Root = "../../"
+		p.Guide = g
+		p.Sections = nil
+		for _, pt := range g.Parts {
+			s, err := findSection(src[pt.File], pt.File, pt.Heading, false)
+			if err != nil {
+				return err
+			}
+			p.Sections = append(p.Sections, s)
+		}
+		if files["guides/"+g.Slug+"/index.html"], err = render(set, "guide.html", p); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func buildComponents(set *template.Template, base page, src, files map[string][]byte) error {
+	p := base
+	p.Title = "Components: ai-ui"
+	p.Description = "Every ai-ui component, working, with its knobs and its Go and React usage."
+	p.Root = "../"
+	p.Section = "components"
+	lead, err := findSection(src["DESIGN.md"], "DESIGN.md", "Components", true)
+	if err != nil {
+		return err
+	}
+	p.Lead = lead.Body
+	for _, c := range components {
+		s, err := findSection(src["DESIGN.md"], "DESIGN.md", c.Heading, false)
+		if err != nil {
+			return err
+		}
+		demo, err := render(set, "demo "+c.Name, p)
+		if err != nil {
+			return err
+		}
+		p.Components = append(p.Components, demoSection{Name: c.Name, section: s, Demo: template.HTML(demo)})
+	}
+	files["components/index.html"], err = render(set, "components.html", p)
+	return err
 }
 
 func render(set *template.Template, name string, data page) ([]byte, error) {
@@ -177,8 +299,7 @@ func renderChangelog(repo string) (template.HTML, error) {
 		return "", errors.New("CHANGELOG.md is empty")
 	}
 	var b bytes.Buffer
-	md := goldmark.New(goldmark.WithParserOptions(parser.WithAutoHeadingID()))
-	if err := md.Convert(raw, &b); err != nil {
+	if err := markdown.Convert(raw, &b); err != nil {
 		return "", fmt.Errorf("CHANGELOG.md: %w", err)
 	}
 	return template.HTML(b.String()), nil

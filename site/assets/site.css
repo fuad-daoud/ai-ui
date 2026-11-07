@@ -20,6 +20,7 @@ body { overflow-x: clip; }
 .site-nav { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-5); padding-block: var(--space-4); font-size: 0.9375rem; }
 .site-nav a { color: var(--ink-2); text-decoration: none; }
 .site-nav a:hover { color: var(--ink); text-decoration: underline; }
+.site-nav a[aria-current] { color: var(--ink); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.4em; }
 .site-nav .mark { color: var(--ink); font-size: 1.25rem; font-weight: 800; }
 .site-nav .end { margin-inline-start: auto; }
 
@@ -29,7 +30,7 @@ body { overflow-x: clip; }
 .prose { max-width: 48rem; padding-block: var(--space-5) var(--space-7); }
 .prose h1 { font-size: clamp(2.5rem, 1.5rem + 3vw, 4rem); font-weight: 800; letter-spacing: -0.03em; }
 .prose h2 { margin-block-start: var(--space-7); padding-block-end: var(--space-2); border-block-end: 1px solid var(--rule-soft); }
-.prose p, .prose ul { margin-block-start: var(--space-4); color: var(--ink-2); }
+.prose p, .prose :is(ul, ol) {margin-block-start: var(--space-4); color: var(--ink-2); }
 .prose li { margin-block-start: var(--space-2); }
 .prose code { padding-inline: 0.25em; background: var(--band); border-radius: var(--radius-sm); }
 .hero { padding-block: var(--space-5) 0; text-align: center; }
@@ -127,6 +128,36 @@ body { overflow-x: clip; }
 .prompt-box { max-width: 48rem; margin: var(--space-4) 0; background: var(--sheet); border: 1px solid var(--rule); border-radius: var(--radius-lg); }
 .prompt-box figcaption { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2) var(--space-3); padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4); border-block-end: 1px solid var(--rule-soft); color: var(--ink-3); font-size: var(--text-sm); }
 .prompt-box p { padding: var(--space-4); font-size: var(--text-sm); line-height: 1.6; overflow-wrap: anywhere; }
+
+/* Docs: a side list beside the text when there's room, a row above it when there isn't. */
+.doc { display: grid; gap: var(--space-5); padding-block: var(--space-5) var(--space-7); }
+.doc > main { min-inline-size: 0; }
+.doc .prose, .doc.prose { padding-block: 0; }
+.side ul { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); padding: 0; list-style: none; font-size: var(--text-sm); }
+.side a { color: var(--ink-2); text-decoration: none; }
+.side a:hover, .side a[aria-current="page"] { color: var(--ink); text-decoration: underline; }
+@media (min-width: 60rem) {
+  .doc { grid-template-columns: 12rem minmax(0, 1fr); gap: var(--space-7); }
+  .side { position: sticky; inset-block-start: var(--space-5); align-self: start; }
+  .side ul { flex-direction: column; }
+}
+
+/* Rendered Markdown. Code wraps rather than scrolls, so it never widens the page. */
+.prose :is(ul, ol) { padding-inline-start: 1.5rem; }
+.prose h3 { margin-block-start: var(--space-6); }
+.prose :is(h2, h3)[id] { scroll-margin-block-start: var(--space-5); }
+.prose pre { margin-block-start: var(--space-4); white-space: pre-wrap; overflow-wrap: anywhere; }
+.prose pre code { padding: 0; background: none; }
+.prose .ui-table-wrap { margin-block-start: var(--space-4); }
+.prose td code { overflow-wrap: anywhere; }
+
+.component { padding-block-start: var(--space-3); }
+.demo { max-inline-size: 48rem; margin-block-start: var(--space-4); padding: var(--space-5); background: var(--sheet); border: 1px solid var(--rule-soft); border-radius: var(--radius-lg); }
+
+.guide-list { padding: 0; list-style: none; }
+.guide-list li { margin-block-start: var(--space-5); }
+.guide-list a { font-size: var(--text-xl); font-weight: 700; }
+.guide-list p { margin-block-start: var(--space-1); }
 
 @media (prefers-reduced-motion: reduce) {
   .it { animation: none !important; transition: none; }

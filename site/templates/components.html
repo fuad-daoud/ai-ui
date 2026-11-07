@@ -1,0 +1,143 @@
+{{define "components.html" -}}
+{{template "top" .}}
+<div class="wrap doc">
+  <nav class="side" aria-label="Components">
+    <ul>
+    {{- range .Components}}
+      <li><a href="#{{.ID}}">{{.Name}}</a></li>
+    {{- end}}
+    </ul>
+  </nav>
+  <main id="main">
+    <div class="prose">
+      <h1>Components</h1>
+      {{.Lead}}
+    </div>
+    {{- range .Components}}
+    <section class="component" aria-labelledby="{{.ID}}">
+      <div class="prose">{{.Heading}}</div>
+      <div class="demo">{{.Demo}}</div>
+      <div class="prose">{{.Body}}</div>
+    </section>
+    {{- end}}
+  </main>
+</div>
+{{template "bottom" .}}
+{{- end}}
+
+{{define "demo Button" -}}
+<div class="ui-stack">
+  <div class="ui-cluster">
+    {{template "ui.button" (dict "Label" "Save")}}
+    {{template "ui.button" (dict "Label" "Preview" "Variant" "secondary")}}
+    {{template "ui.button" (dict "Label" "Cancel" "Variant" "ghost")}}
+    {{template "ui.button" (dict "Label" "Delete" "Variant" "danger")}}
+  </div>
+  <div class="ui-cluster">
+    {{template "ui.button" (dict "Label" "Small" "Size" "sm")}}
+    {{template "ui.button" (dict "Label" "Medium")}}
+    {{template "ui.button" (dict "Label" "Large" "Size" "lg")}}
+  </div>
+  <div class="ui-cluster">
+    {{template "ui.button" (dict "Label" "Saving…" "Disabled" true)}}
+    {{template "ui.button" (dict "Label" "Read the guides" "Variant" "secondary" "Href" (print .Root "guides/"))}}
+    {{template "ui.button" (dict "Label" "Unavailable link" "Variant" "secondary" "Href" "#" "Disabled" true)}}
+  </div>
+</div>
+{{- end}}
+
+{{define "demo Field" -}}
+<div class="ui-stack">
+  {{template "ui.field" (dict "Label" "Email" "ID" "demo-email" "Type" "email" "Hint" "We never share it.")}}
+  {{template "ui.field" (dict "Label" "Work email" "ID" "demo-work-email" "Type" "email" "Value" "ada@example" "Error" "Enter a full email address.")}}
+  <div class="ui-form-row">
+    {{template "ui.field" (dict "Label" "First name" "ID" "demo-first" "Autocomplete" "given-name")}}
+    {{template "ui.field" (dict "Label" "Last name" "ID" "demo-last" "Autocomplete" "family-name")}}
+  </div>
+  {{template "ui.field" (dict "Label" "Currency" "ID" "demo-currency" "Control" "select" "Options" .Currencies)}}
+  {{template "ui.field" (dict "Label" "Notes" "ID" "demo-notes" "Control" "textarea" "Rows" "3")}}
+  {{template "ui.field" (dict "Label" "Account number" "ID" "demo-account" "Value" "DE89 3704 0044" "Disabled" true)}}
+</div>
+{{- end}}
+
+{{define "demo Check" -}}
+<div class="ui-stack">
+  {{template "ui.check" (dict "Label" "Email me receipts" "ID" "demo-receipts")}}
+  {{template "ui.check" (dict "Label" "Remember this device" "ID" "demo-remember" "Checked" true)}}
+  <div class="ui-cluster" role="radiogroup" aria-label="Billing period">
+    {{template "ui.check" (dict "Label" "Monthly" "Type" "radio" "Name" "demo-period" "Value" "m" "Checked" true)}}
+    {{template "ui.check" (dict "Label" "Yearly" "Type" "radio" "Name" "demo-period" "Value" "y")}}
+  </div>
+  {{template "ui.check" (dict "Label" "Two-factor sign-in (set by your admin)" "ID" "demo-2fa" "Checked" true "Disabled" true)}}
+</div>
+{{- end}}
+
+{{define "demo Pill" -}}
+<div class="ui-cluster">
+  {{template "ui.pill" (dict "Label" "Draft")}}
+  {{template "ui.pill" (dict "Label" "Sent" "Variant" "info")}}
+  {{template "ui.pill" (dict "Label" "Paid" "Variant" "good")}}
+  {{template "ui.pill" (dict "Label" "Due soon" "Variant" "warning")}}
+  {{template "ui.pill" (dict "Label" "Overdue" "Variant" "bad")}}
+</div>
+{{- end}}
+
+{{define "demo Dialog" -}}
+{{template "ui.button" (dict "Label" "Delete invoice" "Variant" "danger" "Command" "show-modal" "CommandFor" "demo-dialog")}}
+<dialog class="ui-dialog" id="demo-dialog" aria-labelledby="demo-dialog-title">
+  <header class="ui-dialog-head">
+    <h3 class="ui-dialog-title" id="demo-dialog-title">Delete invoice?</h3>
+    <button class="ui-dialog-x" type="button" command="close" commandfor="demo-dialog" aria-label="Close">×</button>
+  </header>
+  <div class="ui-dialog-body">
+    This cannot be undone.
+    <div class="ui-dialog-actions">
+      {{template "ui.button" (dict "Label" "Cancel" "Variant" "secondary" "Command" "close" "CommandFor" "demo-dialog")}}
+      {{template "ui.button" (dict "Label" "Delete" "Variant" "danger" "Command" "close" "CommandFor" "demo-dialog")}}
+    </div>
+  </div>
+</dialog>
+{{- end}}
+
+{{define "demo Containers" -}}
+<div class="ui-stack">
+  <div class="ui-callout"><p class="ui-callout-title">Export ready</p><p>Your October statement is ready to download.</p></div>
+  <div class="ui-callout" data-variant="good"><p class="ui-callout-title">Paid</p><p>Acme paid invoice 1042.</p></div>
+  <div class="ui-callout" data-variant="warning"><p class="ui-callout-title">Due soon</p><p>Northwind's invoice is due on Friday.</p></div>
+  <div class="ui-callout" data-variant="bad"><p class="ui-callout-title">Build failed</p><p>The gate found unsupported claims.</p></div>
+  <div class="ui-table-wrap">
+    <table class="ui-table">
+      <caption>October spending</caption>
+      <thead><tr><th scope="col">Category</th><th scope="col" class="ui-num">Amount</th></tr></thead>
+      <tbody>
+        <tr><td>Groceries</td><td class="ui-num">212.40</td></tr>
+        <tr><td>Transport</td><td class="ui-num">64.00</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div>
+    <details class="ui-disclosure" name="demo-faq">
+      <summary class="ui-disclosure-summary">Can I export it?</summary>
+      <div class="ui-disclosure-body"><p>Yes, as CSV or JSON.</p></div>
+    </details>
+    <details class="ui-disclosure" name="demo-faq">
+      <summary class="ui-disclosure-summary">Is there an API?</summary>
+      <div class="ui-disclosure-body"><p>Not yet.</p></div>
+    </details>
+  </div>
+  <section class="ui-card" aria-label="Sample card"><p>A card holds a group of related things.</p></section>
+</div>
+{{- end}}
+
+{{define "demo Utilities" -}}
+<div class="ui-stack">
+  <p class="ui-muted">Muted text, for what matters less.</p>
+  <p class="ui-mono">go get github.com/fuad-daoud/ai-ui</p>
+  <p class="ui-num">1,040.00</p>
+  <div class="ui-cluster">
+    {{template "ui.pill" (dict "Label" "A cluster")}}
+    {{template "ui.pill" (dict "Label" "wraps")}}
+    {{template "ui.pill" (dict "Label" "when it runs out of room")}}
+  </div>
+</div>
+{{- end}}

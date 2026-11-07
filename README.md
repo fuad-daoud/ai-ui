@@ -32,6 +32,8 @@ tmpl = template.Must(tmpl.ParseFS(pages, "*.html"))
 
 ## Next.js apps
 
+This needs React 19.
+
 ```json
 "dependencies": { "ai-ui": "github:fuad-daoud/ai-ui#v0.2.0" }
 ```
@@ -41,6 +43,8 @@ tmpl = template.Must(tmpl.ParseFS(pages, "*.html"))
 export default { transpilePackages: ["ai-ui"] };
 ```
 
+With Tailwind v4:
+
 ```css
 /* app/globals.css: this order matters */
 @import "ai-ui/layers.css";
@@ -48,6 +52,8 @@ export default { transpilePackages: ["ai-ui"] };
 @import "ai-ui/theme.css";
 @import "ai-ui/ui.css";
 ```
+
+Without Tailwind, import only `ai-ui/ui.css`. `layers.css` and `theme.css` exist only for Tailwind v4.
 
 ```tsx
 import { Button, Field } from "ai-ui/react";
