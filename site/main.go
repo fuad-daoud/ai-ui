@@ -58,6 +58,27 @@ var guides = []guide{
 		[]part{{"DESIGN.md", "Adopting ai-ui in an app that has its own CSS"}, {"DESIGN.md", "Choosing a stylesheet"}}},
 }
 
+// component is one ### section under ## Components in DESIGN.md. Its demo is
+// the template "demo <Name>" in templates/components.html.
+type component struct{ Name, Heading string }
+
+var components = []component{
+	{"Button", "Button: .ui-btn"},
+	{"Field", "Field: .ui-field"},
+	{"Check", "Check: .ui-check"},
+	{"Pill", "Pill: .ui-pill"},
+	{"Dialog", "Dialog: .ui-dialog"},
+	{"Containers", "Containers (plain markup in Go and React)"},
+	{"Utilities", "Utilities"},
+}
+
+// demoSection is a component's contract section with its live demo.
+type demoSection struct {
+	Name string
+	section
+	Demo template.HTML
+}
+
 // page is what every template renders from.
 type page struct {
 	Title, Description string
@@ -70,9 +91,11 @@ type page struct {
 	ReadmeURL          string
 	Changelog          template.HTML
 	Currencies         []ui.Option
-	Guides             []guide   // every guide, for the index and the side list
-	Guide              guide     // the guide this page shows
-	Sections           []section // that guide's parts, rendered
+	Guides             []guide       // every guide, for the index and the side list
+	Guide              guide         // the guide this page shows
+	Sections           []section     // that guide's parts, rendered
+	Lead               template.HTML // the Components page's opening text
+	Components         []demoSection
 }
 
 func main() {
@@ -122,6 +145,7 @@ func build(out, repo string) error {
 		ContractURL: contractURL,
 		ReadmeURL:   readmeURL,
 		Guides:      guides,
+		Currencies:  []ui.Option{{Value: "usd", Label: "US dollar"}, {Value: "eur", Label: "Euro"}},
 	}
 
 	files := map[string][]byte{}
@@ -130,7 +154,6 @@ func build(out, repo string) error {
 	home.Title = "ai-ui: the UI kit your agent can read"
 	home.Description = "A small pile of real, working UI components, written down in one contract your coding agent can read."
 	home.Root = "./"
-	home.Currencies = []ui.Option{{Value: "usd", Label: "US dollar"}, {Value: "eur", Label: "Euro"}}
 	if files["index.html"], err = render(set, "home.html", home); err != nil {
 		return err
 	}
@@ -146,6 +169,9 @@ func build(out, repo string) error {
 	}
 
 	if err := buildGuides(set, base, sources, files); err != nil {
+		return err
+	}
+	if err := buildComponents(set, base, sources, files); err != nil {
 		return err
 	}
 
@@ -217,6 +243,32 @@ func buildGuides(set *template.Template, base page, src, files map[string][]byte
 		}
 	}
 	return nil
+}
+
+func buildComponents(set *template.Template, base page, src, files map[string][]byte) error {
+	p := base
+	p.Title = "Components: ai-ui"
+	p.Description = "Every ai-ui component, working, with its knobs and its Go and React usage."
+	p.Root = "../"
+	p.Section = "components"
+	lead, err := findSection(src["DESIGN.md"], "DESIGN.md", "Components", true)
+	if err != nil {
+		return err
+	}
+	p.Lead = lead.Body
+	for _, c := range components {
+		s, err := findSection(src["DESIGN.md"], "DESIGN.md", c.Heading, false)
+		if err != nil {
+			return err
+		}
+		demo, err := render(set, "demo "+c.Name, p)
+		if err != nil {
+			return err
+		}
+		p.Components = append(p.Components, demoSection{Name: c.Name, section: s, Demo: template.HTML(demo)})
+	}
+	files["components/index.html"], err = render(set, "components.html", p)
+	return err
 }
 
 func render(set *template.Template, name string, data page) ([]byte, error) {

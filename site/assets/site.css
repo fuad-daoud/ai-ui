@@ -150,6 +150,9 @@ body { overflow-x: clip; }
 .prose .ui-table-wrap { margin-block-start: var(--space-4); }
 .prose td code { overflow-wrap: anywhere; }
 
+.component { padding-block-start: var(--space-3); }
+.demo { max-inline-size: 48rem; margin-block-start: var(--space-4); padding: var(--space-5); background: var(--sheet); border: 1px solid var(--rule-soft); border-radius: var(--radius-lg); }
+
 .guide-list { padding: 0; list-style: none; }
 .guide-list li { margin-block-start: var(--space-5); }
 .guide-list a { font-size: var(--text-xl); font-weight: 700; }

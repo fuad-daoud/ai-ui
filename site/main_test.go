@@ -81,6 +81,7 @@ var pages = []string{
 	"guides/theming/index.html",
 	"guides/density/index.html",
 	"guides/existing-apps/index.html",
+	"components/index.html",
 }
 
 func TestPagesAndAssetsExist(t *testing.T) {
@@ -218,20 +219,15 @@ func TestPromptPointsAtAgentsFile(t *testing.T) {
 	}
 }
 
-// A new component has to be placed in the pile before this passes.
-func TestHomeShowsEveryComponent(t *testing.T) {
-	out := built(t)
-	classes := map[string]bool{}
-	walk(parse(t, filepath.Join(out, "index.html")), func(n *html.Node) {
-		for _, c := range strings.Fields(attr(n, "class")) {
-			classes[c] = true
-		}
-	})
+// componentClasses is the first .ui-* class of each file in css/components/, except density.
+func componentClasses(t *testing.T) []string {
+	t.Helper()
 	files, err := filepath.Glob("../css/components/*.css")
 	if err != nil || len(files) == 0 {
 		t.Fatalf("no component CSS found: %v", err)
 	}
 	first := regexp.MustCompile(`(?m)^\.(ui-[a-z]+)`)
+	var classes []string
 	for _, f := range files {
 		if filepath.Base(f) == "density.css" {
 			continue
@@ -245,9 +241,76 @@ func TestHomeShowsEveryComponent(t *testing.T) {
 			t.Errorf("%s: no component class found", f)
 			continue
 		}
-		if !classes[string(m[1])] {
-			t.Errorf("home page has no .%s", m[1])
+		classes = append(classes, string(m[1]))
+	}
+	return classes
+}
+
+// classesIn collects the classes used under every element that has class root.
+func classesIn(n *html.Node, root string) map[string]bool {
+	found := map[string]bool{}
+	walk(n, func(c *html.Node) {
+		if c.Type != html.ElementNode || !strings.Contains(" "+attr(c, "class")+" ", " "+root+" ") {
+			return
 		}
+		walk(c, func(d *html.Node) {
+			for _, cl := range strings.Fields(attr(d, "class")) {
+				found[cl] = true
+			}
+		})
+	})
+	return found
+}
+
+// A new component has to be placed in the pile before this passes.
+func TestHomeShowsEveryComponent(t *testing.T) {
+	found := classesIn(parse(t, filepath.Join(built(t), "index.html")), "pile")
+	for _, c := range componentClasses(t) {
+		if !found[c] {
+			t.Errorf("home page has no .%s", c)
+		}
+	}
+}
+
+// A new component needs a demo on the Components page before this passes.
+func TestComponentsPageDemosEveryComponent(t *testing.T) {
+	found := classesIn(parse(t, filepath.Join(built(t), "components/index.html")), "demo")
+	for _, c := range componentClasses(t) {
+		if !found[c] {
+			t.Errorf("Components page has no demo using .%s", c)
+		}
+	}
+}
+
+// Every ### under ## Components in the contract must be on the Components page.
+func TestEveryContractComponentIsListed(t *testing.T) {
+	raw, err := os.ReadFile("../DESIGN.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, rest, ok := strings.Cut(string(raw), "\n## Components\n")
+	if !ok {
+		t.Fatal(`DESIGN.md has no "## Components"`)
+	}
+	if i := strings.Index(rest, "\n## "); i >= 0 {
+		rest = rest[:i]
+	}
+	listed := map[string]bool{}
+	for _, c := range components {
+		listed[c.Heading] = true
+	}
+	for _, m := range regexp.MustCompile(`(?m)^### (.+)$`).FindAllStringSubmatch(rest, -1) {
+		if h := strings.ReplaceAll(m[1], "`", ""); !listed[h] {
+			t.Errorf("DESIGN.md's %q isn't on the Components page", h)
+		}
+	}
+}
+
+// The contract shows Go template calls as code; the site must not run them.
+func TestContractCodeShowsAsText(t *testing.T) {
+	page := text(parse(t, filepath.Join(built(t), "components/index.html")))
+	if !strings.Contains(page, `{{template "ui.button" (dict "Label" "Save"`) {
+		t.Error("the Components page doesn't show the Go usage from DESIGN.md as text")
 	}
 }
 
