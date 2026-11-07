@@ -82,6 +82,19 @@ func TestSectionMissingHeadingIsAnError(t *testing.T) {
 	}
 }
 
+// DESIGN.md's tables leave the corner cell empty; an empty <th> names no
+// column, so it renders as an empty <td>.
+func TestEmptyCornerHeaderIsNotAHeader(t *testing.T) {
+	s, err := findSection([]byte("## T\n\n| | Go |\n|---|---|\n| Button | x |\n"), "x.md", "T", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	body := string(s.Body)
+	if strings.Contains(body, "<th></th>") || !strings.Contains(body, "<td></td>\n<th>Go</th>") {
+		t.Errorf("empty header cell is still a <th>:\n%s", body)
+	}
+}
+
 func TestSectionWrapsTables(t *testing.T) {
 	s, err := findSection([]byte("## T\n\n| a | b |\n|---|---|\n| 1 | 2 |\n"), "x.md", "T", false)
 	if err != nil {

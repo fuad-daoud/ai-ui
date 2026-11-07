@@ -106,8 +106,10 @@ func plain(n ast.Node, src []byte) string {
 	return b.String()
 }
 
-// renderMD renders doc and frames each table as a library table. Raw HTML is
-// dropped, so the renderer is the only source of a <table> tag.
+// renderMD renders doc and frames each table as a library table. An empty
+// header cell, the corner of a table like DESIGN.md's, names no column, so it
+// becomes a plain cell. Raw HTML is dropped, so the renderer is the only
+// source of these tags.
 func renderMD(doc ast.Node, src []byte) (template.HTML, error) {
 	var b bytes.Buffer
 	if err := markdown.Renderer().Render(&b, src, doc); err != nil {
@@ -115,5 +117,6 @@ func renderMD(doc ast.Node, src []byte) (template.HTML, error) {
 	}
 	out := strings.ReplaceAll(b.String(), "<table>", `<div class="ui-table-wrap" tabindex="0"><table class="ui-table">`)
 	out = strings.ReplaceAll(out, "</table>", "</table></div>")
+	out = strings.ReplaceAll(out, "<th></th>", "<td></td>")
 	return template.HTML(out), nil
 }
