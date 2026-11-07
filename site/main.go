@@ -38,10 +38,31 @@ const (
 	prompt      = "Use ai-ui for this project's UI. Read " + agentsURL + " first and follow it."
 )
 
+// part is one heading's section of a Markdown file in the repository.
+type part struct{ File, Heading string }
+
+// guide is a page made of parts, in order.
+type guide struct {
+	Slug, Title, Blurb string
+	Parts              []part
+}
+
+var guides = []guide{
+	{"getting-started", "Getting started", "Install it in a Go app or a Next.js app.",
+		[]part{{"README.md", "Go apps"}, {"README.md", "Next.js apps"}}},
+	{"theming", "Theming", "Tokens, knobs, light and dark, palettes, and why your CSS always wins.",
+		[]part{{"DESIGN.md", "Override model"}, {"DESIGN.md", "Tokens"}, {"DESIGN.md", "Modes and palettes"}}},
+	{"density", "Density", "A compact size for working tools, for a whole page or one part of it.",
+		[]part{{"DESIGN.md", "Density"}}},
+	{"existing-apps", "Adding to an existing app", "Bring it into an app that already has its own CSS.",
+		[]part{{"DESIGN.md", "Adopting ai-ui in an app that has its own CSS"}, {"DESIGN.md", "Choosing a stylesheet"}}},
+}
+
 // page is what every template renders from.
 type page struct {
 	Title, Description string
-	Root               string // relative path back to the site root, "./" or "../"
+	Root               string // relative path back to the site root: "./", "../" or "../../"
+	Section            string // the nav link this page sits under: "components", "guides", "releases", or "" for home
 	Version            string
 	Prompt             string
 	RepoURL            string
@@ -49,6 +70,9 @@ type page struct {
 	ReadmeURL          string
 	Changelog          template.HTML
 	Currencies         []ui.Option
+	Guides             []guide   // every guide, for the index and the side list
+	Guide              guide     // the guide this page shows
+	Sections           []section // that guide's parts, rendered
 }
 
 func main() {
@@ -80,6 +104,10 @@ func build(out, repo string) error {
 	if err != nil {
 		return err
 	}
+	sources, err := readSources(repo)
+	if err != nil {
+		return err
+	}
 	set, err := ui.Parse(template.New("site"))
 	if err != nil {
 		return err
@@ -93,6 +121,7 @@ func build(out, repo string) error {
 		RepoURL:     repoURL,
 		ContractURL: contractURL,
 		ReadmeURL:   readmeURL,
+		Guides:      guides,
 	}
 
 	files := map[string][]byte{}
@@ -110,8 +139,13 @@ func build(out, repo string) error {
 	releases.Title = "Release notes: ai-ui"
 	releases.Description = "What changed in each release of ai-ui."
 	releases.Root = "../"
+	releases.Section = "releases"
 	releases.Changelog = changelog
 	if files["releases/index.html"], err = render(set, "releases.html", releases); err != nil {
+		return err
+	}
+
+	if err := buildGuides(set, base, sources, files); err != nil {
 		return err
 	}
 
@@ -135,6 +169,50 @@ func build(out, repo string) error {
 			return err
 		}
 		if err := os.WriteFile(path, body, 0o644); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// readSources reads the Markdown the guides and the Components page are built from.
+func readSources(repo string) (map[string][]byte, error) {
+	src := map[string][]byte{}
+	for _, name := range []string{"DESIGN.md", "README.md"} {
+		raw, err := os.ReadFile(filepath.Join(repo, name))
+		if err != nil {
+			return nil, err
+		}
+		src[name] = raw
+	}
+	return src, nil
+}
+
+func buildGuides(set *template.Template, base page, src, files map[string][]byte) error {
+	index := base
+	index.Title = "Guides: ai-ui"
+	index.Description = "Install ai-ui, theme it, size it, and bring it into an app that has its own CSS."
+	index.Root = "../"
+	index.Section = "guides"
+	var err error
+	if files["guides/index.html"], err = render(set, "guides.html", index); err != nil {
+		return err
+	}
+	for _, g := range guides {
+		p := index
+		p.Title = g.Title + ": ai-ui"
+		p.Description = g.Blurb
+		p.Root = "../../"
+		p.Guide = g
+		p.Sections = nil
+		for _, pt := range g.Parts {
+			s, err := findSection(src[pt.File], pt.File, pt.Heading, false)
+			if err != nil {
+				return err
+			}
+			p.Sections = append(p.Sections, s)
+		}
+		if files["guides/"+g.Slug+"/index.html"], err = render(set, "guide.html", p); err != nil {
 			return err
 		}
 	}

@@ -73,7 +73,15 @@ func text(n *html.Node) string {
 	return b.String()
 }
 
-var pages = []string{"index.html", "releases/index.html"}
+var pages = []string{
+	"index.html",
+	"releases/index.html",
+	"guides/index.html",
+	"guides/getting-started/index.html",
+	"guides/theming/index.html",
+	"guides/density/index.html",
+	"guides/existing-apps/index.html",
+}
 
 func TestPagesAndAssetsExist(t *testing.T) {
 	out := built(t)
@@ -250,21 +258,78 @@ func TestHomeDoesNotCountComponents(t *testing.T) {
 	}
 }
 
-// fakeRepo holds only what build reads from the repository.
+// fakeRepo holds only what build reads from the repository. DESIGN.md and
+// README.md are the real ones unless a test changes them.
 func fakeRepo(t *testing.T, pkg, changelog string) string {
 	t.Helper()
 	dir := t.TempDir()
-	if pkg != "" {
-		if err := os.WriteFile(filepath.Join(dir, "package.json"), []byte(pkg), 0o644); err != nil {
+	write := func(name, body string) {
+		if err := os.WriteFile(filepath.Join(dir, name), []byte(body), 0o644); err != nil {
 			t.Fatal(err)
 		}
+	}
+	if pkg != "" {
+		write("package.json", pkg)
 	}
 	if changelog != "" {
-		if err := os.WriteFile(filepath.Join(dir, "CHANGELOG.md"), []byte(changelog), 0o644); err != nil {
+		write("CHANGELOG.md", changelog)
+	}
+	for _, name := range []string{"DESIGN.md", "README.md"} {
+		raw, err := os.ReadFile(filepath.Join("..", name))
+		if err != nil {
 			t.Fatal(err)
 		}
+		write(name, string(raw))
 	}
 	return dir
+}
+
+// A guide is built from headings in DESIGN.md and README.md, so renaming one
+// must fail the build rather than publish a guide with a hole in it.
+func TestBrokenGuideSourcesFailAndWriteNothing(t *testing.T) {
+	for name, change := range map[string]func(dir string) error{
+		"no DESIGN.md": func(dir string) error { return os.Remove(filepath.Join(dir, "DESIGN.md")) },
+		"heading renamed": func(dir string) error {
+			p := filepath.Join(dir, "DESIGN.md")
+			raw, err := os.ReadFile(p)
+			if err != nil {
+				return err
+			}
+			return os.WriteFile(p, []byte(strings.Replace(string(raw), "\n## Density\n", "\n## Sizes\n", 1)), 0o644)
+		},
+	} {
+		t.Run(name, func(t *testing.T) {
+			repo := fakeRepo(t, `{"version":"1.0.0"}`, "# Changelog\n\n## 1.0.0\n")
+			if err := change(repo); err != nil {
+				t.Fatal(err)
+			}
+			out := filepath.Join(t.TempDir(), "out")
+			if err := build(out, repo); err == nil {
+				t.Fatal("build succeeded")
+			}
+			if _, err := os.Stat(out); !os.IsNotExist(err) {
+				t.Errorf("build left %s behind", out)
+			}
+		})
+	}
+}
+
+func TestGuidesShowTheirSections(t *testing.T) {
+	out := built(t)
+	for _, g := range guides {
+		page := parse(t, filepath.Join(out, "guides", g.Slug, "index.html"))
+		ids := map[string]bool{}
+		walk(page, func(n *html.Node) {
+			if n.Type == html.ElementNode && n.Data == "h2" {
+				ids[strings.TrimSpace(text(n))] = true
+			}
+		})
+		for _, p := range g.Parts {
+			if !ids[p.Heading] {
+				t.Errorf("%s: no h2 %q", g.Slug, p.Heading)
+			}
+		}
+	}
 }
 
 // CI publishes whatever build writes, so a broken source must leave nothing behind.
