@@ -2,7 +2,7 @@
 
 This file is the contract between ai-ui and the apps that use it. A change
 that renames or removes anything named here is a breaking change (see
-CHANGELOG.md and spec §9).
+CHANGELOG.md).
 
 ## Override model
 
@@ -31,7 +31,7 @@ Tokens that belong to one app are named `--app-*`. The library never defines or 
 A new app needs none of this. An app with existing markup does, because `ui.reset` and
 `ui.base` change every element its CSS says nothing about: list bullets, heading sizes, button
 frames. A compat layer between `ui.base` and `ui.components` keeps those elements as they were
-and lets the app move one component at a time. money moved this way, and the only pixels that
+and lets the app move one component at a time. One app moved this way, and the only pixels that
 changed were the focus ring on its buttons, which it chose to take.
 
 Load the compat sheet first, then `ui.css`, then the app's own CSS. The first line has to come

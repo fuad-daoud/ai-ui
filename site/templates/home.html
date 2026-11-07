@@ -1,0 +1,57 @@
+{{define "home.html" -}}
+{{template "top" .}}
+<main id="main">
+  <div class="wrap hero">
+    <h1>Here's the whole UI kit.<br>Your agent can read it.</h1>
+    <p class="lede">A small pile of real, working components, written down in one contract. Not much to learn, and not much to get wrong.</p>
+    <div class="actions">
+      <button class="ui-btn" type="button" data-size="lg" data-copy hidden>Copy the prompt</button>
+      <button class="ui-btn" type="button" data-size="lg" data-variant="secondary" id="drop" hidden>Drop it again</button>
+      <a href="{{.ContractURL}}#components">Browse the components</a>
+    </div>
+    <p class="ui-vh" role="status" id="copy-status"></p>
+  </div>
+
+  <div class="wrap">
+    <div class="pile run-a" id="pile" role="group" aria-label="A pile of working components">
+      <div class="it i-table">
+        <div class="ui-table-wrap">
+          <table class="ui-table">
+            <caption class="ui-vh">Sample invoices</caption>
+            <thead><tr><th scope="col">Client</th><th scope="col">Status</th><th scope="col" class="ui-num">Amount</th></tr></thead>
+            <tbody>
+              <tr><td>Acme</td><td>{{template "ui.pill" (dict "Label" "Paid" "Variant" "good")}}</td><td class="ui-num">212.40</td></tr>
+              <tr><td>Northwind</td><td>{{template "ui.pill" (dict "Label" "Overdue" "Variant" "bad")}}</td><td class="ui-num">1,040.00</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="it i-field"><section class="ui-card" aria-label="Sample form">{{template "ui.field" (dict "Label" "Email" "ID" "pile-email" "Type" "email" "Value" "ada@example" "Error" "Enter a full email address.")}}</section></div>
+      <div class="it i-callout"><div class="ui-callout" data-variant="warning"><p class="ui-callout-title">One invoice is overdue</p><p>Northwind has not paid since October.</p></div></div>
+      <div class="it i-save">{{template "ui.button" (dict "Label" "Save" "Size" "lg")}}</div>
+      <div class="it i-preview">{{template "ui.button" (dict "Label" "Preview" "Variant" "secondary" "Size" "lg")}}</div>
+      <div class="it i-delete">{{template "ui.button" (dict "Label" "Delete" "Variant" "danger" "Size" "lg")}}</div>
+      <div class="it i-currency panel">{{template "ui.field" (dict "Label" "Currency" "ID" "pile-currency" "Control" "select" "Options" .Currencies)}}</div>
+      <div class="it i-check panel">{{template "ui.check" (dict "Label" "Send a receipt" "Name" "receipt" "Checked" true)}}</div>
+      <div class="it i-dialog"><div class="ui-dialog" role="group" aria-labelledby="pile-dialog-title"><div class="ui-dialog-head"><h2 class="ui-dialog-title" id="pile-dialog-title">Delete invoice?</h2></div><div class="ui-dialog-body">This cannot be undone.</div></div></div>
+      <div class="it i-paid big-pill">{{template "ui.pill" (dict "Label" "Paid" "Variant" "good")}}</div>
+      <div class="it i-overdue big-pill">{{template "ui.pill" (dict "Label" "Overdue" "Variant" "bad")}}</div>
+      <div class="it i-sent big-pill">{{template "ui.pill" (dict "Label" "Sent" "Variant" "info")}}</div>
+      <div class="it i-due big-pill">{{template "ui.pill" (dict "Label" "Due soon" "Variant" "warning")}}</div>
+      <div class="it i-disclosure panel"><details class="ui-disclosure"><summary class="ui-disclosure-summary">Can I export it?</summary><div class="ui-disclosure-body">Yes, as CSV.</div></details></div>
+      <div class="it i-cancel">{{template "ui.button" (dict "Label" "Cancel" "Variant" "ghost")}}</div>
+    </div>
+    <p class="pile-note">These are the real components, not pictures. Type in one.</p>
+  </div>
+
+  <section class="wrap hand-over" aria-labelledby="hand-over-title">
+    <h2 id="hand-over-title">Hand it to your agent</h2>
+    <figure class="prompt-box">
+      <figcaption>Paste this into your agent <button class="ui-btn" type="button" data-size="sm" data-copy hidden>Copy the prompt</button></figcaption>
+      <p class="ui-mono" id="prompt">{{.Prompt}}</p>
+    </figure>
+    <p class="ui-muted">Installing it yourself? Follow the steps for <a href="{{.ReadmeURL}}#go-apps">Go</a> or <a href="{{.ReadmeURL}}#nextjs-apps">Next.js</a>.</p>
+  </section>
+</main>
+{{template "bottom" .}}
+{{- end}}

@@ -19,7 +19,7 @@ New:
 
 Docs only. `ui.css`, the templates and the React components do not change.
 
-- `DESIGN.md`: adopting ai-ui in an app that has its own CSS. The compat layer, app markup inside a library container, and how to move a component and keep the app's look, as verified moving money.
+- `DESIGN.md`: adopting ai-ui in an app that has its own CSS. The compat layer, app markup inside a library container, and how to move a component and keep the app's look, as verified moving a real app.
 
 ## 0.1.0 (2026-11-04)
 

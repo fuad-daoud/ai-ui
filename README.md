@@ -1,8 +1,9 @@
 # ai-ui
 
-The shared UI for Fuad's platforms: one token vocabulary, layered CSS that any app
-can override, `html/template` partials for the Go apps, and React components for
-the Next.js apps. Both render the same markup. See [DESIGN.md](DESIGN.md) for the contract.
+A small UI library written to be used by coding agents: one token vocabulary, layered CSS that any
+app can override, `html/template` partials for Go apps, and React components for Next.js apps. Both
+render the same markup. [DESIGN.md](DESIGN.md) is the contract, and [AGENTS.md](AGENTS.md) is where
+an agent starts. The site is at https://ui.fuad-daoud.com/.
 
 ## Go apps
 
@@ -52,14 +53,16 @@ export default { transpilePackages: ["ai-ui"] };
 import { Button, Field } from "ai-ui/react";
 ```
 
-`theme.js` has to run before first paint. Serving it from a Next app is part of the
-unassisted migration and is not wired up in v0.1.
+`theme.js` has to run before first paint. Serving it from a Next app isn't wired up yet, so that
+step is yours.
 
 ## Developing
 
 - `go test ./...`: contrast, build freshness, Go parity, handler, gallery.
-- `dev run npx vitest run`: theme.js, TS canon, React parity, Tailwind mapping.
-- `dev run npx tsc --noEmit`: typecheck.
-- `dev run npx playwright test`: gallery screenshots and axe (contabo only).
+- `npx vitest run`: theme.js, TS canon, React parity, Tailwind mapping.
+- `npx tsc --noEmit`: typecheck.
+- `npx playwright test`: gallery screenshots and axe. The baselines were made on Linux with `/usr/bin/chromium`, so screenshots may differ elsewhere.
+- Site: `cd site && go test ./... && go run . -out out -serve 127.0.0.1:4318`, then open http://127.0.0.1:4318/ai-ui/.
+- `npm run e2e:site`: the site in a browser.
 - After editing `css/`: `go run ./cmd/build`, then commit `dist/ui.css` too.
 - After changing a partial on purpose: `go test . -run TestParityGo -update`, then read the diff.

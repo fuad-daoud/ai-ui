@@ -13,5 +13,5 @@
     "resolveJsonModule": true,
     "types": ["node"]
   },
-  "include": ["react", "test", "e2e", "*.config.ts"]
+  "include": ["react", "test", "e2e", "site/e2e", "*.config.ts"]
 }
