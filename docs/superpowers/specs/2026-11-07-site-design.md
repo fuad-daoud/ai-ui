@@ -27,7 +27,7 @@ markup.
 - Home page: draft 15, "The pile", from the drafts canvas. This replaces an earlier pick of draft 3.
 - The home page shows components off. Browsing them belongs on a separate page.
 - First version: home, release notes and `AGENTS.md`.
-- Hosting: GitHub Pages.
+- Hosting: GitHub Pages, at `ui.fuad-daoud.com`.
 - Site copy never states how many components there are, because the number will change.
 
 ## 2. Non-goals
@@ -37,8 +37,6 @@ markup.
 - **No change to the library.** No token, class, partial or React component changes, no version bump
   and no tag.
 - **No search, versioned docs, blog, analytics or feedback form.** Fuad collects feedback directly.
-- **No custom domain.** It can be added later without changing the site, because every link is
-  relative (§3).
 - **No screenshot baselines for the site.** The home page animates, and its design is still being
   judged.
 - **No physics engine.** The pile is hand-placed and animated with CSS (§4).
@@ -233,7 +231,9 @@ A new `.github/workflows/pages.yml` runs on pushes to `main` and on demand. It b
 `go run . -out out` in `site/` and deploys through `actions/upload-pages-artifact` and
 `actions/deploy-pages`. Pages' source is set to GitHub Actions, once, on the repository.
 
-The address is `https://fuad-daoud.github.io/ai-ui/`.
+The address is `https://ui.fuad-daoud.com/`, set in the repository's Pages settings. Its DNS record is a
+CNAME to `fuad-daoud.github.io`, with Cloudflare's proxy off so GitHub can issue the certificate. Add the
+domain in Pages first and the DNS record second, as GitHub advises.
 
 Pages has to be enabled before the first merge, or that first deploy fails. Enabling it serves nothing
 until a deploy runs.
@@ -244,5 +244,5 @@ is also changed only with Fuad's go-ahead.
 
 ## 10. After the feedback round
 
-Decided then, not now: the Components page, guides, a custom domain, and whether to revisit the home
+Decided then, not now: the Components page, guides, and whether to revisit the home
 page. The drafts canvas stays available for comparison.

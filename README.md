@@ -3,7 +3,7 @@
 A small UI library written to be used by coding agents: one token vocabulary, layered CSS that any
 app can override, `html/template` partials for Go apps, and React components for Next.js apps. Both
 render the same markup. [DESIGN.md](DESIGN.md) is the contract, and [AGENTS.md](AGENTS.md) is where
-an agent starts. The site is at https://fuad-daoud.github.io/ai-ui/.
+an agent starts. The site is at https://ui.fuad-daoud.com/.
 
 ## Go apps
 
