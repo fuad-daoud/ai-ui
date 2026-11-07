@@ -27,7 +27,8 @@ markup.
 - Home page: draft 15, "The pile", from the drafts canvas. This replaces an earlier pick of draft 3.
 - The home page shows components off. Browsing them belongs on a separate page.
 - First version: home, release notes and `AGENTS.md`.
-- Hosting: GitHub Pages, at `ui.fuad-daoud.com`.
+- Hosting: contabo, at `ui.fuad-daoud.com`, like the other sites. This replaced GitHub Pages on 2026-11-07,
+  after the first publish.
 - Site copy never states how many components there are, because the number will change.
 
 ## 2. Non-goals
@@ -226,6 +227,13 @@ under `/ai-ui/` to prove the relative links hold:
 `go test ./...` skips a nested module. Existing steps don't change.
 
 ## 9. Publishing
+
+**Superseded on 2026-11-07:** the site moved to contabo. `site/cmd/serve` is one binary with the
+built pages embedded, run as the `ai-ui-site` service on `127.0.0.1:8083` behind the cloudflared
+tunnel, and deployed with `srv.fish deploy`. The servers repo's `services/ai-ui-site/NOTES.md` has
+the steps. `pages.yml` is removed and GitHub Pages is off. What follows is the original Pages
+design, kept for the record.
+
 
 A new `.github/workflows/pages.yml` runs on pushes to `main` and on demand. It builds with
 `go run . -out out` in `site/` and deploys through `actions/upload-pages-artifact` and

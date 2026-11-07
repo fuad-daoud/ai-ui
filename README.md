@@ -64,5 +64,6 @@ step is yours.
 - `npx playwright test`: gallery screenshots and axe. The baselines were made on Linux with `/usr/bin/chromium`, so screenshots may differ elsewhere.
 - Site: `cd site && go test ./... && go run . -out out -serve 127.0.0.1:4318`, then open http://127.0.0.1:4318/ai-ui/.
 - `npm run e2e:site`: the site in a browser.
+- The site runs on contabo as `ai-ui-site`, built with `site/cmd/serve`. Its deploy steps are in the servers repo.
 - After editing `css/`: `go run ./cmd/build`, then commit `dist/ui.css` too.
 - After changing a partial on purpose: `go test . -run TestParityGo -update`, then read the diff.
