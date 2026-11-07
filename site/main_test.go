@@ -93,6 +93,69 @@ func TestPagesAndAssetsExist(t *testing.T) {
 	}
 }
 
+func hasID(t *testing.T, path, id string) bool {
+	t.Helper()
+	found := false
+	walk(parse(t, path), func(n *html.Node) {
+		if n.Type == html.ElementNode && attr(n, "id") == id {
+			found = true
+		}
+	})
+	return found
+}
+
+// The nav's Components and Guides go to site pages, and each page marks the
+// part of the site it belongs to, and nothing else.
+func TestNavPointsAtSitePagesAndMarksTheCurrentOne(t *testing.T) {
+	out := built(t)
+	want := map[string]string{
+		"index.html":                      "",
+		"releases/index.html":             "Release notes",
+		"components/index.html":           "Components",
+		"guides/index.html":               "Guides",
+		"guides/theming/index.html":       "Guides",
+		"guides/existing-apps/index.html": "Guides",
+	}
+	for p, current := range want {
+		var marked []string
+		walk(parse(t, filepath.Join(out, p)), func(n *html.Node) {
+			if n.Type != html.ElementNode || n.Data != "nav" || attr(n, "class") != "site-nav" {
+				return
+			}
+			walk(n, func(a *html.Node) {
+				if a.Type != html.ElementNode || a.Data != "a" {
+					return
+				}
+				name := strings.TrimSpace(text(a))
+				if (name == "Components" || name == "Guides") && strings.Contains(attr(a, "href"), "://") {
+					t.Errorf("%s: nav %s leaves the site: %s", p, name, attr(a, "href"))
+				}
+				if attr(a, "aria-current") == "page" {
+					marked = append(marked, name)
+				}
+			})
+		})
+		if got := strings.Join(marked, ","); got != current {
+			t.Errorf("%s: nav marks %q, want %q", p, got, current)
+		}
+	}
+}
+
+func TestNoDuplicateIDs(t *testing.T) {
+	out := built(t)
+	for _, p := range pages {
+		seen := map[string]bool{}
+		walk(parse(t, filepath.Join(out, p)), func(n *html.Node) {
+			if id := attr(n, "id"); n.Type == html.ElementNode && id != "" {
+				if seen[id] {
+					t.Errorf("%s: id %q is used twice", p, id)
+				}
+				seen[id] = true
+			}
+		})
+	}
+}
+
 // Every internal path must resolve in the output, and anything else must be GitHub.
 func TestLinksResolveAndStayOnGitHub(t *testing.T) {
 	out := built(t)
@@ -106,7 +169,11 @@ func TestLinksResolveAndStayOnGitHub(t *testing.T) {
 				ref = attr(n, "src")
 			}
 			switch {
-			case ref == "", strings.HasPrefix(ref, "#"), strings.HasPrefix(ref, "data:"):
+			case ref == "", strings.HasPrefix(ref, "data:"):
+			case strings.HasPrefix(ref, "#"):
+				if !hasID(t, filepath.Join(out, p), ref[1:]) {
+					t.Errorf("%s: %q has no target on the page", p, ref)
+				}
 			case strings.HasPrefix(ref, "/"):
 				t.Errorf("%s: %q isn't relative", p, ref)
 			case strings.Contains(ref, "://"):
@@ -114,12 +181,15 @@ func TestLinksResolveAndStayOnGitHub(t *testing.T) {
 					t.Errorf("%s: %q leaves GitHub", p, ref)
 				}
 			default:
-				target := filepath.Join(out, filepath.Dir(p), ref)
+				file, frag, _ := strings.Cut(ref, "#")
+				target := filepath.Join(out, filepath.Dir(p), file)
 				if info, err := os.Stat(target); err == nil && info.IsDir() {
 					target = filepath.Join(target, "index.html")
 				}
 				if _, err := os.Stat(target); err != nil {
 					t.Errorf("%s: %q doesn't resolve", p, ref)
+				} else if frag != "" && !hasID(t, target, frag) {
+					t.Errorf("%s: %q has no #%s", p, ref, frag)
 				}
 			}
 		})
@@ -183,29 +253,6 @@ func TestFooterNamesCurrentVersion(t *testing.T) {
 	}
 }
 
-// The site links into these headings on GitHub, and a rename would break them quietly.
-func TestLinkedHeadingsExist(t *testing.T) {
-	for file, heading := range map[string]string{
-		"../DESIGN.md":    "## Components",
-		"../README.md":    "## Go apps",
-		"../CHANGELOG.md": "# Changelog",
-	} {
-		raw, err := os.ReadFile(file)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if !regexp.MustCompile(`(?m)^` + regexp.QuoteMeta(heading) + `$`).Match(raw) {
-			t.Errorf("%s has no %q", file, heading)
-		}
-	}
-	readme, err := os.ReadFile("../README.md")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if !strings.Contains(string(readme), "## Next.js apps") {
-		t.Error(`README.md has no "## Next.js apps"`)
-	}
-}
 
 func TestPromptPointsAtAgentsFile(t *testing.T) {
 	if !strings.Contains(prompt, agentsURL) {
@@ -314,10 +361,12 @@ func TestContractCodeShowsAsText(t *testing.T) {
 	}
 }
 
-func TestHomeDoesNotCountComponents(t *testing.T) {
-	page := text(parse(t, filepath.Join(built(t), "index.html")))
-	if m := regexp.MustCompile(`(?i)\b(\d+|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\s+components\b`).FindString(page); m != "" {
-		t.Errorf("home page counts components: %q", m)
+func TestNoPageCountsComponents(t *testing.T) {
+	count := regexp.MustCompile(`(?i)\b(\d+|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\s+components\b`)
+	for _, p := range pages {
+		if m := count.FindString(text(parse(t, filepath.Join(built(t), p)))); m != "" {
+			t.Errorf("%s counts components: %q", p, m)
+		}
 	}
 }
 

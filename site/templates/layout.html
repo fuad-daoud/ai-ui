@@ -16,9 +16,9 @@
 <header class="wrap">
   <nav class="site-nav" aria-label="Main">
     <a class="mark" href="{{.Root}}">ai-ui</a>
-    <a href="{{.ContractURL}}#components">Components</a>
-    <a href="{{.ContractURL}}">Guides</a>
-    <a href="{{.Root}}releases/">Release notes</a>
+    <a href="{{.Root}}components/"{{if eq .Section "components"}} aria-current="page"{{end}}>Components</a>
+    <a href="{{.Root}}guides/"{{if eq .Section "guides"}} aria-current="page"{{end}}>Guides</a>
+    <a href="{{.Root}}releases/"{{if eq .Section "releases"}} aria-current="page"{{end}}>Release notes</a>
     <a class="end" href="{{.RepoURL}}">GitHub</a>
   </nav>
 </header>

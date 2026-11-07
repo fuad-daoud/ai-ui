@@ -31,11 +31,9 @@ var templates embed.FS
 var assets embed.FS
 
 const (
-	repoURL     = "https://github.com/fuad-daoud/ai-ui"
-	contractURL = repoURL + "/blob/main/DESIGN.md"
-	readmeURL   = repoURL + "/blob/main/README.md"
-	agentsURL   = "https://raw.githubusercontent.com/fuad-daoud/ai-ui/main/AGENTS.md"
-	prompt      = "Use ai-ui for this project's UI. Read " + agentsURL + " first and follow it."
+	repoURL   = "https://github.com/fuad-daoud/ai-ui"
+	agentsURL = "https://raw.githubusercontent.com/fuad-daoud/ai-ui/main/AGENTS.md"
+	prompt    = "Use ai-ui for this project's UI. Read " + agentsURL + " first and follow it."
 )
 
 // part is one heading's section of a Markdown file in the repository.
@@ -87,8 +85,6 @@ type page struct {
 	Version            string
 	Prompt             string
 	RepoURL            string
-	ContractURL        string
-	ReadmeURL          string
 	Changelog          template.HTML
 	Currencies         []ui.Option
 	Guides             []guide       // every guide, for the index and the side list
@@ -139,13 +135,11 @@ func build(out, repo string) error {
 		return err
 	}
 	base := page{
-		Version:     version,
-		Prompt:      prompt,
-		RepoURL:     repoURL,
-		ContractURL: contractURL,
-		ReadmeURL:   readmeURL,
-		Guides:      guides,
-		Currencies:  []ui.Option{{Value: "usd", Label: "US dollar"}, {Value: "eur", Label: "Euro"}},
+		Version:    version,
+		Prompt:     prompt,
+		RepoURL:    repoURL,
+		Guides:     guides,
+		Currencies: []ui.Option{{Value: "usd", Label: "US dollar"}, {Value: "eur", Label: "Euro"}},
 	}
 
 	files := map[string][]byte{}
