@@ -17,7 +17,7 @@
   <nav class="site-nav" aria-label="Main">
     <a class="mark" href="{{.Root}}">ai-ui</a>
     <a href="{{.Root}}components/"{{if eq .Section "components"}} aria-current="page"{{end}}>Components</a>
-    <a href="{{.Root}}guides/"{{if eq .Section "guides"}} aria-current="page"{{end}}>Guides</a>
+    <a href="{{.Root}}guides/"{{if eq .Section "guides"}} aria-current="{{if .Guide.Slug}}true{{else}}page{{end}}"{{end}}>Guides</a>
     <a href="{{.Root}}releases/"{{if eq .Section "releases"}} aria-current="page"{{end}}>Release notes</a>
     <a class="end" href="{{.RepoURL}}">GitHub</a>
   </nav>

@@ -20,7 +20,7 @@ body { overflow-x: clip; }
 .site-nav { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-5); padding-block: var(--space-4); font-size: 0.9375rem; }
 .site-nav a { color: var(--ink-2); text-decoration: none; }
 .site-nav a:hover { color: var(--ink); text-decoration: underline; }
-.site-nav a[aria-current="page"] { color: var(--ink); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.4em; }
+.site-nav a[aria-current] { color: var(--ink); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.4em; }
 .site-nav .mark { color: var(--ink); font-size: 1.25rem; font-weight: 800; }
 .site-nav .end { margin-inline-start: auto; }
 

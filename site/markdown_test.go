@@ -101,7 +101,7 @@ func TestSectionWrapsTables(t *testing.T) {
 		t.Fatal(err)
 	}
 	body := string(s.Body)
-	if !strings.Contains(body, `<div class="ui-table-wrap" tabindex="0"><table class="ui-table">`) || !strings.Contains(body, "</table></div>") {
+	if !strings.Contains(body, `<div class="ui-table-wrap" tabindex="0" role="region" aria-label="Table"><table class="ui-table">`) || !strings.Contains(body, "</table></div>") {
 		t.Errorf("table isn't wrapped:\n%s", body)
 	}
 }

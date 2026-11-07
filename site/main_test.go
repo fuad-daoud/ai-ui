@@ -105,16 +105,17 @@ func hasID(t *testing.T, path, id string) bool {
 }
 
 // The nav's Components and Guides go to site pages, and each page marks the
-// part of the site it belongs to, and nothing else.
+// part of the site it belongs to, and nothing else: "page" when the link is
+// this page, "true" when this page is inside that part of the site.
 func TestNavPointsAtSitePagesAndMarksTheCurrentOne(t *testing.T) {
 	out := built(t)
 	want := map[string]string{
 		"index.html":                      "",
-		"releases/index.html":             "Release notes",
-		"components/index.html":           "Components",
-		"guides/index.html":               "Guides",
-		"guides/theming/index.html":       "Guides",
-		"guides/existing-apps/index.html": "Guides",
+		"releases/index.html":             "Release notes=page",
+		"components/index.html":           "Components=page",
+		"guides/index.html":               "Guides=page",
+		"guides/theming/index.html":       "Guides=true",
+		"guides/existing-apps/index.html": "Guides=true",
 	}
 	for p, current := range want {
 		var marked []string
@@ -130,8 +131,8 @@ func TestNavPointsAtSitePagesAndMarksTheCurrentOne(t *testing.T) {
 				if (name == "Components" || name == "Guides") && strings.Contains(attr(a, "href"), "://") {
 					t.Errorf("%s: nav %s leaves the site: %s", p, name, attr(a, "href"))
 				}
-				if attr(a, "aria-current") == "page" {
-					marked = append(marked, name)
+				if v := attr(a, "aria-current"); v != "" {
+					marked = append(marked, name+"="+v)
 				}
 			})
 		})

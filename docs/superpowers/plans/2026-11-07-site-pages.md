@@ -1364,3 +1364,23 @@ git commit -m "test(site): Components and Guides in a browser"
   - Check that `https://ui.fuad-daoud.com/components/` and `/guides/theming/` answer 200.
   - Check that `srv.fish probe now` is all up.
   - Update the `ai-ui-site` memory.
+
+## Changes after the whole-branch review
+
+A fresh reviewer read the spec, this plan and the whole diff. It found nothing critical and one important
+issue, and one minor item was regraded to important by its effect. Both are fixed, each with a test
+that failed first:
+
+- **Guide pages named the wrong link as the current page.** On `guides/theming/` the main nav's Guides
+  link had `aria-current="page"` while pointing at `guides/`. §4 and §7 of the spec asked for that, and
+  it was wrong. A link now gets `"page"` only when it is the page itself, and the Guides link gets
+  `"true"` on a guide. Both are underlined.
+- **Table frames were unnamed tab stops.** Each frame now has `role="region"` and `aria-label="Table"`.
+
+The minor findings were deferred:
+- the link rewrite's handling of `../`, `//` and `/` paths, images and links in headings
+- heading levels past h6
+- aligned empty corner cells
+- a test that a wide table scrolls inside its frame
+- cross-file heading-ID collisions failing at build time rather than in tests
+- framed tables in the changelog
