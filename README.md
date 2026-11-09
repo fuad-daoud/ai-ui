@@ -11,13 +11,17 @@ an agent starts. The site is at https://ui.fuad-daoud.com/.
 go get github.com/fuad-daoud/ai-ui@v0.2.0
 ```
 
+It needs Go 1.25.
+
 ```go
 import ui "github.com/fuad-daoud/ai-ui"
 
 mux.Handle(ui.Prefix, http.StripPrefix(ui.Prefix, ui.Handler()))
 tmpl := template.Must(ui.Parse(template.New("app")))
-tmpl = template.Must(tmpl.ParseFS(pages, "*.html"))
+tmpl = template.Must(tmpl.ParseFS(pages, "*.html")) // your own pattern, after ui.Parse
 ```
+
+`theme.js` is only for a page that offers a light/dark or palette choice.
 
 ```html
 <head>
@@ -32,7 +36,13 @@ tmpl = template.Must(tmpl.ParseFS(pages, "*.html"))
 
 ## Next.js apps
 
-This needs React 19.
+This needs React 19. npm 12 and later refuse a dependency fetched from git unless the project
+allows it, so allow it in a `.npmrc` (which `npm ci` and CI read too), then install:
+
+```bash
+echo "allow-git=root" >> .npmrc
+npm install github:fuad-daoud/ai-ui#v0.2.0
+```
 
 ```json
 "dependencies": { "ai-ui": "github:fuad-daoud/ai-ui#v0.2.0" }
