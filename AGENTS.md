@@ -27,7 +27,7 @@ Check which stack this project uses, then follow one of these.
 ### Go with `html/template`
 
 ```bash
-go get github.com/fuad-daoud/ai-ui@v0.2.0
+go get github.com/fuad-daoud/ai-ui@v0.2.1
 ```
 
 It needs Go 1.25, and `go get` raises the `go` line in an older `go.mod` to match.
@@ -60,13 +60,13 @@ read it too, then install:
 
 ```bash
 echo "allow-git=root" >> .npmrc
-npm install github:fuad-daoud/ai-ui#v0.2.0
+npm install github:fuad-daoud/ai-ui#v0.2.1
 ```
 
 That leaves this in `package.json`:
 
 ```json
-"dependencies": { "ai-ui": "github:fuad-daoud/ai-ui#v0.2.0" }
+"dependencies": { "ai-ui": "github:fuad-daoud/ai-ui#v0.2.1" }
 ```
 
 ```ts
