@@ -47,3 +47,16 @@ test("hidden hides every component root", async ({ page }) => {
   );
   expect(shown).toEqual([]);
 });
+
+test("a dialog doesn't take its text alignment or wrapping from where it sits", async ({ page }) => {
+  // A dialog's markup often lives in a table row's actions cell, end-aligned and
+  // unwrapped; the modal is drawn over the page but still inherits from that cell.
+  await page.goto("/p/blue/light/dialog");
+  const got = await page.evaluate(() => {
+    document.body.style.textAlign = "end";
+    document.body.style.whiteSpace = "nowrap";
+    const s = getComputedStyle(document.querySelector("#confirm")!);
+    return `${s.textAlign} ${s.whiteSpace}`;
+  });
+  expect(got).toBe("start normal");
+});

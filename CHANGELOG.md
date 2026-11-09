@@ -4,6 +4,15 @@ Breaking changes come first in each entry. Renaming or removing a token,
 class, data-attribute value, knob, partial name or argument, or React prop
 is breaking.
 
+## Unreleased
+
+No breaking changes.
+
+- A dialog's text starts at the start and wraps, wherever its markup sits. It used to inherit `text-align` and `white-space`, so a dialog in an end-aligned table cell came out right-aligned.
+- `AGENTS.md`: npm 12 refuses git dependencies, so the Next.js steps allow them in `.npmrc`; Go's version floor; the app's own `ParseFS` pattern; `theme.js` only for a page with a theme choice; what is a component, what is plain markup, and that page layout is the app's.
+- `DESIGN.md` documents what the partials and components already took: the button's `Type` (default `button`), `Name` and `Value`; the check's `Type`, `ID`, `Required` and `Disabled`; `.ui-select` and `.ui-textarea`; the options shape; controlled fields and checks; `Dialog`'s `closeLabel`; `.ui-dialog-actions` and a confirm per row; roles for callouts.
+- `DESIGN.md`: where to set a knob, library sizes as minimums, hover colours, a renamed selector that wakes a rule, shared token names, and a page with a design of its own on `ui-scoped.css`.
+
 ## 0.2.0 (2026-11-06)
 
 No breaking changes. One visible change at the default density:

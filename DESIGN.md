@@ -19,7 +19,10 @@ You can override at three levels:
    Use `light-dark(<light>, <dark>)` to cover both modes in one line.
 2. **Component**: set a knob: `.ui-btn { --ui-btn-radius: 0; }`. A knob set on the
    root class also overrides the knob values the variants set, so target the default
-   variant alone with `.ui-btn:not([data-variant])`.
+   variant alone with `.ui-btn:not([data-variant])`. Set a knob on a selector that matches the
+   component itself: the library sets each knob's default on the component, so a value set on an
+   ancestor or on `:root` never reaches it. `.toolbar .ui-btn { --ui-btn-height: 2rem; }` works;
+   `.toolbar { --ui-btn-height: 2rem; }` doesn't.
 3. **Anything else**: write a plain rule. An unlayered app rule also beats the
    library's state rules (`:hover`, `[aria-invalid]`) for the same property, so
    restate the states you need.
@@ -82,6 +85,23 @@ look, override only what the library sets and the app doesn't:
 - **Compare computed styles as well as pixels,** with one control focused or hovered at a time.
   A screenshot with nothing focused can't show a focus ring.
 
+**Sizes, colours and names.** What two apps learned keeping their own look:
+
+- **A library size is a minimum.** A button's height is a `min-height` of `--ui-btn-height`, and
+  an input's is a `min-block-size` of `--ui-input-height`, so an app's `height: 34px` on a 40px
+  button loses. Name the size through the knob as well: `#theme-btn { --ui-btn-height: 34px; height: 34px; }`.
+- **Hover changes colour.** A filled button turns `--primary-hover` under the pointer. If the app's
+  buttons don't change, set `--ui-btn-bg-hover` and `--ui-btn-fg-hover` to their resting colours.
+- **A renamed selector can wake a rule.** Retargeting `.input` to `.ui-input` changes which of the
+  app's own rules win their specificity ties. A rule that used to lose to another app rule on the old
+  class can start to apply, or the other way round. Before renaming, check that each retargeted
+  rule was already the winner where it applies, and look at screenshots in every theme afterwards.
+- **Token names are shared.** The library reads its own token names, and an unlayered app rule
+  sets them. An app token with a library name and another meaning repaints the library: one app's
+  `--rule` was the library's `--rule-soft`. Rename those first. When the app's tokens have other
+  names, give the library's the app's values in one block:
+  `:root { --ink-3: var(--app-muted); --rule: var(--app-line); --rule-soft: var(--app-hairline); }`.
+
 **If you serve `ui.css` inline** under a hash-based CSP from Go's `html/template`, pass it as a
 `template.CSS` value. Literal text in a template has its CSS comments stripped, so the bytes
 served no longer match a hash taken over the source.
@@ -140,6 +160,11 @@ Library markup looks the same under either file. With `ui-scoped.css`, the page 
 - **Page-level compact.** With no `body` rule, `<html data-density="compact">` doesn't set body
   text, so put the attribute on the element that holds the library markup.
 
+**A page with a design of its own,** a marketing home for one, can take `ui-scoped.css` and keep
+its look: load it before the page's stylesheet, put library classes on the page's buttons and
+fields, and let the page's unlayered rules restyle them. Map the library's token names to the
+page's in one block (see "Sizes, colours and names" above), and name sizes through the knobs.
+
 Tokens still apply to `:root`, including `color-scheme: light dark`. A page that sets no
 `color-scheme` of its own follows the system's dark mode for its default colours, so set one if
 the page must not.
@@ -191,7 +216,14 @@ Knobs: `--ui-btn-bg`, `--ui-btn-fg`, `--ui-btn-border`, `--ui-btn-bg-hover`, `--
 | Dialog opener | `(dict "Label" "Open" "Command" "show-modal" "CommandFor" "confirm")` | `<Button command="show-modal" commandFor="confirm">Open</Button>` |
 
 Variants: `primary` (default), `secondary`, `ghost`, `danger`. Sizes: `sm`, `md` (default), `lg`.
-`Disabled` on a link drops `href` and sets `aria-disabled="true"`. Labels are text.
+
+Go args: `Label` (required), `Variant`, `Size`, `Type` (`submit`, `reset`; default `button`), `Name`,
+`Value`, `Command`, `CommandFor`, `Disabled`, and `Href`, which makes it a link. **A button that
+submits its form needs `"Type" "submit"`:** the default is `button`, which submits nothing.
+React: `Button` passes every other `<button>` prop through, and its `type` also defaults to
+`button`. `ButtonLink` passes every `<a>` prop through.
+`Disabled` on a link (`disabled` on `ButtonLink`) drops `href` and sets `aria-disabled="true"`.
+Labels are text.
 
 ```html
 <button class="ui-btn" type="button" data-variant="secondary" data-size="sm">Save</button>
@@ -202,7 +234,12 @@ Variants: `primary` (default), `secondary`, `ghost`, `danger`. Sizes: `sm`, `md`
 Knobs: `--ui-field-gap`; on controls, `--ui-input-bg`, `--ui-input-fg`, `--ui-input-border`, `--ui-input-radius`, `--ui-input-height`.
 
 Go args: `Label` (required), `ID` or `Name` (at least one), `Control` (`textarea`, `select`; default input), `Type` (`email`, `password`, `number`, `search`, `tel`, `url`, `date`; default `text`), `Value`, `Placeholder`, `Autocomplete`, `Rows`, `Options` (`[]ui.Option`), `Hint`, `Error`, `Required`, `Disabled`.
-React: `<Field label name id control type options defaultValue hint error … />`. Every other prop, including `ref`, goes to the control.
+React: `<Field label name id control type options defaultValue hint error … />`. Every other prop, including `ref`, goes to the control,
+so a controlled field takes `value` and `onChange`. `options` is `{ value, label }[]` in React and
+`[]ui.Option{{Value: "m", Label: "Monthly"}}` in Go; the option whose value equals `Value` is selected.
+
+The controls are `.ui-input`, `.ui-select` and `.ui-textarea`. A textarea is twice the input
+height at least, and `Rows` (`rows`) makes it taller.
 
 ```html
 <div class="ui-field">
@@ -220,6 +257,10 @@ Lay fields side by side with `<div class="ui-form-row">`.
 Knobs: `--ui-check-size`, `--ui-check-accent`.
 Go: `{{template "ui.check" (dict "Label" "Monthly" "Name" "period" "Value" "m" "Type" "radio" "Checked" true)}}`. React: `<Check label="Monthly" name="period" value="m" type="radio" defaultChecked />`.
 
+Go args: `Label` (required), `Type` (`radio`; default `checkbox`), `ID`, `Name`, `Value`, `Checked`,
+`Required`, `Disabled`. React: every other prop goes to the `<input>`, so a controlled check takes
+`checked` and `onChange`.
+
 ```html
 <label class="ui-check"><input class="ui-check-input" type="radio" name="period" value="m" checked><span class="ui-check-label">Monthly</span></label>
 ```
@@ -232,7 +273,8 @@ Go: `{{template "ui.pill" (dict "Label" "Paid" "Variant" "good")}}`. React: `<Pi
 ### Dialog: `.ui-dialog`
 
 Knobs: `--ui-dialog-width`, `--ui-dialog-bg`, `--ui-dialog-radius`, `--ui-dialog-pad`. It needs no JavaScript:
-open it with a button carrying `command="show-modal" commandfor="<id>"`. React: `<Dialog id="confirm" title="Delete resume?">…</Dialog>`.
+open it with a button carrying `command="show-modal" commandfor="<id>"`. React: `<Dialog id="confirm" title="Delete resume?">…</Dialog>`;
+`closeLabel` (default `Close`) is the × button's accessible name.
 In Go, write this markup (it is pinned by `testdata/parity/dialog-basic.html`):
 
 ```html
@@ -247,6 +289,23 @@ In Go, write this markup (it is pinned by `testdata/parity/dialog-basic.html`):
   </div>
 </dialog>
 ```
+
+`.ui-dialog-actions` is the row of buttons at the end, and it can be the `<form>` itself. A button
+with `command="close" commandfor="<id>"` closes the dialog without script.
+
+**A confirm per row.** In Go, give each row its own dialog with its own id
+(`printf "remove-%d" $i`), and put the action's form in it, so it works without script:
+
+```html
+<form class="ui-dialog-actions" method="post" action="/remove">
+  <input type="hidden" name="email" value="{{.Email}}">
+  {{template "ui.button" (dict "Label" "Cancel" "Variant" "secondary" "Command" "close" "CommandFor" (printf "remove-%d" $i))}}
+  {{template "ui.button" (dict "Label" "Remove" "Variant" "danger" "Type" "submit")}}
+</form>
+```
+
+In React, keep one dialog and the row it is for in state: each row's opener sets it, and the
+confirm button acts on it and closes the dialog with `command="close"`.
 
 ### Containers (plain markup in Go and React)
 
@@ -273,6 +332,10 @@ In Go, write this markup (it is pinned by `testdata/parity/dialog-basic.html`):
 ```
 
 Knobs: `--ui-callout-bg`, `--ui-callout-fg`, `--ui-callout-accent`; `--ui-table-pad-y`, `--ui-table-pad-x`; `--ui-card-pad`, `--ui-card-radius`.
+
+A callout that reports what just happened takes `role="status"`, and one that reports an error
+takes `role="alert"`, so a screen reader announces it. An error about one field belongs in that
+field's `Error` (`error`) instead.
 
 ### Utilities
 
