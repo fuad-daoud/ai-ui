@@ -4,7 +4,7 @@ Breaking changes come first in each entry. Renaming or removing a token,
 class, data-attribute value, knob, partial name or argument, or React prop
 is breaking.
 
-## Unreleased
+## 0.2.1 (2026-11-09)
 
 No breaking changes.
 
