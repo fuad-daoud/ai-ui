@@ -11,6 +11,10 @@
   border-radius: var(--ui-dialog-radius);
   background: var(--ui-dialog-bg);
   color: var(--ink);
+  /* A modal is drawn over the page but inherits from where its markup sits,
+     often an end-aligned, unwrapped table cell. */
+  text-align: start;
+  white-space: normal;
   box-shadow: 0 1px 2px var(--shadow), 0 16px 48px var(--shadow);
 }
 .ui-dialog[open] { display: flex; flex-direction: column; }
