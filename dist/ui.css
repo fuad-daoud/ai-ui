@@ -203,10 +203,43 @@ small { font-size: var(--text-sm); }
   --ui-btn-bg-hover: var(--ink);
   --ui-btn-fg-hover: var(--paper);
 }
+/* An outlined primary or danger button. :where() keeps these at a variant's weight,
+   so the disabled rules below still win. Secondary and ghost don't change. */
+.ui-btn[data-tone="outline"]:where(:not([data-variant]), [data-variant="danger"]) {
+  --ui-btn-bg: var(--sheet);
+  --ui-btn-border: var(--rule);
+  --ui-btn-bg-hover: var(--band);
+}
+.ui-btn[data-tone="outline"]:where(:not([data-variant])) { --ui-btn-fg: var(--primary); --ui-btn-fg-hover: var(--primary); }
+.ui-btn[data-tone="outline"]:where([data-variant="danger"]) { --ui-btn-fg: var(--bad); --ui-btn-fg-hover: var(--bad); }
 .ui-btn[data-size="sm"] { --ui-btn-height: 2rem; --ui-btn-pad: var(--space-3); --ui-btn-font-size: var(--text-sm); }
 .ui-btn[data-size="lg"] { --ui-btn-height: 3rem; --ui-btn-pad: var(--space-5); --ui-btn-font-size: var(--text-lg); }
+.ui-btn > svg { flex: none; inline-size: 1em; block-size: 1em; }
+/* An icon-only button: as wide as it is tall. */
+.ui-btn[data-shape="square"] { inline-size: var(--ui-btn-height); padding: 0; }
+.ui-btn[data-width="full"] {
+  inline-size: 100%;
+  padding-block: var(--space-1);
+  white-space: normal;
+  text-wrap: balance;
+}
+/* Disabled changes colour, not opacity, so the label stays readable. */
 .ui-btn:disabled,
-.ui-btn[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+.ui-btn[aria-disabled="true"] {
+  --ui-btn-bg: var(--band);
+  --ui-btn-fg: var(--ink-3);
+  --ui-btn-border: var(--rule);
+  --ui-btn-bg-hover: var(--band);
+  --ui-btn-fg-hover: var(--ink-3);
+  cursor: not-allowed;
+}
+.ui-btn[data-variant="ghost"]:is(:disabled, [aria-disabled="true"]) {
+  --ui-btn-bg: transparent;
+  --ui-btn-bg-hover: transparent;
+  --ui-btn-border: transparent;
+}
+/* A disabled link has no href, but must not take clicks either. */
+.ui-btn[aria-disabled="true"] { pointer-events: none; }
 /* css/components/callout.css */
 .ui-callout {
   --ui-callout-bg: var(--band);
@@ -227,11 +260,13 @@ small { font-size: var(--text-sm); }
 .ui-card {
   --ui-card-pad: var(--space-5);
   --ui-card-radius: var(--radius-lg);
+  --ui-card-shadow: 0 1px 2px var(--shadow);
+  --ui-card-border: var(--rule-soft);
   padding: var(--ui-card-pad);
-  border: 1px solid var(--rule-soft);
+  border: 1px solid var(--ui-card-border);
   border-radius: var(--ui-card-radius);
   background: var(--sheet);
-  box-shadow: 0 1px 2px var(--shadow);
+  box-shadow: var(--ui-card-shadow);
 }
 /* css/components/check.css */
 .ui-check {
@@ -269,20 +304,37 @@ small { font-size: var(--text-sm); }
 [data-density="compact"] .ui-btn[data-size="sm"] { --ui-btn-height: 1.75rem; --ui-btn-pad: 0.625rem; }
 [data-density="compact"] .ui-btn[data-size="lg"] { --ui-btn-height: 2.75rem; --ui-btn-pad: 1.25rem; --ui-btn-font-size: 1rem; }
 [data-density="compact"] :is(.ui-input, .ui-select) { --ui-input-height: 2rem; }
+[data-density="compact"] :is(.ui-input, .ui-select, .ui-textarea)[data-size="sm"] { --ui-input-height: 1.75rem; }
+[data-density="compact"] :is(.ui-input, .ui-select, .ui-textarea)[data-size="lg"] { --ui-input-height: 2.75rem; }
 [data-density="compact"] .ui-field { --ui-field-gap: var(--space-1); }
 [data-density="compact"] .ui-pill { border-radius: var(--radius-sm); }
 [data-density="compact"] .ui-table { font-size: var(--text-md); }
+/* Compact cards and dialogs are flat: a hairline, no shadow. */
+[data-density="compact"] .ui-card { --ui-card-shadow: none; }
+[data-density="compact"] .ui-dialog { --ui-dialog-shadow: none; }
+/* Finger-sized controls on a touch screen. */
+@media (pointer: coarse) {
+  [data-density="compact"] .ui-btn { --ui-btn-height: 2.5rem; }
+  [data-density="compact"] .ui-btn[data-size="sm"] { --ui-btn-height: 2.125rem; }
+  [data-density="compact"] .ui-btn[data-size="lg"] { --ui-btn-height: 2.75rem; }
+  [data-density="compact"] :is(.ui-input, .ui-select) { --ui-input-height: 2.5rem; }
+  [data-density="compact"] :is(.ui-input, .ui-select, .ui-textarea)[data-size="sm"] { --ui-input-height: 2.125rem; }
+  [data-density="compact"] :is(.ui-input, .ui-select, .ui-textarea)[data-size="lg"] { --ui-input-height: 2.75rem; }
+}
 /* css/components/dialog.css */
 .ui-dialog {
   --ui-dialog-width: 32rem;
   --ui-dialog-bg: var(--sheet);
   --ui-dialog-radius: var(--radius-lg);
   --ui-dialog-pad: var(--space-5);
+  --ui-dialog-shadow: 0 1px 2px var(--shadow), 0 16px 48px var(--shadow);
+  --ui-dialog-border: var(--rule-soft);
+  --ui-dialog-eyebrow-fg: var(--ink-3);
   inline-size: min(var(--ui-dialog-width), calc(100vw - 2 * var(--space-4)));
   max-block-size: calc(100dvh - 2 * var(--space-4));
   margin: auto; /* the reset zeroes margins; a modal is centred by margin: auto */
   padding: 0;
-  border: 1px solid var(--rule-soft);
+  border: 1px solid var(--ui-dialog-border);
   border-radius: var(--ui-dialog-radius);
   background: var(--ui-dialog-bg);
   color: var(--ink);
@@ -290,7 +342,7 @@ small { font-size: var(--text-sm); }
      often an end-aligned, unwrapped table cell. */
   text-align: start;
   white-space: normal;
-  box-shadow: 0 1px 2px var(--shadow), 0 16px 48px var(--shadow);
+  box-shadow: var(--ui-dialog-shadow);
 }
 .ui-dialog[open] { display: flex; flex-direction: column; }
 .ui-dialog::backdrop { background: var(--scrim); }
@@ -301,6 +353,16 @@ small { font-size: var(--text-sm); }
   gap: var(--space-3);
   padding: var(--ui-dialog-pad) var(--ui-dialog-pad) 0;
 }
+/* A small line above the head, such as "Can't be undone". */
+.ui-dialog-eyebrow {
+  padding: var(--ui-dialog-pad) var(--ui-dialog-pad) 0;
+  color: var(--ui-dialog-eyebrow-fg);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.ui-dialog-eyebrow + .ui-dialog-head { padding-block-start: var(--space-1); }
 .ui-dialog-title { font-size: var(--text-lg); }
 .ui-dialog-x {
   display: grid;
@@ -319,7 +381,7 @@ small { font-size: var(--text-sm); }
 .ui-dialog-body { padding: var(--space-3) var(--ui-dialog-pad) var(--ui-dialog-pad); overflow-y: auto; }
 .ui-dialog-actions { display: flex; justify-content: flex-end; gap: var(--space-2); margin-block-start: var(--space-5); }
 /* css/components/disclosure.css */
-.ui-disclosure { border-block-end: 1px solid var(--rule-soft); }
+.ui-disclosure { --ui-disclosure-rule: var(--rule-soft); border-block-end: 1px solid var(--ui-disclosure-rule); }
 .ui-disclosure-summary {
   display: flex;
   align-items: center;
@@ -343,6 +405,21 @@ small { font-size: var(--text-sm); }
 }
 .ui-disclosure[open] > .ui-disclosure-summary::after { transform: rotate(-135deg); }
 .ui-disclosure-body { padding-block-end: var(--space-4); color: var(--ink-2); }
+/* The chevron before the text: it points to the inline end, and down when open. */
+.ui-disclosure[data-marker="start"] > .ui-disclosure-summary { justify-content: flex-start; }
+.ui-disclosure[data-marker="start"] > .ui-disclosure-summary::after { content: none; }
+.ui-disclosure[data-marker="start"] > .ui-disclosure-summary::before {
+  content: "";
+  flex: none;
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  border-inline-end: 2px solid var(--ink-3);
+  border-block-end: 2px solid var(--ink-3);
+  transform: rotate(-45deg);
+  transition: transform var(--dur) var(--ease);
+}
+.ui-disclosure[data-marker="start"] > .ui-disclosure-summary:dir(rtl)::before { transform: rotate(135deg); }
+.ui-disclosure[data-marker="start"][open] > .ui-disclosure-summary::before { transform: rotate(45deg); }
 /* css/components/field.css */
 .ui-field { --ui-field-gap: var(--space-2); display: grid; gap: var(--ui-field-gap); }
 .ui-field-label { font-size: var(--text-sm); font-weight: 600; color: var(--ink); }
@@ -357,8 +434,9 @@ small { font-size: var(--text-sm); }
   --ui-input-border: var(--rule-field);
   --ui-input-radius: var(--radius-md);
   --ui-input-height: 2.5rem;
+  --ui-input-width: 100%;
 
-  inline-size: 100%;
+  inline-size: var(--ui-input-width);
   min-block-size: var(--ui-input-height);
   padding: var(--space-2) var(--space-3);
   background-color: var(--ui-input-bg);
@@ -382,6 +460,31 @@ small { font-size: var(--text-sm); }
   background-size: 0.3rem 0.3rem, 0.3rem 0.3rem;
   background-repeat: no-repeat;
 }
+/* Sizes match the button of the same size. A select keeps its end padding for the chevron. */
+:is(.ui-input, .ui-select, .ui-textarea)[data-size="sm"] { --ui-input-height: 2rem; font-size: var(--text-sm); }
+:is(.ui-input, .ui-textarea)[data-size="sm"] { padding-inline: var(--space-2); }
+.ui-textarea[data-size="sm"] { padding-block: var(--space-1); }
+.ui-select[data-size="sm"] { padding-inline-start: var(--space-2); }
+:is(.ui-input, .ui-select, .ui-textarea)[data-size="lg"] { --ui-input-height: 3rem; font-size: 1rem; }
+:is(.ui-input, .ui-textarea)[data-size="lg"] { padding-inline: var(--space-4); }
+.ui-select[data-size="lg"] { padding-inline-start: var(--space-4); }
+
+/* A leading icon inside an input. */
+.ui-input-group { --ui-input-icon-inset: var(--space-3); position: relative; }
+.ui-input-group:has(> .ui-input[data-size="sm"]) { --ui-input-icon-inset: var(--space-2); }
+.ui-input-group:has(> .ui-input[data-size="lg"]) { --ui-input-icon-inset: var(--space-4); }
+.ui-input-group > :is(.ui-input-icon, svg) {
+  position: absolute;
+  inset-inline-start: var(--ui-input-icon-inset);
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  inline-size: 1rem;
+  block-size: 1rem;
+  color: var(--ink-3);
+  pointer-events: none;
+}
+.ui-input-group > .ui-input { padding-inline-start: calc(var(--ui-input-icon-inset) + 1rem + var(--space-2)); }
+
 .ui-input::placeholder,
 .ui-textarea::placeholder { color: var(--ink-3); opacity: 1; }
 .ui-input:hover,
@@ -398,7 +501,7 @@ small { font-size: var(--text-sm); }
 .ui-textarea:disabled { background-color: var(--band); color: var(--ink-3); cursor: not-allowed; }
 
 .ui-form-row { display: flex; flex-wrap: wrap; align-items: end; gap: var(--space-4); }
-.ui-form-row > * { flex: 1 1 14rem; }
+.ui-form-row > * { flex: var(--ui-row-grow, 1) 1 var(--ui-row-basis, 14rem); }
 /* css/components/pill.css */
 .ui-pill {
   --ui-pill-bg: var(--band);
@@ -421,6 +524,17 @@ small { font-size: var(--text-sm); }
 .ui-pill[data-variant="good"] { --ui-pill-bg: var(--good-bg); --ui-pill-fg: var(--good); --ui-pill-border: transparent; }
 .ui-pill[data-variant="warning"] { --ui-pill-bg: var(--warning-bg); --ui-pill-fg: var(--warning); --ui-pill-border: transparent; }
 .ui-pill[data-variant="bad"] { --ui-pill-bg: var(--bad-bg); --ui-pill-fg: var(--bad); --ui-pill-border: transparent; }
+/* After the variants: an outline pill drops its fill, and its border takes the text colour. */
+.ui-pill[data-tone="outline"] { --ui-pill-bg: transparent; --ui-pill-border: var(--ui-pill-fg); }
+.ui-pill[data-tone="outline"]:not([data-variant]) { --ui-pill-border: var(--rule-field); }
+.ui-pill[data-dot]::before {
+  content: "";
+  flex: none;
+  inline-size: 0.375rem;
+  block-size: 0.375rem;
+  border-radius: 50%;
+  background: currentColor;
+}
 /* css/components/table.css */
 .ui-table-wrap {
   overflow-x: auto;

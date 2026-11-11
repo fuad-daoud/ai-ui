@@ -1,4 +1,4 @@
-.ui-disclosure { border-block-end: 1px solid var(--rule-soft); }
+.ui-disclosure { --ui-disclosure-rule: var(--rule-soft); border-block-end: 1px solid var(--ui-disclosure-rule); }
 .ui-disclosure-summary {
   display: flex;
   align-items: center;
@@ -22,3 +22,18 @@
 }
 .ui-disclosure[open] > .ui-disclosure-summary::after { transform: rotate(-135deg); }
 .ui-disclosure-body { padding-block-end: var(--space-4); color: var(--ink-2); }
+/* The chevron before the text: it points to the inline end, and down when open. */
+.ui-disclosure[data-marker="start"] > .ui-disclosure-summary { justify-content: flex-start; }
+.ui-disclosure[data-marker="start"] > .ui-disclosure-summary::after { content: none; }
+.ui-disclosure[data-marker="start"] > .ui-disclosure-summary::before {
+  content: "";
+  flex: none;
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  border-inline-end: 2px solid var(--ink-3);
+  border-block-end: 2px solid var(--ink-3);
+  transform: rotate(-45deg);
+  transition: transform var(--dur) var(--ease);
+}
+.ui-disclosure[data-marker="start"] > .ui-disclosure-summary:dir(rtl)::before { transform: rotate(135deg); }
+.ui-disclosure[data-marker="start"][open] > .ui-disclosure-summary::before { transform: rotate(45deg); }
