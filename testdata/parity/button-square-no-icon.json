@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.button", "args": { "Label": "Theme", "Shape": "square" } },
+  "error": "ui.button: Icon is required"
+}

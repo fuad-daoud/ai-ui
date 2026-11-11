@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.button", "args": { "Label": "Continue to the next step", "Width": "full" } },
+  "react": { "component": "Button", "props": { "width": "full", "children": "Continue to the next step" } }
+}

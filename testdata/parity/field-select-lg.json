@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.field", "args": { "Label": "Plan", "Name": "plan", "Control": "select", "Size": "lg", "Value": "m", "Options": [{ "Value": "m", "Label": "Monthly" }, { "Value": "y", "Label": "Yearly" }] } },
+  "react": { "component": "Field", "props": { "label": "Plan", "name": "plan", "control": "select", "size": "lg", "defaultValue": "m", "options": [{ "value": "m", "label": "Monthly" }, { "value": "y", "label": "Yearly" }] } }
+}

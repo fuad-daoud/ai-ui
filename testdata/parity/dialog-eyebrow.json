@@ -1,0 +1,3 @@
+{
+  "react": { "component": "Dialog", "props": { "id": "del", "title": "Delete grace@example.com?", "eyebrow": "Can't be undone", "closeButton": false, "children": "This disables the account." } }
+}

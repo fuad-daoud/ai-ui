@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.button", "args": { "Label": "Theme", "Variant": "secondary", "Shape": "square", "Icon": "◐" } },
+  "react": { "component": "Button", "props": { "variant": "secondary", "shape": "square", "icon": "◐", "children": "Theme" } }
+}
