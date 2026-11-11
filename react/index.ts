@@ -1,10 +1,10 @@
 export { Button, ButtonLink } from "./button";
-export type { ButtonLinkProps, ButtonProps, ButtonSize, ButtonVariant } from "./button";
+export type { ButtonLinkProps, ButtonProps, ButtonShape, ButtonSize, ButtonTone, ButtonVariant, ButtonWidth } from "./button";
 export { Field } from "./field";
-export type { FieldOption, FieldProps, InputType } from "./field";
+export type { FieldOption, FieldProps, FieldSize, InputType } from "./field";
 export { Check } from "./check";
 export type { CheckProps } from "./check";
 export { Pill } from "./pill";
-export type { PillProps, PillVariant } from "./pill";
+export type { PillProps, PillTone, PillVariant } from "./pill";
 export { Dialog } from "./dialog";
 export type { DialogProps } from "./dialog";

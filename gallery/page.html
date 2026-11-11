@@ -11,6 +11,9 @@
   .gallery > section > h2 { margin-block-end: var(--space-4); font-size: var(--text-xl); }
   .gallery-nav a[aria-current="page"] { font-weight: 700; }
   .gallery-form { max-width: 34rem; }
+  .gallery-narrow { max-width: 16rem; }
+  .gallery-row { margin-block-start: var(--space-3); }
+  .gallery-inline { position: static; margin: var(--space-3) 0 0; }
 </style>
 </head>
 <body>
@@ -38,6 +41,18 @@
         {{template "ui.button" (dict "Label" "Medium")}}
         {{template "ui.button" (dict "Label" "Large" "Size" "lg")}}
       </div>
+      <div class="ui-cluster">
+        {{template "ui.button" (dict "Label" "Outline" "Tone" "outline")}}
+        {{template "ui.button" (dict "Label" "Remove" "Variant" "danger" "Tone" "outline")}}
+        {{template "ui.button" (dict "Label" "Off" "Variant" "danger" "Tone" "outline" "Disabled" true)}}
+        {{template "ui.button" (dict "Label" "Ghost off" "Variant" "ghost" "Disabled" true)}}
+        {{template "ui.button" (dict "Label" "Download" "Variant" "secondary" "Icon" .Icons.Download)}}
+        {{template "ui.button" (dict "Label" "Theme" "Variant" "secondary" "Shape" "square" "Icon" .Icons.Theme)}}
+        {{template "ui.button" (dict "Label" "Theme" "Shape" "square" "Size" "sm" "Icon" .Icons.Theme)}}
+      </div>
+      <div class="gallery-narrow">
+        {{template "ui.button" (dict "Label" "Use this category for every payment to this merchant" "Variant" "secondary" "Width" "full")}}
+      </div>
     </div>
   </section>
 
@@ -52,6 +67,12 @@
       </div>
       {{template "ui.field" (dict "Label" "Notes" "Name" "notes" "Control" "textarea" "Rows" 3 "Hint" "Optional.")}}
       {{template "ui.field" (dict "Label" "Account ID" "Name" "account" "Value" "acc_2041" "Disabled" true)}}
+      {{template "ui.field" (dict "Label" "Search" "Name" "q" "Type" "search" "Placeholder" "Merchant or note" "Icon" .Icons.Search)}}
+      <div class="ui-form-row">
+        {{template "ui.field" (dict "Label" "Host" "Name" "host" "Size" "sm" "Value" "imap.example.com")}}
+        <div style="--ui-row-grow: 0; --ui-row-basis: 6rem">{{template "ui.field" (dict "Label" "Port" "Name" "port" "Size" "sm" "Type" "number" "Value" "993")}}</div>
+      </div>
+      {{template "ui.field" (dict "Label" "Work email" "Name" "work" "Type" "email" "Size" "lg" "Placeholder" "you@company.com")}}
       <fieldset class="ui-stack">
         <legend class="ui-field-label">Billing period</legend>
         {{template "ui.check" (dict "Label" "Monthly" "Name" "period" "Value" "m" "Type" "radio" "Checked" true)}}
@@ -70,6 +91,12 @@
       {{template "ui.pill" (dict "Label" "Paid" "Variant" "good")}}
       {{template "ui.pill" (dict "Label" "Due soon" "Variant" "warning")}}
       {{template "ui.pill" (dict "Label" "Failed" "Variant" "bad")}}
+    </div>
+    <div class="ui-cluster gallery-row">
+      {{template "ui.pill" (dict "Label" "1 violation" "Variant" "bad" "Dot" true)}}
+      {{template "ui.pill" (dict "Label" "Weak" "Variant" "warning" "Dot" true)}}
+      {{template "ui.pill" (dict "Label" "meta" "Tone" "outline")}}
+      {{template "ui.pill" (dict "Label" "Price up" "Variant" "warning" "Tone" "outline")}}
     </div>
   </section>
 
@@ -103,6 +130,8 @@
     <div>
       <details class="ui-disclosure" name="faq" open><summary class="ui-disclosure-summary">Where is my data stored?</summary><div class="ui-disclosure-body"><p>On your own server, in one SQLite file.</p></div></details>
       <details class="ui-disclosure" name="faq"><summary class="ui-disclosure-summary">Can I export it?</summary><div class="ui-disclosure-body"><p>Yes, as CSV or JSON.</p></div></details>
+      <details class="ui-disclosure" data-marker="start" open><summary class="ui-disclosure-summary">experience</summary><div class="ui-disclosure-body"><p>invented_lead.md</p></div></details>
+      <details class="ui-disclosure" data-marker="start"><summary class="ui-disclosure-summary">education</summary><div class="ui-disclosure-body"><p>invented_degree.md</p></div></details>
     </div>
   </section>
 
@@ -124,6 +153,20 @@
         <button class="ui-dialog-x" type="button" command="close" commandfor="confirm" aria-label="Close">×</button>
       </header>
       <div class="ui-dialog-body">This cannot be undone.</div>
+    </dialog>
+    <p class="gallery-row ui-muted">Shown without script: an open, non-modal dialog with an eyebrow and no ×.</p>
+    <dialog class="ui-dialog gallery-inline" id="remove" aria-labelledby="remove-title" open>
+      <p class="ui-dialog-eyebrow">Can't be undone</p>
+      <header class="ui-dialog-head">
+        <h2 class="ui-dialog-title" id="remove-title">Remove grace@example.com?</h2>
+      </header>
+      <div class="ui-dialog-body">
+        <p>Their sessions end now.</p>
+        <form class="ui-dialog-actions" method="dialog">
+          {{template "ui.button" (dict "Label" "Cancel" "Variant" "secondary" "Type" "submit")}}
+          {{template "ui.button" (dict "Label" "Remove" "Variant" "danger" "Type" "submit")}}
+        </form>
+      </div>
     </dialog>
   </section>
 </main>

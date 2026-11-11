@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.button", "args": { "Label": "Download PDF", "Href": "/resume.pdf", "Shape": "square", "Icon": "↓" } },
+  "react": { "component": "ButtonLink", "props": { "href": "/resume.pdf", "shape": "square", "icon": "↓", "children": "Download PDF" } }
+}

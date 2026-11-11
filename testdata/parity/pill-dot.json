@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.pill", "args": { "Label": "1 violation", "Variant": "bad", "Dot": true } },
+  "react": { "component": "Pill", "props": { "variant": "bad", "dot": true, "children": "1 violation" } }
+}

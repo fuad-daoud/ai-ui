@@ -3,16 +3,24 @@
 {{- $label := ui_required "ui.field" "Label" (index . "Label") -}}
 {{- $desc := ui_describedby $id (index . "Hint") (index . "Error") -}}
 {{- $control := ui_or (ui_variant (index . "Control") "textarea" "select") "input" -}}
+{{- $size := ui_variant (index . "Size") "sm" "lg" -}}
 <div class="ui-field">
 <label class="ui-field-label" for="{{$id}}">{{$label}}</label>
 {{- if eq $control "textarea"}}
-<textarea class="ui-textarea" id="{{$id}}"{{with ui_str (index . "Name")}} name="{{.}}"{{end}}{{with ui_str (index . "Rows")}} rows="{{.}}"{{end}}{{with ui_str (index . "Placeholder")}} placeholder="{{.}}"{{end}}{{with $desc}} aria-describedby="{{.}}"{{end}}{{if (index . "Error")}} aria-invalid="true"{{end}}{{if (index . "Required")}} required{{end}}{{if (index . "Disabled")}} disabled{{end}}>{{ui_str (index . "Value")}}</textarea>
+<textarea class="ui-textarea" id="{{$id}}"{{with $size}} data-size="{{.}}"{{end}}{{with ui_str (index . "Name")}} name="{{.}}"{{end}}{{with ui_str (index . "Rows")}} rows="{{.}}"{{end}}{{with ui_str (index . "Placeholder")}} placeholder="{{.}}"{{end}}{{with $desc}} aria-describedby="{{.}}"{{end}}{{if (index . "Error")}} aria-invalid="true"{{end}}{{if (index . "Required")}} required{{end}}{{if (index . "Disabled")}} disabled{{end}}>{{ui_str (index . "Value")}}</textarea>
 {{- else if eq $control "select"}}
-<select class="ui-select" id="{{$id}}"{{with ui_str (index . "Name")}} name="{{.}}"{{end}}{{with $desc}} aria-describedby="{{.}}"{{end}}{{if (index . "Error")}} aria-invalid="true"{{end}}{{if (index . "Required")}} required{{end}}{{if (index . "Disabled")}} disabled{{end}}>
+<select class="ui-select" id="{{$id}}"{{with $size}} data-size="{{.}}"{{end}}{{with ui_str (index . "Name")}} name="{{.}}"{{end}}{{with $desc}} aria-describedby="{{.}}"{{end}}{{if (index . "Error")}} aria-invalid="true"{{end}}{{if (index . "Required")}} required{{end}}{{if (index . "Disabled")}} disabled{{end}}>
 {{- range (index . "Options")}}<option value="{{ui_str .Value}}"{{if ui_selected (index $ "Value") .Value}} selected{{end}}>{{ui_str .Label}}</option>{{end -}}
 </select>
 {{- else}}
-<input class="ui-input" id="{{$id}}" type="{{ui_or (ui_variant (index . "Type") "email" "password" "number" "search" "tel" "url" "date") "text"}}"{{with ui_str (index . "Name")}} name="{{.}}"{{end}}{{with ui_str (index . "Value")}} value="{{.}}"{{end}}{{with ui_str (index . "Placeholder")}} placeholder="{{.}}"{{end}}{{with ui_str (index . "Autocomplete")}} autocomplete="{{.}}"{{end}}{{with $desc}} aria-describedby="{{.}}"{{end}}{{if (index . "Error")}} aria-invalid="true"{{end}}{{if (index . "Required")}} required{{end}}{{if (index . "Disabled")}} disabled{{end}}>
+{{- with (index $ "Icon")}}
+<div class="ui-input-group">
+{{.}}
+{{- end}}
+<input class="ui-input" id="{{$id}}"{{with $size}} data-size="{{.}}"{{end}} type="{{ui_or (ui_variant (index . "Type") "email" "password" "number" "search" "tel" "url" "date") "text"}}"{{with ui_str (index . "Name")}} name="{{.}}"{{end}}{{with ui_str (index . "Value")}} value="{{.}}"{{end}}{{with ui_str (index . "Placeholder")}} placeholder="{{.}}"{{end}}{{with ui_str (index . "Autocomplete")}} autocomplete="{{.}}"{{end}}{{with $desc}} aria-describedby="{{.}}"{{end}}{{if (index . "Error")}} aria-invalid="true"{{end}}{{if (index . "Required")}} required{{end}}{{if (index . "Disabled")}} disabled{{end}}>
+{{- if (index . "Icon")}}
+</div>
+{{- end}}
 {{- end}}
 {{- with ui_str (index . "Hint")}}
 <p class="ui-field-hint" id="{{$id}}-hint">{{.}}</p>

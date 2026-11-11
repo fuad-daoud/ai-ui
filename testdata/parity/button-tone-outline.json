@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.button", "args": { "Label": "Delete", "Variant": "danger", "Tone": "outline" } },
+  "react": { "component": "Button", "props": { "variant": "danger", "tone": "outline", "children": "Delete" } }
+}

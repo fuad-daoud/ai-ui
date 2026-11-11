@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.button", "args": { "Label": "Download", "Variant": "secondary", "Icon": "↓" } },
+  "react": { "component": "Button", "props": { "variant": "secondary", "icon": "↓", "children": "Download" } }
+}

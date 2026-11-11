@@ -123,14 +123,19 @@ Controls are 40px at 16px by default. Working tools can ask for compact, on the 
 | Button `data-size="sm"` | 32px, 14px | 28px, 13px, 10px side padding |
 | Button `data-size="lg"` | 48px, 18px | 44px, 16px, 20px side padding |
 | Input, select | 40px, 16px | 32px, 14px |
+| Input, select `data-size="sm"` | 32px, 14px | 28px, 13px |
+| Input, select `data-size="lg"` | 48px, 16px | 44px, 16px |
 | Textarea | 80px, 16px | 80px, 14px |
 | Field label, hint, error | 14px | 13px |
 | Field gap | 8px | 4px |
 | Controls, callout, table wrap | 6px corners | 4px corners |
-| Card, dialog | 10px corners | 8px corners |
+| Card, dialog | 10px corners, a soft shadow | 8px corners, no shadow |
 | Pill | fully round | 4px corners |
 | Table text | 14px | 14px |
 | Body text (attribute on the page) | 16px | 14px |
+
+On a touch screen (`pointer: coarse`), compact controls grow to finger sizes: buttons, inputs and
+selects are 40px, 34px at `sm` and 44px at `lg`. The default density is already 40px there.
 
 Headings and the spacing tokens don't change. `compact` is the only value, and a default region
 nested inside a compact one isn't supported. Inside the attribute, `--text-md`, `--text-sm`,
@@ -217,8 +222,30 @@ Knobs: `--ui-btn-bg`, `--ui-btn-fg`, `--ui-btn-border`, `--ui-btn-bg-hover`, `--
 
 Variants: `primary` (default), `secondary`, `ghost`, `danger`. Sizes: `sm`, `md` (default), `lg`.
 
-Go args: `Label` (required), `Variant`, `Size`, `Type` (`submit`, `reset`; default `button`), `Name`,
-`Value`, `Command`, `CommandFor`, `Disabled`, and `Href`, which makes it a link. **A button that
+| Option | Markup | Go | React |
+|---|---|---|---|
+| Outlined | `data-tone="outline"` | `Tone "outline"` | `tone="outline"` |
+| Icon-only | `data-shape="square"` | `Shape "square"` | `shape="square"` |
+| Full width | `data-width="full"` | `Width "full"` | `width="full"` |
+| Icon | an `<svg>` before the label | `Icon` | `icon` |
+
+- **Outlined** draws a primary or danger button on the sheet with a `--rule` border, its text in
+  `--primary` or `--bad`. Use it for a destructive action in a row, and keep the filled danger
+  button for a dialog's confirm. Secondary and ghost are unchanged by it.
+- **Icon-only** is as wide as it is tall. It needs both `Icon` and `Label`: the label becomes its
+  `aria-label` and the icon its only content. In Go, a square button without `Icon` is an error; in
+  React, a square button's children must be text.
+- **Full width** fills its container, and a long label wraps.
+- **Icon** is the app's own markup. In Go, pass a `template.HTML` value, from the app's own
+  templates or code, never from user input; a plain string is escaped and shows as text. An `<svg>`
+  in a button is sized to the text.
+
+A disabled button is drawn in `--band` with `--ink-3` text and a `--rule` border, at full opacity,
+so its label stays readable. A disabled ghost button keeps no fill.
+
+Go args: `Label` (required), `Variant`, `Size`, `Tone`, `Shape`, `Width`, `Icon`, `Type` (`submit`,
+`reset`; default `button`), `Name`, `Value`, `Command`, `CommandFor`, `Disabled`, and `Href`, which
+makes it a link. **A button that
 submits its form needs `"Type" "submit"`:** the default is `button`, which submits nothing.
 React: `Button` passes every other `<button>` prop through, and its `type` also defaults to
 `button`. `ButtonLink` passes every `<a>` prop through.
@@ -231,10 +258,11 @@ Labels are text.
 
 ### Field: `.ui-field`
 
-Knobs: `--ui-field-gap`; on controls, `--ui-input-bg`, `--ui-input-fg`, `--ui-input-border`, `--ui-input-radius`, `--ui-input-height`.
+Knobs: `--ui-field-gap`; on controls, `--ui-input-bg`, `--ui-input-fg`, `--ui-input-border`, `--ui-input-radius`, `--ui-input-height`, `--ui-input-width` (default 100%).
 
-Go args: `Label` (required), `ID` or `Name` (at least one), `Control` (`textarea`, `select`; default input), `Type` (`email`, `password`, `number`, `search`, `tel`, `url`, `date`; default `text`), `Value`, `Placeholder`, `Autocomplete`, `Rows`, `Options` (`[]ui.Option`), `Hint`, `Error`, `Required`, `Disabled`.
-React: `<Field label name id control type options defaultValue hint error … />`. Every other prop, including `ref`, goes to the control,
+Go args: `Label` (required), `ID` or `Name` (at least one), `Control` (`textarea`, `select`; default input), `Type` (`email`, `password`, `number`, `search`, `tel`, `url`, `date`; default `text`), `Size` (`sm`, `lg`), `Icon` (input only), `Value`, `Placeholder`, `Autocomplete`, `Rows`, `Options` (`[]ui.Option`), `Hint`, `Error`, `Required`, `Disabled`.
+React: `<Field label name id control type size icon options defaultValue hint error … />`. React's
+`size` is the library's size, `sm` or `lg`, in place of the native numeric `size` attribute. Every other prop, including `ref`, goes to the control,
 so a controlled field takes `value` and `onChange`. `options` is `{ value, label }[]` in React and
 `[]ui.Option{{Value: "m", Label: "Monthly"}}` in Go; the option whose value equals `Value` is selected.
 
@@ -250,7 +278,23 @@ height at least, and `Rows` (`rows`) makes it taller.
 </div>
 ```
 
-Lay fields side by side with `<div class="ui-form-row">`.
+**Sizes.** `data-size="sm"` or `"lg"` on a control (`Size`, `size`) makes it as tall as the
+button of that size, at either density.
+
+**A leading icon.** `Icon` (`icon`) puts an icon inside an input, before its text:
+
+```html
+<div class="ui-input-group">
+  <svg class="ui-input-icon" aria-hidden="true">…</svg>
+  <input class="ui-input" type="search" aria-label="Search merchants">
+</div>
+```
+
+The icon is 1rem in `--ink-3` and takes no clicks. Knob on the group: `--ui-input-icon-inset`.
+
+Lay fields side by side with `<div class="ui-form-row">`. Each child grows from 14rem; set
+`--ui-row-grow` and `--ui-row-basis` on one child to change that, for a narrow field beside a wide
+one: `<div style="--ui-row-grow: 0; --ui-row-basis: 6rem">…port…</div>`.
 
 ### Check: `.ui-check`
 
@@ -270,11 +314,19 @@ Go args: `Label` (required), `Type` (`radio`; default `checkbox`), `ID`, `Name`,
 Knobs: `--ui-pill-bg`, `--ui-pill-fg`, `--ui-pill-border`. Variants: neutral (default), `info`, `good`, `warning`, `bad`.
 Go: `{{template "ui.pill" (dict "Label" "Paid" "Variant" "good")}}`. React: `<Pill variant="good">Paid</Pill>`.
 
+- **Dot:** `data-dot` (Go `Dot true`, React `dot`) draws a small dot in the pill's text colour
+  before the label, for a status.
+- **Outlined:** `data-tone="outline"` (`Tone "outline"`, `tone="outline"`) drops the fill; the
+  border takes the text colour, or `--rule-field` on a neutral pill. `info` is already outlined.
+
+Go args: `Label` (required), `Variant`, `Tone`, `Dot`.
+
 ### Dialog: `.ui-dialog`
 
-Knobs: `--ui-dialog-width`, `--ui-dialog-bg`, `--ui-dialog-radius`, `--ui-dialog-pad`. It needs no JavaScript:
+Knobs: `--ui-dialog-width`, `--ui-dialog-bg`, `--ui-dialog-radius`, `--ui-dialog-pad`, `--ui-dialog-shadow`, `--ui-dialog-border`, `--ui-dialog-eyebrow-fg`. It needs no JavaScript:
 open it with a button carrying `command="show-modal" commandfor="<id>"`. React: `<Dialog id="confirm" title="Delete resume?">…</Dialog>`;
-`closeLabel` (default `Close`) is the × button's accessible name.
+`closeLabel` (default `Close`) is the × button's accessible name, `closeButton={false}` leaves the ×
+out, and `eyebrow` adds a small line above the title.
 In Go, write this markup (it is pinned by `testdata/parity/dialog-basic.html`):
 
 ```html
@@ -290,7 +342,17 @@ In Go, write this markup (it is pinned by `testdata/parity/dialog-basic.html`):
 </dialog>
 ```
 
-`.ui-dialog-actions` is the row of buttons at the end, and it can be the `<form>` itself. A button
+`.ui-dialog-actions` is the row of buttons at the end, and it can be the `<form>` itself.
+
+**An eyebrow** is a `<p class="ui-dialog-eyebrow">` as the dialog's first child, before the head:
+small uppercase text in `--ink-3`, such as "Can't be undone". Set `--ui-dialog-eyebrow-fg: var(--bad)`
+on the dialog for red.
+
+**The × is optional.** Leave its button out of the head. The dialog must still close, so give it a
+Cancel button with `command="close" commandfor="<id>"`.
+
+**Shown without script.** A `<dialog open>` lays out as a dialog in the page's flow, with no
+backdrop, so a confirm can be served open when script is off. Placing it is the app's. A button
 with `command="close" commandfor="<id>"` closes the dialog without script.
 
 **A confirm per row.** In Go, give each row its own dialog with its own id
@@ -331,7 +393,14 @@ confirm button acts on it and closes the dialog with `command="close"`.
 <section class="ui-card">…</section>
 ```
 
-Knobs: `--ui-callout-bg`, `--ui-callout-fg`, `--ui-callout-accent`; `--ui-table-pad-y`, `--ui-table-pad-x`; `--ui-card-pad`, `--ui-card-radius`.
+Knobs: `--ui-callout-bg`, `--ui-callout-fg`, `--ui-callout-accent`; `--ui-table-pad-y`, `--ui-table-pad-x`; `--ui-card-pad`, `--ui-card-radius`, `--ui-card-shadow`, `--ui-card-border`; `--ui-disclosure-rule`.
+
+A card has a soft shadow by default and none in compact density. `--ui-card-shadow: none` makes any
+card flat.
+
+`data-marker="start"` on a disclosure puts its chevron before the summary text, pointing to the
+end when closed and down when open, for a list of folders or groups. `--ui-disclosure-rule:
+transparent` drops the line under it.
 
 A callout that reports what just happened takes `role="status"`, and one that reports an error
 takes `role="alert"`, so a screen reader announces it. An error about one field belongs in that

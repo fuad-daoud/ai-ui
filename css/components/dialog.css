@@ -3,11 +3,14 @@
   --ui-dialog-bg: var(--sheet);
   --ui-dialog-radius: var(--radius-lg);
   --ui-dialog-pad: var(--space-5);
+  --ui-dialog-shadow: 0 1px 2px var(--shadow), 0 16px 48px var(--shadow);
+  --ui-dialog-border: var(--rule-soft);
+  --ui-dialog-eyebrow-fg: var(--ink-3);
   inline-size: min(var(--ui-dialog-width), calc(100vw - 2 * var(--space-4)));
   max-block-size: calc(100dvh - 2 * var(--space-4));
   margin: auto; /* the reset zeroes margins; a modal is centred by margin: auto */
   padding: 0;
-  border: 1px solid var(--rule-soft);
+  border: 1px solid var(--ui-dialog-border);
   border-radius: var(--ui-dialog-radius);
   background: var(--ui-dialog-bg);
   color: var(--ink);
@@ -15,7 +18,7 @@
      often an end-aligned, unwrapped table cell. */
   text-align: start;
   white-space: normal;
-  box-shadow: 0 1px 2px var(--shadow), 0 16px 48px var(--shadow);
+  box-shadow: var(--ui-dialog-shadow);
 }
 .ui-dialog[open] { display: flex; flex-direction: column; }
 .ui-dialog::backdrop { background: var(--scrim); }
@@ -26,6 +29,16 @@
   gap: var(--space-3);
   padding: var(--ui-dialog-pad) var(--ui-dialog-pad) 0;
 }
+/* A small line above the head, such as "Can't be undone". */
+.ui-dialog-eyebrow {
+  padding: var(--ui-dialog-pad) var(--ui-dialog-pad) 0;
+  color: var(--ui-dialog-eyebrow-fg);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.ui-dialog-eyebrow + .ui-dialog-head { padding-block-start: var(--space-1); }
 .ui-dialog-title { font-size: var(--text-lg); }
 .ui-dialog-x {
   display: grid;

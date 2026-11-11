@@ -1,0 +1,4 @@
+{
+  "react": { "component": "Button", "props": { "shape": "square", "icon": "◐" } },
+  "error": "ui.button: a square button's label must be text"
+}

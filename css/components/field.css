@@ -11,8 +11,9 @@
   --ui-input-border: var(--rule-field);
   --ui-input-radius: var(--radius-md);
   --ui-input-height: 2.5rem;
+  --ui-input-width: 100%;
 
-  inline-size: 100%;
+  inline-size: var(--ui-input-width);
   min-block-size: var(--ui-input-height);
   padding: var(--space-2) var(--space-3);
   background-color: var(--ui-input-bg);
@@ -36,6 +37,31 @@
   background-size: 0.3rem 0.3rem, 0.3rem 0.3rem;
   background-repeat: no-repeat;
 }
+/* Sizes match the button of the same size. A select keeps its end padding for the chevron. */
+:is(.ui-input, .ui-select, .ui-textarea)[data-size="sm"] { --ui-input-height: 2rem; font-size: var(--text-sm); }
+:is(.ui-input, .ui-textarea)[data-size="sm"] { padding-inline: var(--space-2); }
+.ui-textarea[data-size="sm"] { padding-block: var(--space-1); }
+.ui-select[data-size="sm"] { padding-inline-start: var(--space-2); }
+:is(.ui-input, .ui-select, .ui-textarea)[data-size="lg"] { --ui-input-height: 3rem; font-size: 1rem; }
+:is(.ui-input, .ui-textarea)[data-size="lg"] { padding-inline: var(--space-4); }
+.ui-select[data-size="lg"] { padding-inline-start: var(--space-4); }
+
+/* A leading icon inside an input. */
+.ui-input-group { --ui-input-icon-inset: var(--space-3); position: relative; }
+.ui-input-group:has(> .ui-input[data-size="sm"]) { --ui-input-icon-inset: var(--space-2); }
+.ui-input-group:has(> .ui-input[data-size="lg"]) { --ui-input-icon-inset: var(--space-4); }
+.ui-input-group > :is(.ui-input-icon, svg) {
+  position: absolute;
+  inset-inline-start: var(--ui-input-icon-inset);
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  inline-size: 1rem;
+  block-size: 1rem;
+  color: var(--ink-3);
+  pointer-events: none;
+}
+.ui-input-group > .ui-input { padding-inline-start: calc(var(--ui-input-icon-inset) + 1rem + var(--space-2)); }
+
 .ui-input::placeholder,
 .ui-textarea::placeholder { color: var(--ink-3); opacity: 1; }
 .ui-input:hover,
@@ -52,4 +78,4 @@
 .ui-textarea:disabled { background-color: var(--band); color: var(--ink-3); cursor: not-allowed; }
 
 .ui-form-row { display: flex; flex-wrap: wrap; align-items: end; gap: var(--space-4); }
-.ui-form-row > * { flex: 1 1 14rem; }
+.ui-form-row > * { flex: var(--ui-row-grow, 1) 1 var(--ui-row-basis, 14rem); }

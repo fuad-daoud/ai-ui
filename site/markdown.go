@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"html"
 	"html/template"
 	"net/url"
 	"path"
@@ -21,6 +22,13 @@ const rawURL = "https://raw.githubusercontent.com/fuad-daoud/ai-ui/main/"
 
 // emptyHeader is a header cell with nothing in it, aligned or not.
 var emptyHeader = regexp.MustCompile(`<th([^>]*)></th>`)
+
+// tableHead, headCell and anyTag find a table's column names, which name its region.
+var (
+	tableHead = regexp.MustCompile(`(?s)<table>\s*<thead>(.*?)</thead>`)
+	headCell  = regexp.MustCompile(`(?s)<th[^>]*>(.*?)</th>`)
+	anyTag    = regexp.MustCompile(`<[^>]+>`)
+)
 
 // markdown renders every Markdown source on the site: tables and heading IDs
 // on, and raw HTML dropped (goldmark's default), so a source file can't put
@@ -175,7 +183,8 @@ func plain(n ast.Node, src []byte) string {
 }
 
 // renderMD renders doc and frames each table as a library table, in a named
-// region that takes focus so a table wider than a phone can scroll. An empty
+// region that takes focus so a table wider than a phone can scroll. The region
+// is named by the table's columns, so two tables on one page differ. An empty
 // header cell, the corner of a table like DESIGN.md's, names no column, so it
 // becomes a plain cell. Raw HTML is dropped, so the renderer is the only
 // source of these tags.
@@ -184,7 +193,20 @@ func renderMD(doc ast.Node, src []byte) (template.HTML, error) {
 	if err := markdown.Renderer().Render(&b, src, doc); err != nil {
 		return "", err
 	}
-	out := strings.ReplaceAll(b.String(), "<table>", `<div class="ui-table-wrap" tabindex="0" role="region" aria-label="Table"><table class="ui-table">`)
+	out := tableHead.ReplaceAllStringFunc(b.String(), func(m string) string {
+		var names []string
+		for _, c := range headCell.FindAllStringSubmatch(tableHead.FindStringSubmatch(m)[1], -1) {
+			if n := strings.TrimSpace(html.UnescapeString(anyTag.ReplaceAllString(c[1], ""))); n != "" {
+				names = append(names, n)
+			}
+		}
+		label := "Table"
+		if len(names) > 0 {
+			label += ": " + strings.Join(names, ", ")
+		}
+		return `<div class="ui-table-wrap" tabindex="0" role="region" aria-label="` + html.EscapeString(label) + `"><table class="ui-table">` + strings.TrimPrefix(m, "<table>")
+	})
+	out = strings.ReplaceAll(out, "<table>", `<div class="ui-table-wrap" tabindex="0" role="region" aria-label="Table"><table class="ui-table">`)
 	out = strings.ReplaceAll(out, "</table>", "</table></div>")
 	out = emptyHeader.ReplaceAllString(out, "<td$1></td>")
 	return template.HTML(out), nil

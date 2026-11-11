@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.button", "args": { "Label": "Save", "Tone": "bold", "Shape": "round", "Width": "half" } },
+  "react": { "component": "Button", "props": { "tone": "bold", "shape": "round", "width": "half", "children": "Save" } }
+}

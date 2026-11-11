@@ -48,7 +48,40 @@
   --ui-btn-bg-hover: var(--ink);
   --ui-btn-fg-hover: var(--paper);
 }
+/* An outlined primary or danger button. :where() keeps these at a variant's weight,
+   so the disabled rules below still win. Secondary and ghost don't change. */
+.ui-btn[data-tone="outline"]:where(:not([data-variant]), [data-variant="danger"]) {
+  --ui-btn-bg: var(--sheet);
+  --ui-btn-border: var(--rule);
+  --ui-btn-bg-hover: var(--band);
+}
+.ui-btn[data-tone="outline"]:where(:not([data-variant])) { --ui-btn-fg: var(--primary); --ui-btn-fg-hover: var(--primary); }
+.ui-btn[data-tone="outline"]:where([data-variant="danger"]) { --ui-btn-fg: var(--bad); --ui-btn-fg-hover: var(--bad); }
 .ui-btn[data-size="sm"] { --ui-btn-height: 2rem; --ui-btn-pad: var(--space-3); --ui-btn-font-size: var(--text-sm); }
 .ui-btn[data-size="lg"] { --ui-btn-height: 3rem; --ui-btn-pad: var(--space-5); --ui-btn-font-size: var(--text-lg); }
+.ui-btn > svg { flex: none; inline-size: 1em; block-size: 1em; }
+/* An icon-only button: as wide as it is tall. */
+.ui-btn[data-shape="square"] { inline-size: var(--ui-btn-height); padding: 0; }
+.ui-btn[data-width="full"] {
+  inline-size: 100%;
+  padding-block: var(--space-1);
+  white-space: normal;
+  text-wrap: balance;
+}
+/* Disabled changes colour, not opacity, so the label stays readable. */
 .ui-btn:disabled,
-.ui-btn[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+.ui-btn[aria-disabled="true"] {
+  --ui-btn-bg: var(--band);
+  --ui-btn-fg: var(--ink-3);
+  --ui-btn-border: var(--rule);
+  --ui-btn-bg-hover: var(--band);
+  --ui-btn-fg-hover: var(--ink-3);
+  cursor: not-allowed;
+}
+.ui-btn[data-variant="ghost"]:is(:disabled, [aria-disabled="true"]) {
+  --ui-btn-bg: transparent;
+  --ui-btn-bg-hover: transparent;
+  --ui-btn-border: transparent;
+}
+/* A disabled link has no href, but must not take clicks either. */
+.ui-btn[aria-disabled="true"] { pointer-events: none; }

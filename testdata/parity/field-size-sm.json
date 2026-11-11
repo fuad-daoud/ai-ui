@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.field", "args": { "Label": "Port", "Name": "port", "Type": "number", "Size": "sm" } },
+  "react": { "component": "Field", "props": { "label": "Port", "name": "port", "type": "number", "size": "sm" } }
+}

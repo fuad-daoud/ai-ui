@@ -19,3 +19,14 @@
 .ui-pill[data-variant="good"] { --ui-pill-bg: var(--good-bg); --ui-pill-fg: var(--good); --ui-pill-border: transparent; }
 .ui-pill[data-variant="warning"] { --ui-pill-bg: var(--warning-bg); --ui-pill-fg: var(--warning); --ui-pill-border: transparent; }
 .ui-pill[data-variant="bad"] { --ui-pill-bg: var(--bad-bg); --ui-pill-fg: var(--bad); --ui-pill-border: transparent; }
+/* After the variants: an outline pill drops its fill, and its border takes the text colour. */
+.ui-pill[data-tone="outline"] { --ui-pill-bg: transparent; --ui-pill-border: var(--ui-pill-fg); }
+.ui-pill[data-tone="outline"]:not([data-variant]) { --ui-pill-border: var(--rule-field); }
+.ui-pill[data-dot]::before {
+  content: "";
+  flex: none;
+  inline-size: 0.375rem;
+  block-size: 0.375rem;
+  border-radius: 50%;
+  background: currentColor;
+}

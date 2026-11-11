@@ -1,9 +1,11 @@
 .ui-card {
   --ui-card-pad: var(--space-5);
   --ui-card-radius: var(--radius-lg);
+  --ui-card-shadow: 0 1px 2px var(--shadow);
+  --ui-card-border: var(--rule-soft);
   padding: var(--ui-card-pad);
-  border: 1px solid var(--rule-soft);
+  border: 1px solid var(--ui-card-border);
   border-radius: var(--ui-card-radius);
   background: var(--sheet);
-  box-shadow: 0 1px 2px var(--shadow);
+  box-shadow: var(--ui-card-shadow);
 }

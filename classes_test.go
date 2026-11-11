@@ -7,15 +7,15 @@ import (
 	"testing"
 )
 
-// documentedClasses is every class DESIGN.md documents for v0.1. Renaming
+// documentedClasses is every class DESIGN.md documents. Renaming
 // or removing one is a breaking change (spec §9).
 var documentedClasses = []string{
 	"ui-btn",
 	"ui-field", "ui-field-label", "ui-field-hint", "ui-field-error",
-	"ui-input", "ui-select", "ui-textarea", "ui-form-row",
+	"ui-input", "ui-select", "ui-textarea", "ui-form-row", "ui-input-group", "ui-input-icon",
 	"ui-check", "ui-check-input",
 	"ui-pill",
-	"ui-dialog", "ui-dialog-head", "ui-dialog-title", "ui-dialog-x", "ui-dialog-body", "ui-dialog-actions",
+	"ui-dialog", "ui-dialog-eyebrow", "ui-dialog-head", "ui-dialog-title", "ui-dialog-x", "ui-dialog-body", "ui-dialog-actions",
 	"ui-callout", "ui-callout-title",
 	"ui-table-wrap", "ui-table",
 	"ui-disclosure", "ui-disclosure-summary", "ui-disclosure-body",

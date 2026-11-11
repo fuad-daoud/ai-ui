@@ -2,9 +2,13 @@
 {{- $label := ui_required "ui.button" "Label" (index . "Label") -}}
 {{- $variant := ui_variant (index . "Variant") "secondary" "ghost" "danger" -}}
 {{- $size := ui_variant (index . "Size") "sm" "lg" -}}
+{{- $tone := ui_variant (index . "Tone") "outline" -}}
+{{- $shape := ui_variant (index . "Shape") "square" -}}
+{{- $width := ui_variant (index . "Width") "full" -}}
+{{- if $shape}}{{$_ := ui_required "ui.button" "Icon" (index . "Icon")}}{{end -}}
 {{- if (index . "Href") -}}
-<a class="ui-btn"{{if (index . "Disabled")}} aria-disabled="true"{{else}} href="{{(index . "Href")}}"{{end}}{{with $variant}} data-variant="{{.}}"{{end}}{{with $size}} data-size="{{.}}"{{end}}>{{$label}}</a>
+<a class="ui-btn"{{if (index . "Disabled")}} aria-disabled="true"{{else}} href="{{(index . "Href")}}"{{end}}{{with $variant}} data-variant="{{.}}"{{end}}{{with $size}} data-size="{{.}}"{{end}}{{with $tone}} data-tone="{{.}}"{{end}}{{with $shape}} data-shape="{{.}}" aria-label="{{$label}}"{{end}}{{with $width}} data-width="{{.}}"{{end}}>{{with (index . "Icon")}}{{.}}{{end}}{{if not $shape}}{{$label}}{{end}}</a>
 {{- else -}}
-<button class="ui-btn" type="{{ui_or (ui_variant (index . "Type") "submit" "reset") "button"}}"{{with ui_str (index . "Name")}} name="{{.}}"{{end}}{{with ui_str (index . "Value")}} value="{{.}}"{{end}}{{with ui_str (index . "Command")}} command="{{.}}"{{end}}{{with ui_str (index . "CommandFor")}} commandfor="{{.}}"{{end}}{{with $variant}} data-variant="{{.}}"{{end}}{{with $size}} data-size="{{.}}"{{end}}{{if (index . "Disabled")}} disabled{{end}}>{{$label}}</button>
+<button class="ui-btn" type="{{ui_or (ui_variant (index . "Type") "submit" "reset") "button"}}"{{with ui_str (index . "Name")}} name="{{.}}"{{end}}{{with ui_str (index . "Value")}} value="{{.}}"{{end}}{{with ui_str (index . "Command")}} command="{{.}}"{{end}}{{with ui_str (index . "CommandFor")}} commandfor="{{.}}"{{end}}{{with $variant}} data-variant="{{.}}"{{end}}{{with $size}} data-size="{{.}}"{{end}}{{with $tone}} data-tone="{{.}}"{{end}}{{with $shape}} data-shape="{{.}}" aria-label="{{$label}}"{{end}}{{with $width}} data-width="{{.}}"{{end}}{{if (index . "Disabled")}} disabled{{end}}>{{with (index . "Icon")}}{{.}}{{end}}{{if not $shape}}{{$label}}{{end}}</button>
 {{- end -}}
 {{- end}}

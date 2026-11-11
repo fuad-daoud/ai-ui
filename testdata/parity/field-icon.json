@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.field", "args": { "Label": "Search", "Name": "q", "Type": "search", "Icon": "⌕", "Hint": "Merchant or note." } },
+  "react": { "component": "Field", "props": { "label": "Search", "name": "q", "type": "search", "icon": "⌕", "hint": "Merchant or note." } }
+}

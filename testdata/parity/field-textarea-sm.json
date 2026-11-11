@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.field", "args": { "Label": "Note", "Name": "note", "Control": "textarea", "Size": "sm" } },
+  "react": { "component": "Field", "props": { "label": "Note", "name": "note", "control": "textarea", "size": "sm" } }
+}

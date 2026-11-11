@@ -69,3 +69,25 @@ func TestHrefFunc(t *testing.T) {
 		t.Errorf("err = %v, want unknown asset", err)
 	}
 }
+
+// An icon is markup the app wrote, so a template.HTML value goes in as it is,
+// and a plain string is escaped like any other argument.
+func TestIconIsTheAppsMarkup(t *testing.T) {
+	svg := template.HTML(`<svg class="ui-input-icon" aria-hidden="true"></svg>`)
+	for _, c := range []struct {
+		name, src, want string
+		data            any
+	}{
+		{"button", `{{template "ui.button" (dict "Label" "Theme" "Shape" "square" "Icon" .)}}`, `data-shape="square" aria-label="Theme">` + string(svg) + `</button>`, svg},
+		{"field", `{{template "ui.field" (dict "Label" "Search" "Name" "q" "Icon" .)}}`, `<div class="ui-input-group">` + "\n" + string(svg) + "\n" + `<input class="ui-input" id="q"`, svg},
+		{"escaped", `{{template "ui.button" (dict "Label" "Go" "Icon" .)}}`, `>&lt;b&gt;Go</button>`, "<b>"},
+	} {
+		got, err := render(t, c.src, c.data)
+		if err != nil {
+			t.Fatalf("%s: %v", c.name, err)
+		}
+		if !strings.Contains(got, c.want) {
+			t.Errorf("%s: got %s\nwant it to contain %s", c.name, got, c.want)
+		}
+	}
+}

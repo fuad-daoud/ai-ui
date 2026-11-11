@@ -14,6 +14,20 @@
 [data-density="compact"] .ui-btn[data-size="sm"] { --ui-btn-height: 1.75rem; --ui-btn-pad: 0.625rem; }
 [data-density="compact"] .ui-btn[data-size="lg"] { --ui-btn-height: 2.75rem; --ui-btn-pad: 1.25rem; --ui-btn-font-size: 1rem; }
 [data-density="compact"] :is(.ui-input, .ui-select) { --ui-input-height: 2rem; }
+[data-density="compact"] :is(.ui-input, .ui-select, .ui-textarea)[data-size="sm"] { --ui-input-height: 1.75rem; }
+[data-density="compact"] :is(.ui-input, .ui-select, .ui-textarea)[data-size="lg"] { --ui-input-height: 2.75rem; }
 [data-density="compact"] .ui-field { --ui-field-gap: var(--space-1); }
 [data-density="compact"] .ui-pill { border-radius: var(--radius-sm); }
 [data-density="compact"] .ui-table { font-size: var(--text-md); }
+/* Compact cards and dialogs are flat: a hairline, no shadow. */
+[data-density="compact"] .ui-card { --ui-card-shadow: none; }
+[data-density="compact"] .ui-dialog { --ui-dialog-shadow: none; }
+/* Finger-sized controls on a touch screen. */
+@media (pointer: coarse) {
+  [data-density="compact"] .ui-btn { --ui-btn-height: 2.5rem; }
+  [data-density="compact"] .ui-btn[data-size="sm"] { --ui-btn-height: 2.125rem; }
+  [data-density="compact"] .ui-btn[data-size="lg"] { --ui-btn-height: 2.75rem; }
+  [data-density="compact"] :is(.ui-input, .ui-select) { --ui-input-height: 2.5rem; }
+  [data-density="compact"] :is(.ui-input, .ui-select, .ui-textarea)[data-size="sm"] { --ui-input-height: 2.125rem; }
+  [data-density="compact"] :is(.ui-input, .ui-select, .ui-textarea)[data-size="lg"] { --ui-input-height: 2.75rem; }
+}

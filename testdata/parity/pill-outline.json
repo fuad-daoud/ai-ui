@@ -1,0 +1,4 @@
+{
+  "go": { "template": "ui.pill", "args": { "Label": "meta", "Tone": "outline" } },
+  "react": { "component": "Pill", "props": { "tone": "outline", "children": "meta" } }
+}
