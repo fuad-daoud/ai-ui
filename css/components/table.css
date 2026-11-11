@@ -1,5 +1,7 @@
 .ui-table-wrap {
-  overflow-x: auto;
+  --ui-table-max-height: none;
+  overflow: auto;
+  max-block-size: var(--ui-table-max-height);
   border: 1px solid var(--rule-soft);
   border-radius: var(--radius-md);
   background: var(--sheet);
@@ -7,6 +9,14 @@
 .ui-table {
   --ui-table-pad-y: var(--space-2);
   --ui-table-pad-x: var(--space-3);
+  --ui-table-head-bg: var(--band);
+  --ui-table-head-fg: var(--ink-2);
+  --ui-table-head-size: 1em;
+  --ui-table-head-case: none;
+  --ui-table-head-rule: var(--rule-soft);
+  --ui-table-hover: color-mix(in oklch, var(--band) 60%, transparent);
+  --ui-table-sticky-bg: var(--sheet);
+  --ui-table-label-width: 8rem;
   inline-size: 100%;
   border-collapse: collapse;
   font-size: var(--text-sm);
@@ -19,12 +29,78 @@
   vertical-align: top;
 }
 .ui-table th { background: var(--band); color: var(--ink-2); font-weight: 600; white-space: nowrap; }
+.ui-table thead th {
+  background: var(--ui-table-head-bg);
+  color: var(--ui-table-head-fg);
+  font-size: var(--ui-table-head-size);
+  text-transform: var(--ui-table-head-case);
+  border-block-end-color: var(--ui-table-head-rule);
+}
 .ui-table tbody tr:last-child > * { border-block-end: 0; }
-.ui-table tbody tr:hover > * { background: color-mix(in oklch, var(--band) 60%, transparent); }
+/* Only where a pointer can hover, so a tapped row on a phone doesn't keep its tint. */
+@media (hover: hover) {
+  .ui-table tbody tr:hover > * { background: var(--ui-table-hover); }
+}
 .ui-table caption {
   caption-side: top;
   padding: var(--space-2) var(--ui-table-pad-x);
   color: var(--ink-3);
   font-size: var(--text-sm);
   text-align: start;
+}
+
+/* A quiet header row: no fill, small grey text. */
+.ui-table[data-head="quiet"] {
+  --ui-table-head-bg: transparent;
+  --ui-table-head-fg: var(--ink-3);
+  --ui-table-head-size: var(--text-xs);
+}
+/* The header row stays at the top of a wrap that scrolls (bound it with --ui-table-max-height). */
+.ui-table[data-sticky="head"] thead th {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
+  background: var(--ui-table-sticky-bg);
+}
+
+/* No frame: the table sits on the page or in a card, its outer columns flush with the content. */
+.ui-table-wrap[data-frame="none"] { border: 0; border-radius: 0; background: transparent; }
+.ui-table-wrap[data-frame="none"] .ui-table :is(th, td):first-child { padding-inline-start: 0; }
+.ui-table-wrap[data-frame="none"] .ui-table :is(th, td):last-child { padding-inline-end: 0; }
+
+/* On a phone, each row is a block and each cell a labelled line. 800px is the apps' phone boundary. */
+@media (max-width: 799.98px) {
+  .ui-table-wrap[data-stack="phone"] { overflow: visible; max-block-size: none; }
+  .ui-table-wrap[data-stack="phone"] :is(.ui-table, .ui-table > tbody, .ui-table > tbody > tr) { display: block; }
+  .ui-table-wrap[data-stack="phone"] .ui-table > thead {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .ui-table-wrap[data-stack="phone"] .ui-table > tbody > tr {
+    padding-block: var(--space-2);
+    border-block-end: 1px solid var(--rule-soft);
+  }
+  .ui-table-wrap[data-stack="phone"] .ui-table > tbody > tr:last-child { border-block-end: 0; }
+  .ui-table-wrap[data-stack="phone"] .ui-table > tbody > tr > * {
+    display: block;
+    padding-block: var(--space-1);
+    border-block-end: 0;
+    text-align: start;
+  }
+  .ui-table-wrap[data-stack="phone"] .ui-table > tbody > tr > [data-label] {
+    display: grid;
+    grid-template-columns: var(--ui-table-label-width) minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+  .ui-table-wrap[data-stack="phone"] .ui-table > tbody > tr > [data-label]::before {
+    content: attr(data-label);
+    color: var(--ink-3);
+    font-size: var(--text-xs);
+    font-weight: 600;
+  }
+  .ui-table-wrap[data-stack="phone"][data-frame="none"] .ui-table > tbody > tr > * { padding-inline: 0; }
 }
