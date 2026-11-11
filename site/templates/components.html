@@ -43,6 +43,14 @@
     {{template "ui.button" (dict "Label" "Read the guides" "Variant" "secondary" "Href" (print .Root "guides/"))}}
     {{template "ui.button" (dict "Label" "Unavailable link" "Variant" "secondary" "Href" "#" "Disabled" true)}}
   </div>
+  <div class="ui-cluster">
+    {{template "ui.button" (dict "Label" "Remove" "Variant" "danger" "Tone" "outline")}}
+    {{template "ui.button" (dict "Label" "Download" "Variant" "secondary" "Icon" .Icons.Download)}}
+    {{template "ui.button" (dict "Label" "Theme" "Variant" "secondary" "Shape" "square" "Icon" .Icons.Theme)}}
+  </div>
+  <div style="max-inline-size: 16rem">
+    {{template "ui.button" (dict "Label" "Use this category for every payment to Acme" "Variant" "secondary" "Width" "full")}}
+  </div>
 </div>
 {{- end}}
 
@@ -57,6 +65,11 @@
   {{template "ui.field" (dict "Label" "Currency" "ID" "demo-currency" "Control" "select" "Options" .Currencies)}}
   {{template "ui.field" (dict "Label" "Notes" "ID" "demo-notes" "Control" "textarea" "Rows" "3")}}
   {{template "ui.field" (dict "Label" "Account number" "ID" "demo-account" "Value" "DE89 3704 0044" "Disabled" true)}}
+  {{template "ui.field" (dict "Label" "Search invoices" "ID" "demo-search" "Type" "search" "Placeholder" "Customer or number" "Icon" .Icons.Search)}}
+  <div class="ui-form-row">
+    {{template "ui.field" (dict "Label" "Mail server" "ID" "demo-host" "Size" "sm" "Value" "imap.example.com")}}
+    <div style="--ui-row-grow: 0; --ui-row-basis: 6rem">{{template "ui.field" (dict "Label" "Port" "ID" "demo-port" "Type" "number" "Size" "sm" "Value" "993")}}</div>
+  </div>
 </div>
 {{- end}}
 
@@ -79,12 +92,15 @@
   {{template "ui.pill" (dict "Label" "Paid" "Variant" "good")}}
   {{template "ui.pill" (dict "Label" "Due soon" "Variant" "warning")}}
   {{template "ui.pill" (dict "Label" "Overdue" "Variant" "bad")}}
+  {{template "ui.pill" (dict "Label" "2 failing" "Variant" "bad" "Dot" true)}}
+  {{template "ui.pill" (dict "Label" "draft" "Tone" "outline")}}
 </div>
 {{- end}}
 
 {{define "demo Dialog" -}}
 {{template "ui.button" (dict "Label" "Delete invoice" "Variant" "danger" "Command" "show-modal" "CommandFor" "demo-dialog")}}
 <dialog class="ui-dialog" id="demo-dialog" aria-labelledby="demo-dialog-title">
+  <p class="ui-dialog-eyebrow">Can't be undone</p>
   <header class="ui-dialog-head">
     <h3 class="ui-dialog-title" id="demo-dialog-title">Delete invoice?</h3>
     <button class="ui-dialog-x" type="button" command="close" commandfor="demo-dialog" aria-label="Close">×</button>
@@ -123,6 +139,16 @@
     <details class="ui-disclosure" name="demo-faq">
       <summary class="ui-disclosure-summary">Is there an API?</summary>
       <div class="ui-disclosure-body"><p>Not yet.</p></div>
+    </details>
+  </div>
+  <div>
+    <details class="ui-disclosure" data-marker="start" open>
+      <summary class="ui-disclosure-summary">2026</summary>
+      <div class="ui-disclosure-body"><p>12 invoices</p></div>
+    </details>
+    <details class="ui-disclosure" data-marker="start">
+      <summary class="ui-disclosure-summary">2025</summary>
+      <div class="ui-disclosure-body"><p>31 invoices</p></div>
     </details>
   </div>
   <section class="ui-card" aria-label="Sample card"><p>A card holds a group of related things.</p></section>

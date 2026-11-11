@@ -172,7 +172,22 @@ func TestSectionWrapsTables(t *testing.T) {
 		t.Fatal(err)
 	}
 	body := string(s.Body)
-	if !strings.Contains(body, `<div class="ui-table-wrap" tabindex="0" role="region" aria-label="Table"><table class="ui-table">`) || !strings.Contains(body, "</table></div>") {
+	if !strings.Contains(body, `<div class="ui-table-wrap" tabindex="0" role="region" aria-label="Table: a, b"><table class="ui-table">`) || !strings.Contains(body, "</table></div>") {
 		t.Errorf("table isn't wrapped:\n%s", body)
+	}
+}
+
+// Two tables on one page are two regions, so each is named by its columns. An
+// empty corner cell names nothing, and markup in a heading is read as text.
+func TestTableRegionsAreNamedByTheirColumns(t *testing.T) {
+	s, err := findSection([]byte("## T\n\n|   | `Go` | **React** |\n|---|---|---|\n| x | 1 | 2 |\n\n| a & b |\n|---|\n| 1 |\n"), "x.md", "T", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	body := string(s.Body)
+	for _, want := range []string{`aria-label="Table: Go, React"`, `aria-label="Table: a &amp; b"`} {
+		if !strings.Contains(body, want) {
+			t.Errorf("want %s in:\n%s", want, body)
+		}
 	}
 }
