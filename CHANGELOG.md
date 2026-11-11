@@ -4,6 +4,26 @@ Breaking changes come first in each entry. Renaming or removing a token,
 class, data-attribute value, knob, partial name or argument, or React prop
 is breaking.
 
+## 0.3.0 (2026-11-11)
+
+No breaking changes. Two looks change:
+
+- A disabled button is drawn in `--band` with `--ink-3` text and a `--rule` border, at full opacity, at every density. It used to fade to half opacity. A disabled ghost button keeps no fill, and a disabled `<button>` now shows the not-allowed cursor.
+- In compact density, cards and dialogs have no shadow. Their border stays.
+
+New:
+
+- Button: `data-tone="outline"` for an outlined primary or danger button, `data-shape="square"` for an icon-only button, `data-width="full"` for a full-width button whose label wraps, and an icon before the label. Go `Tone`, `Shape`, `Width`, `Icon`; React `tone`, `shape`, `width`, `icon`.
+- Inputs, selects and textareas: `data-size="sm"` and `"lg"`, as tall as the button of that size. Go `Size`, React `size`.
+- A leading icon inside an input: `.ui-input-group` and `.ui-input-icon`. Go `Icon`, React `icon`.
+- Knobs `--ui-input-width`, and `--ui-row-grow` and `--ui-row-basis` on a child of `.ui-form-row`.
+- In compact density, on a touch screen, controls grow to 40px (34px small, 44px large).
+- Card: knobs `--ui-card-shadow` and `--ui-card-border`.
+- Dialog: knobs `--ui-dialog-shadow`, `--ui-dialog-border` and `--ui-dialog-eyebrow-fg`; `.ui-dialog-eyebrow` above the title; the × is optional. React `eyebrow` and `closeButton`.
+- Pill: `data-dot` for a status dot and `data-tone="outline"`. Go `Dot`, `Tone`; React `dot`, `tone`.
+- Disclosure: `data-marker="start"` puts the chevron before the summary, and the knob `--ui-disclosure-rule`.
+- `DESIGN.md`: every option above, and a dialog shown without script.
+
 ## 0.2.1 (2026-11-09)
 
 No breaking changes.
