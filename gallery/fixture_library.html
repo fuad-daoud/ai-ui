@@ -17,8 +17,31 @@
     <button class="ui-btn" id="btn-sm" data-size="sm">Small</button>
     <button class="ui-btn" id="btn-lg" data-size="lg">Large</button>
     <a class="ui-btn" href="#library">Link</a>
-    <button class="ui-btn" disabled>Off</button>
+    <button class="ui-btn" id="btn-off" disabled>Off</button>
   </div>
+  <div class="ui-cluster">
+    <button class="ui-btn" id="btn-outline" data-variant="danger" data-tone="outline">Remove</button>
+    <button class="ui-btn" id="btn-outline-primary" data-tone="outline">Outline</button>
+    <button class="ui-btn" id="btn-outline-off" data-variant="danger" data-tone="outline" disabled>Remove</button>
+    <button class="ui-btn" id="ghost-off" data-variant="ghost" disabled>Ghost</button>
+    <a class="ui-btn" id="link-off" aria-disabled="true">Link</a>
+    <button class="ui-btn" id="btn-square" data-variant="secondary" data-shape="square" aria-label="Theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="currentColor"/></svg></button>
+    <button class="ui-btn" id="btn-square-sm" data-size="sm" data-shape="square" aria-label="Theme"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="currentColor"/></svg></button>
+  </div>
+  <div id="full-box" style="inline-size: 10rem"><button class="ui-btn" id="btn-full" data-width="full">Use this category for every payment</button></div>
+  <div class="ui-cluster">
+    <input class="ui-input" id="input-sm" data-size="sm" aria-label="Small">
+    <select class="ui-select" id="select-sm" data-size="sm" aria-label="Small select"><option>One</option></select>
+    <input class="ui-input" id="input-lg" data-size="lg" aria-label="Large">
+    <select class="ui-select" id="select-lg" data-size="lg" aria-label="Large select"><option>One</option></select>
+    <textarea class="ui-textarea" id="area-sm" data-size="sm" aria-label="Small area"></textarea>
+  </div>
+  <div class="ui-input-group" id="group"><svg class="ui-input-icon" id="icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="none" stroke="currentColor"/></svg><input class="ui-input" id="input-icon" type="search" aria-label="Search"></div>
+  <div class="ui-form-row" id="row">
+    <div class="ui-field"><label class="ui-field-label" for="row-wide">Host</label><input class="ui-input" id="row-wide"></div>
+    <div class="ui-field" id="row-narrow" style="--ui-row-grow: 0; --ui-row-basis: 5rem"><label class="ui-field-label" for="row-port">Port</label><input class="ui-input" id="row-port"></div>
+  </div>
+  <input class="ui-input" id="input-width" style="--ui-input-width: 8rem" aria-label="Narrow">
   <div class="ui-field" id="field">
     <label class="ui-field-label" id="label" for="input">Label</label>
     <input class="ui-input" id="input" value="text">
@@ -29,15 +52,22 @@
   <div class="ui-field"><label class="ui-field-label" for="multi">Several</label><select class="ui-select" id="multi" multiple size="2"><option>One</option><option>Two</option></select></div>
   <div class="ui-field"><label class="ui-field-label" for="area">Area</label><textarea class="ui-textarea" id="area">x</textarea></div>
   <label class="ui-check"><input class="ui-check-input" type="checkbox" checked> Check</label>
-  <div class="ui-cluster"><span class="ui-pill" id="pill">Neutral</span><span class="ui-pill" data-variant="good">Good</span><span class="ui-pill" data-variant="bad">Bad</span></div>
+  <div class="ui-cluster"><span class="ui-pill" id="pill">Neutral</span><span class="ui-pill" data-variant="good">Good</span><span class="ui-pill" data-variant="bad">Bad</span><span class="ui-pill" id="pill-dot" data-variant="bad" data-dot>1 violation</span><span class="ui-pill" id="pill-outline" data-tone="outline">meta</span><span class="ui-pill" id="pill-outline-warn" data-variant="warning" data-tone="outline">Price up</span></div>
   <div class="ui-callout" id="callout" data-variant="bad"><p class="ui-callout-title">Title</p><p>Body with <a id="callout-link" href="#library">a link</a> and <strong>bold</strong>.</p></div>
   <div class="ui-table-wrap" id="wrap"><table class="ui-table"><caption>Caption</caption><thead><tr><th scope="col">A</th><th scope="col" class="ui-num">B</th></tr></thead><tbody><tr><td id="td">x</td><td class="ui-num">1</td></tr></tbody></table></div>
   <details class="ui-disclosure" open><summary class="ui-disclosure-summary">More</summary><div class="ui-disclosure-body"><p>Body</p><ul><li>Item</li></ul></div></details>
+  <details class="ui-disclosure" id="disc-start" data-marker="start"><summary class="ui-disclosure-summary" id="disc-start-summary">Folder</summary><div class="ui-disclosure-body"><p>File</p></div></details>
+  <details class="ui-disclosure" id="disc-norule" style="--ui-disclosure-rule: transparent"><summary class="ui-disclosure-summary">No rule</summary><div class="ui-disclosure-body"><p>Body</p></div></details>
   <section class="ui-card" id="card"><h2>Card head</h2><p>Text</p></section>
   <dialog class="ui-dialog" id="dialog" aria-labelledby="dialog-title">
     <div class="ui-dialog-head"><h2 class="ui-dialog-title" id="dialog-title">Title</h2><button class="ui-dialog-x" aria-label="Close">x</button></div>
     <div class="ui-dialog-body"><p>Body</p></div>
     <div class="ui-dialog-actions"><button class="ui-btn">OK</button></div>
+  </dialog>
+  <dialog class="ui-dialog" id="dialog-eyebrow" aria-labelledby="dialog-eyebrow-title">
+    <p class="ui-dialog-eyebrow" id="eyebrow">Can't be undone</p>
+    <div class="ui-dialog-head"><h2 class="ui-dialog-title" id="dialog-eyebrow-title">Delete?</h2></div>
+    <div class="ui-dialog-body"><p>Body</p></div>
   </dialog>
 </main>
 </body>
