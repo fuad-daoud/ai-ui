@@ -4,6 +4,17 @@ Breaking changes come first in each entry. Renaming or removing a token,
 class, data-attribute value, knob, partial name or argument, or React prop
 is breaking.
 
+## 0.3.1 (2026-11-11)
+
+No breaking changes. One look changes:
+
+- A table row is tinted on hover only where the pointer can hover, so a tapped row on a phone no longer keeps its tint. The tint is the new `--ui-table-hover` knob.
+
+New:
+
+- Tables: `data-frame="none"` on the wrap for no frame, with flush outer columns; `data-head="quiet"` for a header on no fill in small grey text; `data-sticky="head"` for a header that stays at the top of a scrolling wrap; `data-stack="phone"` on the wrap to stack each row into labelled lines below 800px, labels from each cell's `data-label`.
+- Table knobs: `--ui-table-head-bg`, `--ui-table-head-fg`, `--ui-table-head-size`, `--ui-table-head-case`, `--ui-table-head-rule`, `--ui-table-hover`, `--ui-table-sticky-bg`, `--ui-table-label-width`, and `--ui-table-max-height` on the wrap.
+
 ## 0.3.0 (2026-11-11)
 
 No breaking changes. Two looks change:

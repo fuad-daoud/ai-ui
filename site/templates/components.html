@@ -131,6 +131,15 @@
       </tbody>
     </table>
   </div>
+  <div class="ui-table-wrap" data-frame="none" data-stack="phone">
+    <table class="ui-table" data-head="quiet">
+      <thead><tr><th scope="col">Invoice</th><th scope="col">Customer</th><th scope="col">State</th><th scope="col" class="ui-num">Amount</th></tr></thead>
+      <tbody>
+        <tr><td>1042</td><td data-label="Customer">Acme</td><td data-label="State">{{template "ui.pill" (dict "Label" "Paid" "Variant" "good" "Dot" true)}}</td><td data-label="Amount" class="ui-num">1,040.00</td></tr>
+        <tr><td>1043</td><td data-label="Customer">Northwind</td><td data-label="State">{{template "ui.pill" (dict "Label" "Due soon" "Variant" "warning" "Dot" true)}}</td><td data-label="Amount" class="ui-num">320.00</td></tr>
+      </tbody>
+    </table>
+  </div>
   <div>
     <details class="ui-disclosure" name="demo-faq">
       <summary class="ui-disclosure-summary">Can I export it?</summary>

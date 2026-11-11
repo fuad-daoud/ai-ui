@@ -1,6 +1,10 @@
 .ui-muted { color: var(--ink-3); }
 .ui-mono { font-family: var(--font-mono); }
 .ui-num { font-variant-numeric: tabular-nums; text-align: end; }
+/* In a table stacked on a phone, a number sits beside its label, so it starts at the start. */
+@media (max-width: 799.98px) {
+  .ui-table-wrap[data-stack="phone"] .ui-table > tbody > tr > .ui-num { text-align: start; }
+}
 .ui-vh {
   position: absolute;
   inline-size: 1px;

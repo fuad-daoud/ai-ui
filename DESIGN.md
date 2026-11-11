@@ -393,10 +393,44 @@ confirm button acts on it and closes the dialog with `command="close"`.
 <section class="ui-card">…</section>
 ```
 
-Knobs: `--ui-callout-bg`, `--ui-callout-fg`, `--ui-callout-accent`; `--ui-table-pad-y`, `--ui-table-pad-x`; `--ui-card-pad`, `--ui-card-radius`, `--ui-card-shadow`, `--ui-card-border`; `--ui-disclosure-rule`.
+Knobs: `--ui-callout-bg`, `--ui-callout-fg`, `--ui-callout-accent`; `--ui-table-pad-y`, `--ui-table-pad-x` and the table knobs below; `--ui-card-pad`, `--ui-card-radius`, `--ui-card-shadow`, `--ui-card-border`; `--ui-disclosure-rule`.
 
 A card has a soft shadow by default and none in compact density. `--ui-card-shadow: none` makes any
 card flat.
+
+**Tables** take four options, all plain markup:
+
+| Option | Markup | What it does |
+|---|---|---|
+| No frame | `data-frame="none"` on `.ui-table-wrap` | No border, corners or fill; the first and last columns sit flush with the content around them. |
+| Quiet head | `data-head="quiet"` on `.ui-table` | Header cells on no fill, in small `--ink-3` text. |
+| Sticky head | `data-sticky="head"` on `.ui-table` | Header cells stay at the top of the wrap as it scrolls. Bound the wrap with `--ui-table-max-height`. |
+| Stacked on a phone | `data-stack="phone"` on `.ui-table-wrap` | Below 800px of viewport, each row is a block and each cell a line with its label. |
+
+Table knobs, on `.ui-table`: `--ui-table-head-bg`, `--ui-table-head-fg`, `--ui-table-head-size`,
+`--ui-table-head-case` (`text-transform`), `--ui-table-head-rule` (the line under the header),
+`--ui-table-hover` (`transparent` turns the row tint off), `--ui-table-sticky-bg` (default
+`--sheet`; set it to whatever is behind the table), `--ui-table-label-width` (default 8rem). On
+`.ui-table-wrap`: `--ui-table-max-height`. A row is tinted on hover only where the pointer can hover.
+
+A stacked table labels each cell from its `data-label`. A cell without one, such as the row's name,
+spans the row, and so does a row header (`<th scope="row">`). The header row is hidden from sight
+but stays in the markup.
+
+```html
+<div class="ui-table-wrap" data-stack="phone">
+  <table class="ui-table">
+    <thead><tr><th scope="col">Email</th><th scope="col">Role</th><th scope="col" class="ui-num">Logins</th></tr></thead>
+    <tbody>
+      <tr><td>ada@example.com</td><td data-label="Role">owner</td><td data-label="Logins" class="ui-num">12</td></tr>
+    </tbody>
+  </table>
+</div>
+```
+
+Some browsers stop treating a table as a table once its rows are blocks, so a screen reader may lose
+the column names on a phone. If that matters, add the ARIA table roles to the markup: `role="table"`
+on the table, `rowgroup`, `row`, `columnheader` and `cell`.
 
 `data-marker="start"` on a disclosure puts its chevron before the summary text, pointing to the
 end when closed and down when open, for a list of folders or groups. `--ui-disclosure-rule:
