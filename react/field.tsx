@@ -5,8 +5,12 @@ const INPUT_TYPES = ["email", "password", "number", "search", "tel", "url", "dat
 export type InputType = "text" | (typeof INPUT_TYPES)[number];
 export type FieldOption = { value: string; label: string };
 
+export type FieldSize = "sm" | "md" | "lg";
+const SIZES = ["sm", "lg"] as const;
+
 type FieldBase = {
   label: ReactNode;
+  size?: FieldSize;
   name?: string;
   id?: string;
   hint?: ReactNode;
@@ -15,16 +19,16 @@ type FieldBase = {
 };
 type Own = keyof FieldBase | "control";
 
-export type InputFieldProps = FieldBase & { control?: "input"; type?: InputType } & Omit<ComponentPropsWithRef<"input">, Own | "type">;
+export type InputFieldProps = FieldBase & { control?: "input"; type?: InputType; icon?: ReactNode } & Omit<ComponentPropsWithRef<"input">, Own | "type">;
 export type TextareaFieldProps = FieldBase & { control: "textarea" } & Omit<ComponentPropsWithRef<"textarea">, Own>;
 export type SelectFieldProps = FieldBase & { control: "select"; options: readonly FieldOption[] } & Omit<ComponentPropsWithRef<"select">, Own>;
 export type FieldProps = InputFieldProps | TextareaFieldProps | SelectFieldProps;
 
-type Wiring = { id: string; name?: string; "aria-describedby"?: string; "aria-invalid"?: ControlAria["aria-invalid"] };
+type Wiring = { id: string; name?: string; "data-size"?: string; "aria-describedby"?: string; "aria-invalid"?: ControlAria["aria-invalid"] };
 type ControlAria = Pick<ComponentPropsWithRef<"input">, "aria-describedby" | "aria-invalid">;
 
 export function Field(props: FieldProps) {
-  const { label, name, id: idProp, hint, error, className, ...controlProps } = props;
+  const { label, name, id: idProp, hint, error, className, size, ...controlProps } = props;
   const { "aria-describedby": callerDescribedBy, "aria-invalid": callerInvalid } = controlProps as ControlAria;
   const id = idProp || name;
   if (!id) throw new Error("ui.field: needs ID or Name");
@@ -36,6 +40,7 @@ export function Field(props: FieldProps) {
   const wiring: Wiring = {
     id,
     name,
+    "data-size": pick(size, SIZES),
     "aria-describedby": describedBy || undefined,
     "aria-invalid": hasError ? "true" : callerInvalid,
   };
@@ -51,6 +56,7 @@ export function Field(props: FieldProps) {
 
 type ControlProps = {
   control?: string;
+  icon?: ReactNode;
   type?: string;
   options?: readonly FieldOption[];
   defaultValue?: string | number | readonly string[];
@@ -61,7 +67,7 @@ type ControlProps = {
 const blank = (v: ControlProps["defaultValue"]) => (v === "" ? undefined : v);
 
 function control(props: object, wiring: Wiring): ReactNode {
-  const { control: kind, type, options, defaultValue, ...rest } = props as ControlProps;
+  const { control: kind, type, options, defaultValue, icon, ...rest } = props as ControlProps;
   if (kind === "textarea") {
     return <textarea {...(rest as ComponentPropsWithRef<"textarea">)} {...wiring} className="ui-textarea" defaultValue={blank(defaultValue)} />;
   }
@@ -74,5 +80,12 @@ function control(props: object, wiring: Wiring): ReactNode {
       </select>
     );
   }
-  return <input {...(rest as ComponentPropsWithRef<"input">)} {...wiring} className="ui-input" type={pick(type, INPUT_TYPES) ?? "text"} defaultValue={blank(defaultValue)} />;
+  const input = <input {...(rest as ComponentPropsWithRef<"input">)} {...wiring} className="ui-input" type={pick(type, INPUT_TYPES) ?? "text"} defaultValue={blank(defaultValue)} />;
+  if (!present(icon)) return input;
+  return (
+    <div className="ui-input-group">
+      {icon}
+      {input}
+    </div>
+  );
 }
