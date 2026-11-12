@@ -342,7 +342,8 @@ In Go, write this markup (it is pinned by `testdata/parity/dialog-basic.html`):
 </dialog>
 ```
 
-`.ui-dialog-actions` is the row of buttons at the end, and it can be the `<form>` itself.
+`.ui-dialog-actions` is the row of buttons at the end, and it can be the `<form>` itself. The title
+wraps anywhere it must, so a long email address in it stays inside the dialog.
 
 **An eyebrow** is a `<p class="ui-dialog-eyebrow">` as the dialog's first child, before the head:
 small uppercase text in `--ink-3`, such as "Can't be undone". Set `--ui-dialog-eyebrow-fg: var(--bad)`
@@ -403,7 +404,7 @@ card flat.
 | Option | Markup | What it does |
 |---|---|---|
 | No frame | `data-frame="none"` on `.ui-table-wrap` | No border, corners or fill; the first and last columns sit flush with the content around them. |
-| Quiet head | `data-head="quiet"` on `.ui-table` | Header cells on no fill, in small `--ink-3` text. |
+| Quiet head | `data-head="quiet"` on `.ui-table` | Header cells on no fill, in small `--ink-3` text. Row headers in the body (`<th scope="row">`) go quiet too, but keep their case. |
 | Sticky head | `data-sticky="head"` on `.ui-table` | Header cells stay at the top of the wrap as it scrolls. Bound the wrap with `--ui-table-max-height`. |
 | Stacked on a phone | `data-stack="phone"` on `.ui-table-wrap` | Below 800px of viewport, each row is a block and each cell a line with its label. |
 

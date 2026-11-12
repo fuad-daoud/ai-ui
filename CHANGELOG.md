@@ -4,6 +4,13 @@ Breaking changes come first in each entry. Renaming or removing a token,
 class, data-attribute value, knob, partial name or argument, or React prop
 is breaking.
 
+## 0.3.2 (2026-11-12)
+
+No breaking changes. Two looks change:
+
+- A dialog's title shrinks and wraps anywhere it must, so a long word such as an email address no longer pushes the × or the dialog past the viewport.
+- In a table with `data-head="quiet"`, row headers in the body (`<th scope="row">`) go quiet too: no fill, in the head's colour and size. They keep their case, and their row still tints on hover.
+
 ## 0.3.1 (2026-11-11)
 
 No breaking changes. One look changes:
