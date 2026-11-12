@@ -17,6 +17,7 @@
   --ui-table-hover: color-mix(in oklch, var(--band) 60%, transparent);
   --ui-table-sticky-bg: var(--sheet);
   --ui-table-label-width: 8rem;
+  --ui-table-selected: var(--mark-bg);
   inline-size: 100%;
   border-collapse: collapse;
   font-size: var(--text-sm);
@@ -41,6 +42,8 @@
 @media (hover: hover) {
   .ui-table tbody tr:hover > * { background: var(--ui-table-hover); }
 }
+/* The current row (aria-current, or aria-selected in a grid) keeps its tint under the pointer. */
+.ui-table tbody tr:is([aria-current]:not([aria-current="false"]), [aria-selected="true"]) > * { background: var(--ui-table-selected); }
 .ui-table caption {
   caption-side: top;
   padding: var(--space-2) var(--ui-table-pad-x);

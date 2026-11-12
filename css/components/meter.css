@@ -1,0 +1,36 @@
+/* Meter: a native <progress>, so it is a progressbar to assistive tech. With
+   no value it is indeterminate and a segment slides along it, unless reduced
+   motion is asked for (DESIGN.md). */
+.ui-meter {
+  --ui-meter-height: 0.5rem;
+  --ui-meter-track: var(--band);
+  --ui-meter-fill: var(--primary);
+  appearance: none;
+  display: block;
+  inline-size: 100%;
+  block-size: var(--ui-meter-height);
+  overflow: hidden;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ui-meter-track);
+  color: var(--ui-meter-fill);
+}
+.ui-meter::-webkit-progress-bar { background: var(--ui-meter-track); border-radius: 999px; }
+.ui-meter::-webkit-progress-value { background: var(--ui-meter-fill); border-radius: 999px; transition: inline-size 400ms var(--ease); }
+.ui-meter::-moz-progress-bar { background: var(--ui-meter-fill); border-radius: 999px; }
+.ui-meter[data-variant="good"] { --ui-meter-fill: var(--good); }
+.ui-meter[data-variant="warning"] { --ui-meter-fill: var(--warning); }
+.ui-meter[data-variant="bad"] { --ui-meter-fill: var(--bad); }
+.ui-meter:indeterminate {
+  background: linear-gradient(90deg, transparent 0 33%, var(--ui-meter-fill) 33% 66%, transparent 66%) var(--ui-meter-track);
+  background-size: 300% 100%;
+}
+.ui-meter:indeterminate::-webkit-progress-bar { background: transparent; }
+.ui-meter:indeterminate::-moz-progress-bar { background: transparent; }
+@media (prefers-reduced-motion: no-preference) {
+  .ui-meter:indeterminate { animation: ui-meter-slide 1.4s linear infinite; }
+}
+@keyframes ui-meter-slide {
+  from { background-position: 100% 0; }
+  to { background-position: 0 0; }
+}

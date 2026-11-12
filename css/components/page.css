@@ -1,0 +1,108 @@
+/* The parts of a page: its head, eyebrows, section heads, stat tiles and empty
+   states. Plain markup in Go and React (DESIGN.md). A page's width, gutters and
+   section spacing stay the app's. */
+.ui-page-head {
+  --ui-page-title-size: clamp(1.75rem, 1.2rem + 1.6vw, 2.375rem);
+  --ui-page-head-rule: var(--rule);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-5);
+  padding-block-end: var(--space-4);
+  border-block-end: 1px solid var(--ui-page-head-rule);
+}
+.ui-page-head > :first-child { min-inline-size: 0; }
+.ui-page-title {
+  font-size: var(--ui-page-title-size);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+.ui-page-sub { max-inline-size: 65ch; margin-block-start: var(--space-2); color: var(--ink-2); }
+.ui-page-aside { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); color: var(--ink-2); font-size: var(--text-sm); }
+
+/* A small label above a title. */
+.ui-eyebrow {
+  --ui-eyebrow-fg: var(--ink-3);
+  --ui-eyebrow-case: uppercase;
+  display: block;
+  margin-block-end: var(--space-1);
+  color: var(--ui-eyebrow-fg);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: var(--ui-eyebrow-case);
+}
+
+.ui-section-head {
+  --ui-section-rule: var(--rule);
+  --ui-section-title-size: var(--text-xl);
+  --ui-section-index-fg: var(--primary);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-3);
+  padding-block-end: var(--space-2);
+  border-block-end: 1px solid var(--ui-section-rule);
+}
+.ui-section-title { min-inline-size: 0; font-size: var(--ui-section-title-size); font-weight: 600; letter-spacing: -0.015em; }
+.ui-section-index { color: var(--ui-section-index-fg); font-size: var(--text-xs); font-weight: 700; font-variant-numeric: tabular-nums; }
+.ui-section-count { color: var(--ink-3); font-size: var(--text-sm); font-variant-numeric: tabular-nums; }
+.ui-section-aside { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); margin-inline-start: auto; }
+
+/* Stat tiles: a <dl> of equal columns with hairlines between them. */
+.ui-stats {
+  --ui-stats-min: 9rem;
+  --ui-stat-value-size: var(--text-2xl);
+  --ui-stat-label-case: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--ui-stats-min), 100%), 1fr));
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--rule-soft);
+  border-radius: var(--radius-md);
+  background: var(--rule-soft);
+}
+.ui-stat { display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-3) var(--space-4); background: var(--sheet); }
+.ui-stat > dt {
+  color: var(--ink-3);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: var(--ui-stat-label-case);
+}
+.ui-stat-value {
+  color: var(--ink);
+  font-size: var(--ui-stat-value-size);
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+.ui-stat-note { color: var(--ink-3); font-size: var(--text-xs); }
+.ui-stat[data-variant="good"] .ui-stat-value, .ui-stat-note[data-variant="good"] { color: var(--good); }
+.ui-stat[data-variant="warning"] .ui-stat-value, .ui-stat-note[data-variant="warning"] { color: var(--warning); }
+.ui-stat[data-variant="bad"] .ui-stat-value, .ui-stat-note[data-variant="bad"] { color: var(--bad); }
+.ui-stat[data-variant="muted"] .ui-stat-value { color: var(--ink-3); }
+.ui-stats[data-frame="none"] { border: 0; border-radius: 0; background: transparent; gap: 0; }
+.ui-stats[data-frame="none"] > .ui-stat { padding-block: var(--space-1); background: transparent; }
+.ui-stats[data-frame="none"] > .ui-stat + .ui-stat { border-inline-start: 1px solid var(--rule-soft); }
+
+/* Nothing here yet: a sentence and maybe a way forward. */
+.ui-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-6) var(--space-4);
+  border: 1px dashed var(--rule);
+  border-radius: var(--radius-md);
+  color: var(--ink-2);
+  text-align: center;
+  text-wrap: balance;
+}
+.ui-empty > p { max-inline-size: 60ch; }
+.ui-empty-title { color: var(--ink); font-size: var(--text-md); font-weight: 600; }
+.ui-empty[data-frame="none"] { align-items: flex-start; padding: 0; border: 0; text-align: start; }
