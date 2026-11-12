@@ -3,7 +3,11 @@
 <head>
 <meta charset="utf-8">
 <title>ai-ui fixture: library markup</title>
+<script src="{{href "theme.js"}}"></script>
 {{if ne .Sheet "none"}}<link rel="stylesheet" href="{{href .Sheet}}">{{end}}
+<script src="{{href "ui.js"}}" defer></script>
+<!-- An app's light-only palette, unlayered as an app writes it. -->
+<style>[data-palette="rose"] { color-scheme: light; --paper: oklch(97% 0.015 10); --primary: oklch(55% 0.17 10); }</style>
 <!-- What ui.css's body rule does, restated so the two sheets inherit alike. -->
 <style>body { margin: 0; min-height: 100vh; font-family: var(--font-sans); font-size: var(--text-md); line-height: 1.6; color: var(--ink); }</style>
 </head>
@@ -77,6 +81,60 @@
     <div class="ui-dialog-head"><h2 class="ui-dialog-title" id="dialog-long-title">Remove grace.hopper.long.address@subdomain.example.com?</h2><button class="ui-dialog-x" id="dialog-long-x" aria-label="Close">x</button></div>
     <div class="ui-dialog-body"><p>Body</p></div>
   </dialog>
+  <div class="ui-cluster" style="justify-content: flex-end">
+    <button class="ui-btn" id="edge-btn" type="button" popovertarget="edge-menu">Edge</button>
+    <div class="ui-menu" id="edge-menu" popover role="menu" aria-label="Edge">
+      <button class="ui-menu-item" role="menuitem" type="button">One</button>
+    </div>
+  </div>
+  <div class="ui-cluster" id="overlays">
+    <button class="ui-btn" id="menu-btn" type="button" popovertarget="menu" aria-haspopup="menu">Account</button>
+    <div class="ui-menu" id="menu" popover role="menu" aria-label="Account">
+      <p class="ui-menu-label" id="menu-label" role="none">grace.hopper.long.address@example.com</p>
+      <a class="ui-menu-item" id="mi-account" role="menuitem" href="#library">Account</a>
+      <button class="ui-menu-item" id="mi-rename" role="menuitem" type="button">Rename</button>
+      <hr class="ui-menu-sep" id="menu-sep">
+      <button class="ui-menu-item" id="mi-delete" role="menuitem" type="button" data-variant="danger">Delete</button>
+    </div>
+    <button class="ui-btn" id="theme-btn" type="button" popovertarget="theme-menu" aria-haspopup="menu">Theme</button>
+    <div class="ui-menu" id="theme-menu" popover role="menu" aria-label="Theme" data-align="start" data-sheet="phone">
+      <div class="ui-menu-head" id="theme-menu-head" role="none"><span class="ui-menu-title">Theme</span><button class="ui-menu-x" id="theme-menu-x" type="button" role="menuitem" popovertarget="theme-menu" popovertargetaction="hide" aria-label="Close">×</button></div>
+      <button class="ui-menu-item" id="tm-blue" role="menuitemradio" type="button" data-ui-set-theme="light" data-ui-set-palette="blue"><span class="ui-swatch-face" data-theme="light" data-palette="blue" aria-hidden="true"></span>Blue</button>
+      <button class="ui-menu-item" id="tm-system" role="menuitemradio" type="button" data-ui-set-theme="system" data-ui-set-palette="blue"><span class="ui-swatch-face" data-theme="system" data-palette="blue" aria-hidden="true"></span>System</button>
+      <button class="ui-menu-item" id="tm-mono-dark" role="menuitemradio" type="button" data-ui-set-theme="dark" data-ui-set-palette="mono"><span class="ui-swatch-face" data-theme="dark" data-palette="mono" aria-hidden="true"></span>Black and white dark</button>
+    </div>
+    <button class="ui-btn" id="sheet-btn" type="button" command="show-modal" commandfor="sheet">Facts</button>
+    <dialog class="ui-sheet" id="sheet" aria-labelledby="sheet-title" closedby="any">
+      <header class="ui-sheet-head"><h2 class="ui-sheet-title" id="sheet-title">Facts</h2><button class="ui-sheet-x" id="sheet-x" type="button" command="close" commandfor="sheet" aria-label="Close">×</button></header>
+      <div class="ui-sheet-body"><p>Body</p></div>
+    </dialog>
+    <button class="ui-btn" id="drawer-btn" type="button" command="show-modal" commandfor="drawer">Email</button>
+    <dialog class="ui-sheet" id="drawer" aria-labelledby="drawer-title" data-side="end">
+      <header class="ui-sheet-head"><h2 class="ui-sheet-title" id="drawer-title">Re: offer</h2><button class="ui-sheet-x" type="button" command="close" commandfor="drawer" aria-label="Close">×</button></header>
+      <div class="ui-sheet-body"><p>Body</p></div>
+    </dialog>
+  </div>
+  <div class="ui-swatches" id="swatches" role="group" aria-label="Theme">
+    <button class="ui-swatch" id="sw-system" type="button" data-ui-set-theme="system" data-ui-set-palette="blue" aria-label="System"><span class="ui-swatch-face" data-theme="system" data-palette="blue" aria-hidden="true"></span></button>
+    <button class="ui-swatch" id="sw-blue" type="button" data-ui-set-theme="light" data-ui-set-palette="blue" aria-label="Blue"><span class="ui-swatch-face" data-theme="light" data-palette="blue" aria-hidden="true"></span></button>
+    <button class="ui-swatch" id="sw-blue-dark" type="button" data-ui-set-theme="dark" data-ui-set-palette="blue" aria-label="Blue dark"><span class="ui-swatch-face" data-theme="dark" data-palette="blue" aria-hidden="true"></span></button>
+    <button class="ui-swatch" id="sw-rose" type="button" data-ui-set-theme="light" data-ui-set-palette="rose" aria-label="Rose"><span class="ui-swatch-face" data-theme="light" data-palette="rose" aria-hidden="true"></span></button>
+  </div>
+  <div id="mono-region" data-palette="mono" data-theme="light">
+    <span class="ui-swatch-face" id="face-blue-dark" data-theme="dark" data-palette="blue"></span>
+    <span class="ui-swatch-face" id="face-system" data-theme="system" data-palette="blue"></span>
+  </div>
+  <p id="rose-light" data-palette="rose" data-theme="light" style="background: var(--paper); color: var(--ink)">Rose</p>
+  <p id="rose-dark" data-palette="rose" data-theme="dark" style="background: var(--paper); color: var(--ink)">Rose, asked for dark</p>
+  <div style="block-size: 60vh"></div>
+  <div class="ui-cluster" id="low">
+    <button class="ui-btn" id="low-btn" type="button" popovertarget="low-menu">More</button>
+    <div class="ui-menu" id="low-menu" popover role="menu" aria-label="More">
+      <button class="ui-menu-item" role="menuitem" type="button">One</button>
+      <button class="ui-menu-item" role="menuitem" type="button">Two</button>
+      <button class="ui-menu-item" role="menuitem" type="button">Three</button>
+    </div>
+  </div>
 </main>
 </body>
 </html>
