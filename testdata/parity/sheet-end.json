@@ -1,0 +1,3 @@
+{
+  "react": { "component": "Sheet", "props": { "id": "mail", "title": "Re: offer", "side": "end", "closeLabel": "Close the email", "children": "Body" } }
+}

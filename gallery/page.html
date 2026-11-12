@@ -4,7 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ai-ui gallery: {{.Palette}} {{.Mode}}</title>
+<script src="{{href "theme.js"}}"></script>
 <link rel="stylesheet" href="{{href "ui.css"}}">
+<script src="{{href "ui.js"}}" defer></script>
 <style>
   .gallery { max-width: 60rem; margin-inline: auto; padding: var(--space-6) var(--space-4) var(--space-8); }
   .gallery > section { margin-block-start: var(--space-7); }
@@ -14,6 +16,7 @@
   .gallery-narrow { max-width: 16rem; }
   .gallery-row { margin-block-start: var(--space-3); }
   .gallery-inline { position: static; margin: var(--space-3) 0 0; }
+  .gallery-static { position: static; margin: var(--space-3) 0 0; }
 </style>
 </head>
 <body>
@@ -178,6 +181,45 @@
         </form>
       </div>
     </dialog>
+  </section>
+
+  <section aria-labelledby="s-menu">
+    <h2 id="s-menu">Menu, sheet and theme</h2>
+    <div class="ui-stack">
+      <div class="ui-cluster">
+        <button class="ui-btn" type="button" data-variant="secondary" popovertarget="g-acct" aria-haspopup="menu">Account</button>
+        <div class="ui-menu" id="g-acct" popover role="menu" aria-label="Account">
+          <p class="ui-menu-label" role="none">grace@example.com</p>
+          <a class="ui-menu-item" role="menuitem" href="#s-menu">Account</a>
+          <hr class="ui-menu-sep">
+          <button class="ui-menu-item" role="menuitem" type="button">Sign out</button>
+        </div>
+        {{template "ui.button" (dict "Label" "Facts" "Variant" "secondary" "Command" "show-modal" "CommandFor" "g-facts")}}
+        <dialog class="ui-sheet" id="g-facts" aria-labelledby="g-facts-title" closedby="any">
+          <header class="ui-sheet-head"><h2 class="ui-sheet-title" id="g-facts-title">Facts</h2><button class="ui-sheet-x" type="button" command="close" commandfor="g-facts" aria-label="Close">×</button></header>
+          <div class="ui-sheet-body"><p>Three facts back this line.</p></div>
+        </dialog>
+      </div>
+      <div class="ui-swatches gallery-narrow" role="group" aria-label="Theme">
+        <button class="ui-swatch" type="button" data-ui-set-theme="system" data-ui-set-palette="blue" aria-label="System"><span class="ui-swatch-face" data-theme="system" data-palette="blue" aria-hidden="true"></span></button>
+        <button class="ui-swatch" type="button" data-ui-set-theme="light" data-ui-set-palette="blue" aria-label="Blue"><span class="ui-swatch-face" data-theme="light" data-palette="blue" aria-hidden="true"></span></button>
+        <button class="ui-swatch" type="button" data-ui-set-theme="dark" data-ui-set-palette="blue" aria-label="Blue dark"><span class="ui-swatch-face" data-theme="dark" data-palette="blue" aria-hidden="true"></span></button>
+        <button class="ui-swatch" type="button" data-ui-set-theme="light" data-ui-set-palette="mono" aria-label="Black and white"><span class="ui-swatch-face" data-theme="light" data-palette="mono" aria-hidden="true"></span></button>
+        <button class="ui-swatch" type="button" data-ui-set-theme="dark" data-ui-set-palette="mono" aria-label="Black and white dark"><span class="ui-swatch-face" data-theme="dark" data-palette="mono" aria-hidden="true"></span></button>
+      </div>
+      <p class="gallery-row ui-muted">Shown without script: a menu and a sheet drawn in place.</p>
+      <div class="ui-menu gallery-static gallery-narrow" role="menu" aria-label="Theme (shown open)">
+        <p class="ui-menu-label" role="none">Theme</p>
+        <button class="ui-menu-item" role="menuitemradio" aria-checked="true" type="button"><span class="ui-swatch-face" data-theme="light" data-palette="blue" aria-hidden="true"></span>Blue</button>
+        <button class="ui-menu-item" role="menuitemradio" aria-checked="false" type="button"><span class="ui-swatch-face" data-theme="dark" data-palette="mono" aria-hidden="true"></span>Black and white dark</button>
+        <hr class="ui-menu-sep">
+        <button class="ui-menu-item" role="menuitem" type="button" data-variant="danger">Delete account</button>
+      </div>
+      <dialog class="ui-sheet gallery-static" id="g-sheet-static" aria-labelledby="g-sheet-static-title" open>
+        <header class="ui-sheet-head"><h2 class="ui-sheet-title" id="g-sheet-static-title">Archive</h2></header>
+        <div class="ui-sheet-body"><p>Two archived resumes.</p></div>
+      </dialog>
+    </div>
   </section>
 </main>
 {{if .Dialog}}<script>document.getElementById("confirm").showModal();</script>{{end}}

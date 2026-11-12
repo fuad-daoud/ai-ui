@@ -1,0 +1,9 @@
+{
+  "react": { "component": "Menu", "props": { "id": "acct", "label": "Account", "children": [
+    { "component": "MenuLabel", "props": { "children": "grace@example.com" } },
+    { "component": "MenuLink", "props": { "href": "/account/", "children": "Account" } },
+    { "component": "MenuSeparator" },
+    { "tag": "form", "props": { "method": "post", "action": "/logout", "role": "none", "children": { "component": "MenuItem", "props": { "type": "submit", "children": "Sign out" } } } },
+    { "component": "MenuItem", "props": { "variant": "danger", "children": "Delete" } }
+  ] } }
+}

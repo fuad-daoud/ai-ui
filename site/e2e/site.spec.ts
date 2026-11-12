@@ -119,10 +119,10 @@ for (const scripts of [true, false]) {
 
 test("Tab reaches the side list and every demo control on the Components page", async ({ page }) => {
   await page.goto(components);
-  // A radio group is one tab stop, at its checked radio; disabled controls and a closed dialog's aren't stops.
+  // A radio group is one tab stop, at its checked radio; disabled controls and a closed dialog's or menu's aren't stops.
   const total = await page.evaluate(() => {
     const els = [...document.querySelectorAll<HTMLElement>(".side a, .demo :is(a[href], button, input, select, textarea, summary)")]
-      .filter((el) => !(el as HTMLInputElement).disabled && !el.closest("dialog")
+      .filter((el) => !(el as HTMLInputElement).disabled && !el.closest("dialog, [popover]")
         && !(el instanceof HTMLInputElement && el.type === "radio" && !el.checked));
     els.forEach((el, i) => { el.dataset.want = String(i); });
     return els.length;

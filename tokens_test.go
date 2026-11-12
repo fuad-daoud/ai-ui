@@ -13,13 +13,14 @@ import (
 
 var (
 	commentRE = regexp.MustCompile(`(?s)/\*.*?\*/`)
-	blockRE   = regexp.MustCompile(`(?s):root(\[data-palette="([a-z0-9-]+)"\])?\s*\{(.*?)\}`)
+	blockRE   = regexp.MustCompile(`(?s)(?::root(?:,\s*\[data-palette="blue"\])?|\[data-palette="([a-z0-9-]+)"\])\s*\{(.*?)\}`)
 	declRE    = regexp.MustCompile(`--([a-z0-9-]+)\s*:\s*([^;]+);`)
 )
 
 // palettes parses css/tokens.css into palette → token → [light, dark].
-// "blue" is :root alone; every other palette is :root overlaid with its block.
-// Blocks such as :root[data-theme="dark"] carry no tokens and are skipped.
+// "blue" is :root (and :root, [data-palette="blue"]); every other palette is
+// blue overlaid with its [data-palette="…"] block. Blocks such as
+// [data-theme="dark"] carry no tokens and are skipped.
 func palettes(t *testing.T) map[string]map[string][2]string {
 	t.Helper()
 	src, err := os.ReadFile("css/tokens.css")
@@ -31,13 +32,13 @@ func palettes(t *testing.T) map[string]map[string][2]string {
 	overlays := map[string]map[string][2]string{}
 	for _, m := range blockRE.FindAllStringSubmatch(clean, -1) {
 		target := base
-		if name := m[2]; name != "" {
+		if name := m[1]; name != "" {
 			if overlays[name] == nil {
 				overlays[name] = map[string][2]string{}
 			}
 			target = overlays[name]
 		}
-		for _, d := range declRE.FindAllStringSubmatch(m[3], -1) {
+		for _, d := range declRE.FindAllStringSubmatch(m[2], -1) {
 			v, err := lightDark(strings.TrimSpace(d[2]))
 			if err != nil {
 				t.Fatalf("--%s: %v", d[1], err)
@@ -112,7 +113,7 @@ func TestTokensDefined(t *testing.T) {
 		}
 	}
 	if _, ok := p["mono"]; !ok {
-		t.Error(`the mono palette (:root[data-palette="mono"]) is missing`)
+		t.Error(`the mono palette ([data-palette="mono"]) is missing`)
 	}
 }
 

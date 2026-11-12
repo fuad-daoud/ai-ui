@@ -4,6 +4,22 @@ Breaking changes come first in each entry. Renaming or removing a token,
 class, data-attribute value, knob, partial name or argument, or React prop
 is breaking.
 
+## 0.4.0 (2026-11-12)
+
+No breaking changes. One look can change:
+
+- `data-palette` and `data-theme` now apply on any element, not only `<html>`. An element that already carried either attribute takes that palette or mode. `data-theme="system"` follows the OS again.
+
+New:
+
+- Menu (`.ui-menu`): a popover anchored to the button that opens it (`popovertarget`), with items (`.ui-menu-item`, `data-variant="danger"`, `role="menuitemradio"` with a check), a label, a separator, `data-align="start"`, and `data-sheet="phone"` to become a bottom sheet below 800px with a head (`.ui-menu-head`, `.ui-menu-title`, `.ui-menu-x`). Knobs `--ui-menu-width`, `--ui-menu-bg`, `--ui-menu-border`, `--ui-menu-radius`, `--ui-menu-shadow`, `--ui-menu-item-height`, `--ui-menu-hover`. React `Menu`, `MenuItem`, `MenuLink`, `MenuLabel`, `MenuSeparator`.
+- Sheet (`.ui-sheet`): a modal `<dialog>` docked to the bottom, or with `data-side="end"` to the side as a drawer; `closedby="any"` closes it on a backdrop tap. It slides in unless reduced motion is asked for, and is flat in compact. Knobs `--ui-sheet-bg`, `--ui-sheet-border`, `--ui-sheet-radius`, `--ui-sheet-shadow`, `--ui-sheet-pad`, `--ui-sheet-max-height`, `--ui-sheet-width`. React `Sheet`.
+- Theme picker (`.ui-swatches`, `.ui-swatch`, `.ui-swatch-face`): swatch buttons carrying `data-ui-set-*`, faces that preview any palette and mode, a split face for `system`. React `Swatches`, `Swatch`, `SwatchFace`.
+- A light-only palette: `color-scheme: light` in its block keeps it light in either mode.
+- `theme.js`: `aiui:themechange` on `document` after every change and on an OS flip while following it; `aria-pressed` / `aria-checked` on every `data-ui-set-*` element; `window.aiui.theme.sync(root)`.
+- `ui.js` (`{{href "ui.js"}}`, `import "ai-ui/ui.js"`): a menu's keys and focus, swatch arrows, a placement fallback where CSS anchor positioning is missing, and `closedby="any"` where the browser lacks it.
+- `DESIGN.md`: moving an app's stored theme choice to `theme.js`, and why `ui.css` belongs in `<head>`.
+
 ## 0.3.2 (2026-11-12)
 
 No breaking changes. Two looks change:

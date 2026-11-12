@@ -31,7 +31,7 @@ func get(t *testing.T, h http.Handler, target string, header map[string]string) 
 }
 
 func TestHrefCarriesContentHash(t *testing.T) {
-	for _, name := range []string{"ui.css", "theme.js"} {
+	for _, name := range []string{"ui.css", "theme.js", "ui.js"} {
 		if got := ui.Href(name); !regexp.MustCompile(`^/_ui/` + regexp.QuoteMeta(name) + `\?v=[0-9a-f]{12}$`).MatchString(got) {
 			t.Errorf("Href(%q) = %q", name, got)
 		}
@@ -67,10 +67,12 @@ func TestHandlerServesVersionedCSSAsImmutable(t *testing.T) {
 	}
 }
 
-func TestHandlerServesThemeJS(t *testing.T) {
-	rec := get(t, mux(), ui.Href("theme.js"), nil)
-	if ct := rec.Header().Get("Content-Type"); rec.Code != http.StatusOK || ct != "text/javascript; charset=utf-8" {
-		t.Fatalf("status %d, Content-Type %q", rec.Code, ct)
+func TestHandlerServesTheScripts(t *testing.T) {
+	for _, name := range []string{"theme.js", "ui.js"} {
+		rec := get(t, mux(), ui.Href(name), nil)
+		if ct := rec.Header().Get("Content-Type"); rec.Code != http.StatusOK || ct != "text/javascript; charset=utf-8" {
+			t.Fatalf("%s: status %d, Content-Type %q", name, rec.Code, ct)
+		}
 	}
 }
 

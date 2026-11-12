@@ -8,7 +8,7 @@ an agent starts. The site is at https://ui.fuad-daoud.com/.
 ## Go apps
 
 ```bash
-go get github.com/fuad-daoud/ai-ui@v0.3.2
+go get github.com/fuad-daoud/ai-ui@v0.4.0
 ```
 
 It needs Go 1.25.
@@ -21,13 +21,15 @@ tmpl := template.Must(ui.Parse(template.New("app")))
 tmpl = template.Must(tmpl.ParseFS(pages, "*.html")) // your own pattern, after ui.Parse
 ```
 
-`theme.js` is only for a page that offers a light/dark or palette choice.
+`theme.js` is only for a page that offers a light/dark or palette choice, and `ui.js` only for a
+page with a menu, a theme picker or a sheet.
 
 ```html
 <head>
   <script src="{{href "theme.js"}}"></script>
   <link rel="stylesheet" href="{{href "ui.css"}}">
   <link rel="stylesheet" href="/static/app.css">  <!-- unlayered: always wins -->
+  <script src="{{href "ui.js"}}" defer></script>
 </head>
 …
 {{template "ui.field" (dict "Label" "Email" "Name" "email" "Type" "email" "Error" .Errs.Email)}}
@@ -41,11 +43,11 @@ allows it, so allow it in a `.npmrc` (which `npm ci` and CI read too), then inst
 
 ```bash
 echo "allow-git=root" >> .npmrc
-npm install github:fuad-daoud/ai-ui#v0.3.2
+npm install github:fuad-daoud/ai-ui#v0.4.0
 ```
 
 ```json
-"dependencies": { "ai-ui": "github:fuad-daoud/ai-ui#v0.3.2" }
+"dependencies": { "ai-ui": "github:fuad-daoud/ai-ui#v0.4.0" }
 ```
 
 ```ts

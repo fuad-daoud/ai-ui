@@ -40,7 +40,7 @@ body { overflow-x: clip; }
 
 /* The clip reaches far above the pile so components fall in over the headline,
    and stops at the floor so they rest on it. */
-.pile { position: relative; height: 20rem; margin-block-start: var(--space-5); clip-path: inset(-200rem 0 0 0); border-block-end: 3px solid var(--rule); }
+.pile { position: relative; height: 26.5rem; margin-block-start: var(--space-5); clip-path: inset(-200rem 0 0 0); border-block-end: 3px solid var(--rule); }
 .pile-note { padding-block-start: var(--space-3); text-align: center; color: var(--ink-3); font-size: var(--text-sm); }
 
 .it {
@@ -100,10 +100,17 @@ body { overflow-x: clip; }
 .i-due { --x: 58.5%; --y: 7.5rem; --r: 5deg; --spin: 45deg; --d: 760ms; --z: 5; }
 .i-disclosure { --x: 16%; --y: 12.75rem; --r: -6deg; --spin: -55deg; --d: 820ms; --w: 14rem; --z: 5; }
 .i-cancel { --x: 42%; --y: 14rem; --r: -3deg; --spin: 90deg; --d: 900ms; --z: 6; }
+.i-menu { --x: 2%; --y: 19rem; --r: -3deg; --spin: -45deg; --d: 960ms; --w: 12rem; --z: 6; }
+.i-sheet { --x: 30%; --y: 19.25rem; --r: 2deg; --spin: 30deg; --d: 1020ms; --w: 17rem; --z: 6; }
+.i-swatches { --x: 62%; --y: 20rem; --r: -2deg; --spin: -30deg; --d: 1080ms; --w: 15rem; --z: 6; }
+.i-menu .ui-menu { position: static; inline-size: 100%; margin: 0; }
+.i-sheet .ui-sheet { position: static; border-radius: var(--radius-lg); border: 1px solid var(--rule); --ui-sheet-shadow: 0 1px 2px var(--shadow); }
+.i-swatches:not([hidden]) { display: flex; flex-direction: column; gap: var(--space-2); }
+.i-swatches .swatch-note { color: var(--ink-3); font-size: var(--text-sm); }
 
 /* Narrow: a tall heap with its own places, rather than the desktop one shrunk. */
 @media (max-width: 71.99rem) {
-  .pile { height: 51rem; max-inline-size: 24rem; margin-inline: auto; }
+  .pile { height: 67.5rem; max-inline-size: 24rem; margin-inline: auto; }
   .i-table { --x: 0%; --y: 0rem; --r: -1deg; --w: 100%; }
   .i-field { --x: 0%; --y: 8.25rem; --r: 1deg; --w: 100%; }
   .i-callout { --x: 0%; --y: 17.75rem; --r: -1deg; --w: 100%; }
@@ -121,6 +128,11 @@ body { overflow-x: clip; }
   .big-pill { --text-xs: 0.9375rem; }
   .i-sent { --x: 54%; --y: 48rem; --r: -3deg; }
   .i-due { --x: 62%; --y: 34rem; --r: 4deg; }
+  .i-sheet { --x: 0%; --y: 51.5rem; --r: 1deg; --w: 100%; }
+  .i-menu { --x: 0%; --y: 59.25rem; --r: -2deg; --w: 56%; }
+  .i-swatches { --x: 59%; --y: 60rem; --r: 3deg; --w: 41%; padding-inline: var(--space-3); }
+  .i-swatches .ui-swatches { gap: var(--space-1); }
+  .i-swatches .ui-swatch { min-inline-size: 1.25rem; }
 }
 
 .hand-over { padding-block: var(--space-7) var(--space-5); }
