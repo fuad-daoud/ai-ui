@@ -18,10 +18,12 @@ fieldset:where([class^="ui-"], [class*=" ui-"], [class^="ui-"] *, [class*=" ui-"
 /* css/tokens.css */
 /* ai-ui tokens (spec §3). Every colour is light-dark(light, dark).
    A token's name never changes; only its value does (spec §9).
-   Apps theme by setting these on :root in their own, unlayered CSS. */
-:root {
-  color-scheme: light dark;
-
+   Apps theme by setting these on :root in their own, unlayered CSS.
+   A palette or a mode applies on any element (v0.4), so a swatch can preview
+   one that isn't the page's: blue's colours are also on [data-palette="blue"]. */
+:root { color-scheme: light dark; }
+:root,
+[data-palette="blue"] {
   /* surfaces */
   --paper: light-dark(oklch(98.2% 0.01 262), oklch(18% 0.02 262));
   --band: light-dark(oklch(96% 0.016 262), oklch(22% 0.024 262));
@@ -57,7 +59,9 @@ fieldset:where([class^="ui-"], [class*=" ui-"], [class^="ui-"] *, [class*=" ui-"
   --mark-bg: light-dark(oklch(93.2% 0.032 256), oklch(34% 0.07 262));
   --shadow: light-dark(oklch(21% 0.03 262 / 0.12), oklch(0% 0 0 / 0.5));
   --scrim: light-dark(oklch(21% 0.03 262 / 0.32), oklch(0% 0 0 / 0.6));
+}
 
+:root {
   /* type */
   --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-display: var(--font-sans);
@@ -88,11 +92,12 @@ fieldset:where([class^="ui-"], [class*=" ui-"], [class^="ui-"] *, [class*=" ui-"
   --ease: cubic-bezier(0.2, 0, 0, 1);
 }
 
-:root[data-theme="light"] { color-scheme: light; }
-:root[data-theme="dark"] { color-scheme: dark; }
+[data-theme="light"] { color-scheme: light; }
+[data-theme="dark"] { color-scheme: dark; }
+[data-theme="system"] { color-scheme: light dark; }
 
 /* mono: the neutral palette. Status colours are inherited from :root. */
-:root[data-palette="mono"] {
+[data-palette="mono"] {
   --paper: light-dark(oklch(100% 0 0), oklch(15% 0 0));
   --band: light-dark(oklch(96.5% 0 0), oklch(19% 0 0));
   --sheet: light-dark(oklch(100% 0 0), oklch(22% 0 0));
@@ -300,9 +305,12 @@ small:where([class^="ui-"], [class*=" ui-"], [class^="ui-"] *, [class*=" ui-"] *
 [data-density="compact"] .ui-field { --ui-field-gap: var(--space-1); }
 [data-density="compact"] .ui-pill { border-radius: var(--radius-sm); }
 [data-density="compact"] .ui-table { font-size: var(--text-md); }
-/* Compact cards and dialogs are flat: a hairline, no shadow. */
+/* Compact cards, dialogs and sheets are flat: a hairline, no shadow. A menu
+   keeps its shadow: it floats over content. */
 [data-density="compact"] .ui-card { --ui-card-shadow: none; }
 [data-density="compact"] .ui-dialog { --ui-dialog-shadow: none; }
+[data-density="compact"] .ui-sheet { --ui-sheet-shadow: none; }
+[data-density="compact"] .ui-menu { --ui-menu-item-height: 2.125rem; }
 /* Finger-sized controls on a touch screen. */
 @media (pointer: coarse) {
   [data-density="compact"] .ui-btn { --ui-btn-height: 2.5rem; }
@@ -311,6 +319,7 @@ small:where([class^="ui-"], [class*=" ui-"], [class^="ui-"] *, [class*=" ui-"] *
   [data-density="compact"] :is(.ui-input, .ui-select) { --ui-input-height: 2.5rem; }
   [data-density="compact"] :is(.ui-input, .ui-select, .ui-textarea)[data-size="sm"] { --ui-input-height: 2.125rem; }
   [data-density="compact"] :is(.ui-input, .ui-select, .ui-textarea)[data-size="lg"] { --ui-input-height: 2.75rem; }
+  [data-density="compact"] .ui-menu { --ui-menu-item-height: 2.75rem; }
 }
 /* css/components/dialog.css */
 .ui-dialog {
@@ -495,6 +504,146 @@ small:where([class^="ui-"], [class*=" ui-"], [class^="ui-"] *, [class*=" ui-"] *
 
 .ui-form-row { display: flex; flex-wrap: wrap; align-items: end; gap: var(--space-4); }
 .ui-form-row > * { flex: var(--ui-row-grow, 1) 1 var(--ui-row-basis, 14rem); }
+/* css/components/menu.css */
+/* Menu: a popover anchored to the button that opens it (popovertarget). The
+   browser gives light dismiss, Escape, focus return and the anchor; ui.js adds
+   the keys (DESIGN.md). */
+.ui-menu {
+  --ui-menu-width: 16rem;
+  --ui-menu-bg: var(--sheet);
+  --ui-menu-border: var(--rule);
+  --ui-menu-radius: var(--radius-md);
+  --ui-menu-shadow: 0 8px 24px var(--shadow);
+  --ui-menu-item-height: 2.25rem;
+  --ui-menu-hover: var(--band);
+  /* The UA centres a popover with inset: 0 and margin: auto; anchor it instead. */
+  inset: auto;
+  margin: var(--space-1) 0;
+  position-area: block-end span-inline-start;
+  position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
+  inline-size: var(--ui-menu-width);
+  max-inline-size: calc(100vw - 2 * var(--space-2));
+  max-block-size: min(70dvh, 32rem);
+  overflow-y: auto;
+  padding: var(--space-1);
+  border: 1px solid var(--ui-menu-border);
+  border-radius: var(--ui-menu-radius);
+  background: var(--ui-menu-bg);
+  color: var(--ink);
+  box-shadow: var(--ui-menu-shadow);
+  text-align: start;
+  white-space: normal;
+}
+.ui-menu[data-align="start"] { position-area: block-end span-inline-end; }
+.ui-menu:popover-open { display: flex; flex-direction: column; }
+.ui-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: var(--ui-menu-item-height);
+  inline-size: 100%;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+}
+.ui-menu-item:hover,
+.ui-menu-item:focus-visible { background: var(--ui-menu-hover); }
+.ui-menu-item:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.ui-menu-item[data-variant="danger"] { color: var(--bad); }
+.ui-menu-item:is(:disabled, [aria-disabled="true"]) { color: var(--ink-3); cursor: not-allowed; }
+.ui-menu-item > :is(svg, .ui-swatch-face) { flex: none; inline-size: 1em; block-size: 1em; }
+/* A checked radio item draws a check at the end. */
+.ui-menu-item[role="menuitemradio"]::after {
+  content: "";
+  flex: none;
+  inline-size: 0.35em;
+  block-size: 0.7em;
+  margin-inline-start: auto;
+  margin-block-start: -0.2em;
+  border: solid currentColor;
+  border-width: 0 2px 2px 0;
+  rotate: 45deg;
+  visibility: hidden;
+}
+.ui-menu-item[role="menuitemradio"][aria-checked="true"]::after { visibility: visible; }
+.ui-menu-label {
+  overflow: hidden;
+  padding: var(--space-2) var(--space-3) var(--space-1);
+  color: var(--ink-3);
+  font-size: var(--text-xs);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ui-menu-sep {
+  flex: none;
+  margin: var(--space-1) 0;
+  border: 0;
+  border-block-start: 1px solid var(--rule-soft);
+}
+.ui-menu > form { display: contents; }
+.ui-menu > .ui-swatches { padding: var(--space-1) var(--space-3) var(--space-2); }
+/* The head shows only when the menu is a sheet. */
+.ui-menu-head { display: none; }
+.ui-menu-title { font-size: var(--text-sm); font-weight: 600; }
+.ui-menu-x {
+  display: grid;
+  place-items: center;
+  inline-size: 2.25rem;
+  block-size: 2.25rem;
+  margin-inline-start: auto;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-3);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.ui-menu-x:hover { background: var(--band); color: var(--ink); }
+@media (pointer: coarse) {
+  .ui-menu { --ui-menu-item-height: 2.75rem; }
+}
+/* On a phone, data-sheet="phone" turns the menu into a bottom sheet. */
+@media (max-width: 799.98px) {
+  .ui-menu[data-sheet="phone"] {
+    --ui-menu-item-height: 2.75rem;
+    position-area: none;
+    position-try-fallbacks: none;
+    inset: auto 0 0;
+    inline-size: 100%;
+    max-inline-size: none;
+    max-block-size: 70dvh;
+    margin: 0;
+    padding: 0 0 var(--space-2);
+    border-width: 1px 0 0;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    box-shadow: 0 -8px 24px var(--shadow);
+    overscroll-behavior: contain;
+  }
+  .ui-menu[data-sheet="phone"]::backdrop { background: var(--scrim); }
+  .ui-menu[data-sheet="phone"] .ui-menu-head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    position: sticky;
+    inset-block-start: 0;
+    min-block-size: 3rem;
+    margin-block-end: var(--space-1);
+    padding: var(--space-1) var(--space-2) var(--space-1) var(--space-4);
+    border-block-end: 1px solid var(--rule-soft);
+    background: var(--ui-menu-bg);
+  }
+  .ui-menu[data-sheet="phone"] .ui-menu-item { padding-inline: var(--space-4); border-radius: 0; }
+  .ui-menu[data-sheet="phone"] :is(.ui-menu-label, .ui-swatches) { padding-inline: var(--space-4); }
+}
 /* css/components/pill.css */
 .ui-pill {
   --ui-pill-bg: var(--band);
@@ -528,6 +677,126 @@ small:where([class^="ui-"], [class*=" ui-"], [class^="ui-"] *, [class*=" ui-"] *
   border-radius: 50%;
   background: currentColor;
 }
+/* css/components/sheet.css */
+/* Sheet: a modal <dialog> docked to the bottom, or with data-side="end" to the
+   inline end as a drawer. Opened like a dialog; closedby="any" closes it on a
+   backdrop tap (DESIGN.md). */
+.ui-sheet {
+  --ui-sheet-bg: var(--sheet);
+  --ui-sheet-border: var(--rule);
+  --ui-sheet-radius: var(--radius-lg);
+  --ui-sheet-shadow: 0 0 24px var(--shadow);
+  --ui-sheet-pad: var(--space-4);
+  --ui-sheet-max-height: 70dvh;
+  --ui-sheet-width: 28rem;
+  /* The UA centres a modal; dock it to the bottom edge. */
+  inset: auto 0 0;
+  inline-size: 100%;
+  max-inline-size: none;
+  max-block-size: var(--ui-sheet-max-height);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-block-start: 1px solid var(--ui-sheet-border);
+  border-radius: var(--ui-sheet-radius) var(--ui-sheet-radius) 0 0;
+  background: var(--ui-sheet-bg);
+  color: var(--ink);
+  box-shadow: var(--ui-sheet-shadow);
+  text-align: start;
+  white-space: normal;
+}
+.ui-sheet[open] { display: flex; flex-direction: column; }
+.ui-sheet::backdrop { background: var(--scrim); }
+.ui-sheet[data-side="end"] {
+  inset: 0 0 0 auto;
+  inline-size: min(var(--ui-sheet-width), 100vw);
+  block-size: 100dvh;
+  max-block-size: none;
+  border: 0;
+  border-inline-start: 1px solid var(--ui-sheet-border);
+  border-radius: var(--ui-sheet-radius) 0 0 var(--ui-sheet-radius);
+}
+.ui-sheet-head {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: 3rem;
+  padding: var(--space-1) var(--space-2) var(--space-1) var(--ui-sheet-pad);
+  border-block-end: 1px solid var(--rule-soft);
+}
+.ui-sheet-title { min-inline-size: 0; font-size: var(--text-md); overflow-wrap: anywhere; }
+.ui-sheet-x {
+  display: grid;
+  place-items: center;
+  flex: none;
+  inline-size: 2.25rem;
+  block-size: 2.25rem;
+  margin-inline-start: auto;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-3);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.ui-sheet-x:hover { background: var(--band); color: var(--ink); }
+.ui-sheet-body { flex: 1 1 auto; padding: var(--ui-sheet-pad); overflow-y: auto; overscroll-behavior: contain; }
+/* A modal sheet slides in from its edge. One drawn in place (open, not modal) doesn't. */
+@media (prefers-reduced-motion: no-preference) {
+  .ui-sheet:modal { transition: translate var(--dur) var(--ease); }
+  @starting-style {
+    .ui-sheet:modal { translate: 0 100%; }
+    .ui-sheet[data-side="end"]:modal { translate: 100% 0; }
+    .ui-sheet[data-side="end"]:modal:dir(rtl) { translate: -100% 0; }
+  }
+}
+/* css/components/swatch.css */
+/* Theme picker: a row of swatches, each a button carrying a choice for
+   theme.js (data-ui-set-theme / data-ui-set-palette). theme.js marks the
+   current one aria-pressed. A face previews its palette and mode from the
+   tokens, because both apply on any element (DESIGN.md). */
+.ui-swatches { display: flex; gap: var(--space-2); }
+.ui-swatch {
+  display: flex;
+  flex: 1 1 0;
+  min-inline-size: 2rem;
+  block-size: 2rem;
+  padding: 2px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  cursor: pointer;
+}
+.ui-swatch:hover { border-color: var(--rule-field); }
+.ui-swatch[aria-pressed="true"] { padding: 1px; border: 2px solid var(--ink); }
+.ui-swatch:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.ui-swatch > .ui-swatch-face { flex: 1 1 auto; block-size: auto; }
+@media (pointer: coarse) {
+  .ui-swatch { block-size: 2.5rem; }
+}
+.ui-swatch-face {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  inline-size: 1em;
+  block-size: 1em;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  background: linear-gradient(135deg, var(--paper) 62%, var(--primary) 62%);
+}
+/* System: light over dark, split on the diagonal. Each half takes its own mode. */
+.ui-swatch-face[data-theme="system"] { background: none; }
+.ui-swatch-face[data-theme="system"]::before,
+.ui-swatch-face[data-theme="system"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--paper) 62%, var(--primary) 62%);
+}
+.ui-swatch-face[data-theme="system"]::before { color-scheme: light; clip-path: polygon(0 0, 100% 0, 0 100%); }
+.ui-swatch-face[data-theme="system"]::after { color-scheme: dark; clip-path: polygon(100% 0, 100% 100%, 0 100%); }
 /* css/components/table.css */
 .ui-table-wrap {
   --ui-table-max-height: none;

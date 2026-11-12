@@ -1,0 +1,44 @@
+/* Theme picker: a row of swatches, each a button carrying a choice for
+   theme.js (data-ui-set-theme / data-ui-set-palette). theme.js marks the
+   current one aria-pressed. A face previews its palette and mode from the
+   tokens, because both apply on any element (DESIGN.md). */
+.ui-swatches { display: flex; gap: var(--space-2); }
+.ui-swatch {
+  display: flex;
+  flex: 1 1 0;
+  min-inline-size: 2rem;
+  block-size: 2rem;
+  padding: 2px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  cursor: pointer;
+}
+.ui-swatch:hover { border-color: var(--rule-field); }
+.ui-swatch[aria-pressed="true"] { padding: 1px; border: 2px solid var(--ink); }
+.ui-swatch:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.ui-swatch > .ui-swatch-face { flex: 1 1 auto; block-size: auto; }
+@media (pointer: coarse) {
+  .ui-swatch { block-size: 2.5rem; }
+}
+.ui-swatch-face {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  inline-size: 1em;
+  block-size: 1em;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  background: linear-gradient(135deg, var(--paper) 62%, var(--primary) 62%);
+}
+/* System: light over dark, split on the diagonal. Each half takes its own mode. */
+.ui-swatch-face[data-theme="system"] { background: none; }
+.ui-swatch-face[data-theme="system"]::before,
+.ui-swatch-face[data-theme="system"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--paper) 62%, var(--primary) 62%);
+}
+.ui-swatch-face[data-theme="system"]::before { color-scheme: light; clip-path: polygon(0 0, 100% 0, 0 100%); }
+.ui-swatch-face[data-theme="system"]::after { color-scheme: dark; clip-path: polygon(100% 0, 100% 100%, 0 100%); }
