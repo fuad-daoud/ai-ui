@@ -1,0 +1,7 @@
+{
+  "react": { "component": "Swatches", "props": { "label": "Theme", "children": [
+    { "component": "Swatch", "props": { "theme": "system", "palette": "blue", "label": "System" } },
+    { "component": "Swatch", "props": { "theme": "light", "palette": "blue", "label": "Blue" } },
+    { "component": "Swatch", "props": { "theme": "dark", "palette": "mono", "label": "Black and white dark" } }
+  ] } }
+}

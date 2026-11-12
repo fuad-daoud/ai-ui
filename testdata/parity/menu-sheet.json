@@ -1,0 +1,6 @@
+{
+  "react": { "component": "Menu", "props": { "id": "theme", "label": "Theme", "sheet": "phone", "align": "start", "children": [
+    { "component": "MenuItem", "props": { "checked": true, "data-ui-set-theme": "light", "data-ui-set-palette": "blue", "icon": { "component": "SwatchFace", "props": { "theme": "light", "palette": "blue" } }, "children": "Blue" } },
+    { "component": "MenuItem", "props": { "checked": false, "data-ui-set-theme": "dark", "data-ui-set-palette": "mono", "icon": { "component": "SwatchFace", "props": { "theme": "dark", "palette": "mono" } }, "children": "Black and white dark" } }
+  ] } }
+}
