@@ -363,7 +363,9 @@ small { font-size: var(--text-sm); }
   text-transform: uppercase;
 }
 .ui-dialog-eyebrow + .ui-dialog-head { padding-block-start: var(--space-1); }
-.ui-dialog-title { font-size: var(--text-lg); }
+/* The title shrinks and wraps, so a long word such as an email address can't push the × or the
+   dialog past the viewport. */
+.ui-dialog-title { min-inline-size: 0; font-size: var(--text-lg); overflow-wrap: anywhere; }
 .ui-dialog-x {
   display: grid;
   place-items: center;
@@ -592,6 +594,13 @@ small { font-size: var(--text-sm); }
   --ui-table-head-bg: transparent;
   --ui-table-head-fg: var(--ink-3);
   --ui-table-head-size: var(--text-xs);
+}
+/* Its row headers go quiet too: no fill, the head's colour and size, but not its case. :where()
+   keeps the row hover tint winning. */
+.ui-table[data-head="quiet"] :where(tbody th) {
+  background: transparent;
+  color: var(--ui-table-head-fg);
+  font-size: var(--ui-table-head-size);
 }
 /* The header row stays at the top of a wrap that scrolls (bound it with --ui-table-max-height). */
 .ui-table[data-sticky="head"] thead th {

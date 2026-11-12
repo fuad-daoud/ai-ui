@@ -155,3 +155,21 @@ test.describe("on a touch screen", () => {
     expect((await rect(page, "#input-sm")).height).toBe(32);
   });
 });
+
+test.describe("on a phone", () => {
+  test.use({ viewport: { width: 360, height: 740 } });
+
+  test("a long title wraps inside its dialog and keeps the × in view", async ({ page }) => {
+    await page.goto("/fixture/library/ui.css");
+    await showModal(page, "#dialog-long");
+    const dialog = await rect(page, "#dialog-long");
+    const title = await rect(page, "#dialog-long-title");
+    const x = await rect(page, "#dialog-long-x");
+    expect(dialog.right).toBeLessThanOrEqual(360);
+    // Without the fix the title keeps the email's width (about 500px) and the dialog scrolls sideways.
+    expect(title.left).toBeGreaterThanOrEqual(dialog.left);
+    expect(title.right).toBeLessThanOrEqual(x.left);
+    expect(x.right).toBeLessThanOrEqual(dialog.right);
+    expect(await page.locator("#dialog-long").evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(true);
+  });
+});

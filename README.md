@@ -8,7 +8,7 @@ an agent starts. The site is at https://ui.fuad-daoud.com/.
 ## Go apps
 
 ```bash
-go get github.com/fuad-daoud/ai-ui@v0.3.1
+go get github.com/fuad-daoud/ai-ui@v0.3.2
 ```
 
 It needs Go 1.25.
@@ -41,11 +41,11 @@ allows it, so allow it in a `.npmrc` (which `npm ci` and CI read too), then inst
 
 ```bash
 echo "allow-git=root" >> .npmrc
-npm install github:fuad-daoud/ai-ui#v0.3.1
+npm install github:fuad-daoud/ai-ui#v0.3.2
 ```
 
 ```json
-"dependencies": { "ai-ui": "github:fuad-daoud/ai-ui#v0.3.1" }
+"dependencies": { "ai-ui": "github:fuad-daoud/ai-ui#v0.3.2" }
 ```
 
 ```ts

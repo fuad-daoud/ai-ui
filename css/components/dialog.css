@@ -39,7 +39,9 @@
   text-transform: uppercase;
 }
 .ui-dialog-eyebrow + .ui-dialog-head { padding-block-start: var(--space-1); }
-.ui-dialog-title { font-size: var(--text-lg); }
+/* The title shrinks and wraps, so a long word such as an email address can't push the × or the
+   dialog past the viewport. */
+.ui-dialog-title { min-inline-size: 0; font-size: var(--text-lg); overflow-wrap: anywhere; }
 .ui-dialog-x {
   display: grid;
   place-items: center;
