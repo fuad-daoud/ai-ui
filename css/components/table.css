@@ -55,6 +55,13 @@
   --ui-table-head-fg: var(--ink-3);
   --ui-table-head-size: var(--text-xs);
 }
+/* Its row headers go quiet too: no fill, the head's colour and size, but not its case. :where()
+   keeps the row hover tint winning. */
+.ui-table[data-head="quiet"] :where(tbody th) {
+  background: transparent;
+  color: var(--ui-table-head-fg);
+  font-size: var(--ui-table-head-size);
+}
 /* The header row stays at the top of a wrap that scrolls (bound it with --ui-table-max-height). */
 .ui-table[data-sticky="head"] thead th {
   position: sticky;
