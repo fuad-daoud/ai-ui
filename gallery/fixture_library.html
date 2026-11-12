@@ -56,7 +56,7 @@
   <div class="ui-callout" id="callout" data-variant="bad"><p class="ui-callout-title">Title</p><p>Body with <a id="callout-link" href="#library">a link</a> and <strong>bold</strong>.</p></div>
   <div class="ui-table-wrap" id="wrap"><table class="ui-table"><caption>Caption</caption><thead><tr><th scope="col">A</th><th scope="col" class="ui-num">B</th></tr></thead><tbody><tr><td id="td">x</td><td class="ui-num">1</td></tr></tbody></table></div>
   <div class="ui-table-wrap" id="plain-wrap" data-frame="none"><table class="ui-table" data-head="quiet"><thead><tr><th scope="col" id="plain-th">Name</th><th scope="col" class="ui-num" id="plain-th-num">Count</th></tr></thead><tbody><tr id="plain-row"><td id="plain-first">a</td><td class="ui-num" id="plain-last">1</td></tr></tbody></table></div>
-  <div class="ui-table-wrap"><table class="ui-table" data-head="quiet" style="--ui-table-head-case: uppercase; --ui-table-head-rule: var(--rule)"><thead><tr><th scope="col" id="caps-th">Email</th></tr></thead><tbody><tr><td>x</td></tr></tbody></table></div>
+  <div class="ui-table-wrap"><table class="ui-table" data-head="quiet" style="--ui-table-head-case: uppercase; --ui-table-head-rule: var(--rule)"><thead><tr><th scope="col" id="caps-th">Email</th><th scope="col">Plan</th></tr></thead><tbody><tr><th scope="row" id="caps-rowhead">Total</th><td id="caps-td">x</td></tr></tbody></table></div>
   <div class="ui-table-wrap" id="sticky-wrap" style="--ui-table-max-height: 8rem"><table class="ui-table" data-sticky="head"><thead><tr><th scope="col" id="sticky-th">Day</th></tr></thead><tbody><tr><td>Day 1</td></tr><tr><td>Day 2</td></tr><tr><td>Day 3</td></tr><tr><td>Day 4</td></tr><tr><td>Day 5</td></tr><tr><td>Day 6</td></tr><tr><td>Day 7</td></tr><tr><td>Day 8</td></tr><tr><td>Day 9</td></tr><tr><td>Day 10</td></tr><tr><td>Day 11</td></tr><tr><td>Day 12</td></tr></tbody></table></div>
   <div class="ui-table-wrap" id="stack-wrap" data-stack="phone"><table class="ui-table" id="stack"><thead id="stack-head"><tr><th scope="col">Email</th><th scope="col">Role</th><th scope="col" class="ui-num">Logins</th></tr></thead><tbody><tr id="stack-row"><td id="stack-name">ada@example.com</td><td id="stack-role" data-label="Role">owner</td><td id="stack-num" data-label="Logins" class="ui-num">12</td></tr><tr><th scope="row" id="stack-rowhead">grace@example.com</th><td data-label="Role">member</td><td data-label="Logins" class="ui-num">3</td></tr></tbody></table></div>
   <details class="ui-disclosure" open><summary class="ui-disclosure-summary">More</summary><div class="ui-disclosure-body"><p>Body</p><ul><li>Item</li></ul></div></details>
@@ -71,6 +71,10 @@
   <dialog class="ui-dialog" id="dialog-eyebrow" aria-labelledby="dialog-eyebrow-title">
     <p class="ui-dialog-eyebrow" id="eyebrow">Can't be undone</p>
     <div class="ui-dialog-head"><h2 class="ui-dialog-title" id="dialog-eyebrow-title">Delete?</h2></div>
+    <div class="ui-dialog-body"><p>Body</p></div>
+  </dialog>
+  <dialog class="ui-dialog" id="dialog-long" aria-labelledby="dialog-long-title">
+    <div class="ui-dialog-head"><h2 class="ui-dialog-title" id="dialog-long-title">Remove grace.hopper.long.address@subdomain.example.com?</h2><button class="ui-dialog-x" id="dialog-long-x" aria-label="Close">x</button></div>
     <div class="ui-dialog-body"><p>Body</p></div>
   </dialog>
 </main>

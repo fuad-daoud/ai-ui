@@ -45,6 +45,17 @@ test.describe("at desktop width", () => {
     expect(await css(page, "#wrap thead th >> nth=0", "background-color")).toBe(await token(page, "#library", "--band"));
   });
 
+  test("a quiet head's row headers go quiet too, keep their case and still tint on hover", async ({ page }) => {
+    expect(await css(page, "#caps-rowhead", "background-color")).toBe("rgba(0, 0, 0, 0)");
+    expect(await css(page, "#caps-rowhead", "color")).toBe(await token(page, "#library", "--ink-3"));
+    expect(await css(page, "#caps-rowhead", "font-size")).toBe("12px");
+    expect(await css(page, "#caps-rowhead", "text-transform")).toBe("none");
+    // A row header in a default table keeps its fill.
+    expect(await css(page, "#stack-rowhead", "background-color")).toBe(await token(page, "#library", "--band"));
+    await page.locator("#caps-td").hover();
+    expect(await css(page, "#caps-rowhead", "background-color")).not.toBe("rgba(0, 0, 0, 0)");
+  });
+
   test("a sticky head stays at the top of a bounded wrap as it scrolls", async ({ page }) => {
     const wrap = await box(page, "#sticky-wrap");
     expect(wrap.height).toBeLessThanOrEqual(128);
