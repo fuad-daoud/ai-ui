@@ -12,7 +12,9 @@ https://raw.githubusercontent.com/fuad-daoud/ai-ui/main/DESIGN.md
 What the library gives you:
 
 - **Components** with a Go partial and a React component: button, field (input, select, textarea),
-  check (checkbox, radio), pill, dialog (React only; Go writes its markup).
+  check (checkbox, radio), pill.
+- **Components with a React component whose markup Go writes from the contract:** dialog, menu,
+  sheet (a bottom sheet or a side drawer), and the theme picker (swatches).
 - **Plain markup** you write yourself in both stacks, with the classes the contract shows: callout,
   table, card, disclosure, and the utilities (`ui-stack`, `ui-cluster`, `ui-vh`, …).
 - **Nothing for page layout.** A page's width, gutters and section spacing are the app's own CSS.
@@ -27,7 +29,7 @@ Check which stack this project uses, then follow one of these.
 ### Go with `html/template`
 
 ```bash
-go get github.com/fuad-daoud/ai-ui@v0.3.2
+go get github.com/fuad-daoud/ai-ui@v0.4.0
 ```
 
 It needs Go 1.25, and `go get` raises the `go` line in an older `go.mod` to match.
@@ -48,7 +50,9 @@ Use the app's own pattern in `ParseFS`: `"templates/*.html"` if that's what it e
 ```
 
 Add `<script src="{{href "theme.js"}}"></script>` before it only if the page offers a light/dark
-or palette choice. Without one, the page follows the system's mode and needs no script.
+or palette choice. Without one, the page follows the system's mode and needs no script. Add
+`<script src="{{href "ui.js"}}" defer></script>` if the page has a menu, a theme picker or a sheet:
+it gives the menu its arrow keys.
 
 ### Next.js
 
@@ -60,13 +64,13 @@ read it too, then install:
 
 ```bash
 echo "allow-git=root" >> .npmrc
-npm install github:fuad-daoud/ai-ui#v0.3.2
+npm install github:fuad-daoud/ai-ui#v0.4.0
 ```
 
 That leaves this in `package.json`:
 
 ```json
-"dependencies": { "ai-ui": "github:fuad-daoud/ai-ui#v0.3.2" }
+"dependencies": { "ai-ui": "github:fuad-daoud/ai-ui#v0.4.0" }
 ```
 
 ```ts
@@ -90,6 +94,9 @@ and `theme.css` exist only for Tailwind v4. Tailwind v3 isn't covered, so ask be
 ```tsx
 import { Button, Field } from "ai-ui/react";
 ```
+
+A page with a `Menu`, `Swatches` or `Sheet` also imports `"ai-ui/ui.js"` once, in a client
+component.
 
 `theme.js` has to run before first paint. Serving it from a Next app isn't wired up yet, so add it
 yourself if the project needs a stored theme choice.

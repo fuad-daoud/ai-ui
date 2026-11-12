@@ -195,14 +195,52 @@ and `rule-field` on `sheet` at 3:1 or more.
 
 ## Modes and palettes
 
-- The mode follows the OS. `<html data-theme="light|dark">` forces one.
+- The mode follows the OS. `<html data-theme="light|dark">` forces one; `"system"` follows the OS
+  again.
 - `<html data-palette="mono">` selects the neutral palette. `blue` is the default and needs no attribute.
-- An app adds a palette in its own CSS: `:root[data-palette="whiteboard"] { --paper: …; }`.
+- Both apply on any element, not only `<html>`: a region, or a swatch face, can show another
+  palette or mode. Custom properties inherit, so everything inside takes the palette's tokens; the
+  element paints with them where its CSS uses them (`background: var(--paper); color: var(--ink)`).
+- An app adds a palette in its own CSS: `[data-palette="whiteboard"] { --paper: …; }`. An app that
+  changes blue writes `:root, [data-palette="blue"] { … }`, so a blue swatch face shows the change
+  inside another palette.
+- **A light-only palette** has no dark values. Put `color-scheme: light` in its block:
+  `[data-palette="rose"] { color-scheme: light; --paper: …; }`. The app's rule is unlayered, so it
+  beats `[data-theme="dark"]` and the palette stays light whatever the mode. Offer it once in a
+  picker.
 - `theme.js` (load it blocking in `<head>`) applies and persists the visitor's choice.
   Use `<button data-ui-set-theme="dark">`, `data-ui-set-theme="system"` or
   `<button data-ui-set-palette="mono">`; an empty value clears the choice. From script,
   use `window.aiui.theme.get()` and `.set({ theme, palette })`. Until the visitor
   chooses, the server's own `data-theme` / `data-palette` stay untouched.
+- `theme.js` marks every element carrying `data-ui-set-theme` or `data-ui-set-palette`:
+  `aria-pressed="true|false"`, or `aria-checked` when its role is `menuitemradio`,
+  `menuitemcheckbox` or `radio`. It matches when each attribute it carries is the current value
+  (an empty theme means `system`; an empty palette means the page's default). Markup added later is
+  marked by `window.aiui.theme.sync(root)`.
+- After every change, and when the OS flips light/dark while the mode follows it, `theme.js`
+  fires `aiui:themechange` on `document`, its `detail` the new `get()`. Relabel a theme button
+  there.
+- **Moving an app's stored choice.** Run this before `theme.js`, mapping the app's old values:
+
+  ```html
+  <script>try{var o=localStorage.getItem("app.theme");if(o!==null&&localStorage.getItem("ai-ui:theme")===null){
+  var m={"blue-dark":{theme:"dark",palette:"blue"},"mono":{theme:"light",palette:"mono"}}[o]||{};
+  localStorage.setItem("ai-ui:theme",JSON.stringify(m));}localStorage.removeItem("app.theme");}catch(e){}</script>
+  ```
+- Load `ui.css` in `<head>` too. `theme.js` sets attributes only, so a stylesheet loaded later
+  in `<body>` paints the page once in the wrong ground.
+
+## Scripts
+
+| Script | Load | What it does |
+|---|---|---|
+| `theme.js` | blocking, first in `<head>` | The visitor's mode and palette (above). |
+| `ui.js` | `defer` | The menu's keys and placement fallback, the swatch row's arrows, and `closedby="any"` where the browser lacks it. It listens on `document`, so markup added later needs nothing. |
+
+Go: `<script src="{{href "ui.js"}}" defer></script>`. React: `import "ai-ui/ui.js"` once, in a
+client component. Without `ui.js`, menus and sheets still open, close on Escape and an outside
+click, and return focus; only the keys are missing.
 
 ## Components
 
@@ -369,6 +407,96 @@ with `command="close" commandfor="<id>"` closes the dialog without script.
 
 In React, keep one dialog and the row it is for in state: each row's opener sets it, and the
 confirm button acts on it and closes the dialog with `command="close"`.
+
+### Menu: `.ui-menu`
+
+A popover anchored to the button that opens it. The browser gives light dismiss, Escape, focus
+return, `aria-expanded` and the anchor; `ui.js` adds the keys. Go writes this markup (pinned by
+`testdata/parity/menu-basic.html`); React: `<Menu id="acct" label="Account">` with `MenuItem`,
+`MenuLink`, `MenuLabel` and `MenuSeparator`, and `<Button popoverTarget="acct">` to open it.
+
+```html
+<button class="ui-btn" type="button" popovertarget="acct" aria-haspopup="menu">Account</button>
+<div class="ui-menu" id="acct" popover role="menu" aria-label="Account">
+  <p class="ui-menu-label" role="none">grace@example.com</p>
+  <a class="ui-menu-item" role="menuitem" href="/account/">Account</a>
+  <hr class="ui-menu-sep">
+  <form method="post" action="/logout" role="none"><button class="ui-menu-item" role="menuitem" type="submit">Sign out</button></form>
+  <button class="ui-menu-item" role="menuitem" type="button" data-variant="danger">Delete</button>
+</div>
+```
+
+| Part | What it is |
+|---|---|
+| `.ui-menu-item` | A row, `<button>` or `<a>`, `role="menuitem"`. `data-variant="danger"` paints it `--bad`. `role="menuitemradio"` with `aria-checked` draws a check when checked. A leading `svg` or `.ui-swatch-face` is 1em. |
+| `.ui-menu-label` | A caption or identity row: small `--ink-3`, one line with an ellipsis, `role="none"`. |
+| `.ui-menu-sep` | A hairline: `<hr>`. |
+| `.ui-menu-head`, `.ui-menu-title`, `.ui-menu-x` | A head shown only when the menu is a sheet on a phone (below). |
+
+| Menu option | Attribute | What it does |
+|---|---|---|
+| Start-aligned | `data-align="start"` | Lines up the menu's start edge with the opener's. By default the end edges line up. Either flips to fit. |
+| A sheet on a phone | `data-sheet="phone"` | Below 800px the menu is a bottom sheet over a `--scrim` backdrop, rows 44px, and its head shows. |
+
+A phone-sheet menu's head, first in the menu:
+
+```html
+<div class="ui-menu-head" role="none"><span class="ui-menu-title">Theme</span><button class="ui-menu-x" type="button" role="menuitem" popovertarget="theme" popovertargetaction="hide" aria-label="Close">×</button></div>
+```
+
+With `ui.js`: opening focuses the checked item, else the first; Down/Up move and wrap; Home/End go
+to the ends; Tab closes the menu and moves on from the opener; activating a `menuitem` closes it,
+and a `menuitemradio` or swatch keeps it open, so a theme can be tried in place.
+
+Knobs: `--ui-menu-width` (`16rem`), `--ui-menu-bg`, `--ui-menu-border`, `--ui-menu-radius`,
+`--ui-menu-shadow`, `--ui-menu-item-height` (`2.25rem`; 34px in compact; 44px on a coarse pointer),
+`--ui-menu-hover`. A menu keeps its shadow in compact: it floats over content.
+
+### Sheet: `.ui-sheet`
+
+A modal `<dialog>` docked to the bottom edge, or with `data-side="end"` to the inline end as a
+drawer. Open it like a dialog, with `command="show-modal" commandfor="<id>"`; the page behind is
+inert, Escape closes it and focus returns. `closedby="any"` closes it on a backdrop tap as well.
+Go writes this markup (pinned by `testdata/parity/sheet-basic.html`); React: `<Sheet id="facts"
+title="Facts" dismissible>…</Sheet>`, with `side="end"`, `closeLabel` and `closeButton={false}`.
+
+```html
+<dialog class="ui-sheet" id="facts" aria-labelledby="facts-title" closedby="any">
+  <header class="ui-sheet-head">
+    <h2 class="ui-sheet-title" id="facts-title">Facts</h2>
+    <button class="ui-sheet-x" type="button" command="close" commandfor="facts" aria-label="Close">×</button>
+  </header>
+  <div class="ui-sheet-body">…</div>
+</dialog>
+```
+
+At the bottom it is full width and at most `--ui-sheet-max-height` (`70dvh`) tall; at the end it is
+full height and `--ui-sheet-width` (`28rem`) wide, never wider than the viewport. The body scrolls.
+A modal sheet slides in from its edge unless reduced motion is asked for; one drawn in place
+(`open`, not modal) doesn't move.
+
+Knobs: `--ui-sheet-bg`, `--ui-sheet-border`, `--ui-sheet-radius`, `--ui-sheet-shadow`,
+`--ui-sheet-pad`, `--ui-sheet-max-height`, `--ui-sheet-width`. Flat in compact.
+
+### Theme picker: `.ui-swatches`
+
+A row of swatches, each a button carrying a choice for `theme.js`, which marks the current one
+pressed (a 2px `--ink` ring). Go writes this markup (pinned by `testdata/parity/swatches.html`);
+React: `<Swatches label="Theme"><Swatch theme="dark" palette="mono" label="Black and white dark" /></Swatches>`.
+
+```html
+<div class="ui-swatches" role="group" aria-label="Theme">
+  <button class="ui-swatch" type="button" data-ui-set-theme="system" data-ui-set-palette="blue" aria-label="System"><span class="ui-swatch-face" data-theme="system" data-palette="blue" aria-hidden="true"></span></button>
+  <button class="ui-swatch" type="button" data-ui-set-theme="dark" data-ui-set-palette="mono" aria-label="Black and white dark"><span class="ui-swatch-face" data-theme="dark" data-palette="mono" aria-hidden="true"></span></button>
+</div>
+```
+
+- A face (`.ui-swatch-face`) previews its `data-palette` and `data-theme` from the tokens: the
+  palette's `--paper` with a `--primary` corner. `data-theme="system"` splits it, light over dark.
+- Swatches share the row equally, 2rem tall (2.5rem on a coarse pointer). With `ui.js`,
+  Left/Right/Home/End move between them.
+- In a menu, a face can lead a `menuitemradio` row instead (React `<MenuItem checked icon={<SwatchFace … />}>`),
+  with `data-ui-set-*` on the row.
 
 ### Containers (plain markup in Go and React)
 

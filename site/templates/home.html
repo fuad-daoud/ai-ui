@@ -13,7 +13,7 @@
   </div>
 
   <div class="wrap">
-    <div class="pile run-a" id="pile" role="group" aria-label="A pile of working components">
+    <div class="pile run-a" id="pile" data-demo-scope role="group" aria-label="A pile of working components">
       <div class="it i-table">
         <div class="ui-table-wrap">
           <table class="ui-table">
@@ -40,6 +40,14 @@
       <div class="it i-due big-pill">{{template "ui.pill" (dict "Label" "Due soon" "Variant" "warning")}}</div>
       <div class="it i-disclosure panel"><details class="ui-disclosure"><summary class="ui-disclosure-summary">Can I export it?</summary><div class="ui-disclosure-body">Yes, as CSV.</div></details></div>
       <div class="it i-cancel">{{template "ui.button" (dict "Label" "Cancel" "Variant" "ghost")}}</div>
+      <div class="it i-menu"><div class="ui-menu" role="menu" aria-label="Invoice 1042"><p class="ui-menu-label" role="none">Invoice 1042</p><button class="ui-menu-item" role="menuitem" type="button">Send a reminder</button><button class="ui-menu-item" role="menuitem" type="button" data-variant="danger">Void it</button></div></div>
+      <div class="it i-sheet"><dialog class="ui-sheet" aria-labelledby="pile-sheet-title" open><header class="ui-sheet-head"><h2 class="ui-sheet-title" id="pile-sheet-title">Payments</h2></header><div class="ui-sheet-body">EUR 400 on 2 November.</div></dialog></div>
+      <div class="it i-swatches panel" data-demo-theme hidden><div class="ui-swatches" role="group" aria-label="Theme for the pile">
+        <button class="ui-swatch" type="button" data-demo-set-theme="dark" data-demo-set-palette="blue" id="pile-sw-blue-dark" aria-label="Blue dark"><span class="ui-swatch-face" data-theme="dark" data-palette="blue" aria-hidden="true"></span></button>
+        <button class="ui-swatch" type="button" data-demo-set-theme="light" data-demo-set-palette="blue" id="pile-sw-blue" aria-label="Blue"><span class="ui-swatch-face" data-theme="light" data-palette="blue" aria-hidden="true"></span></button>
+        <button class="ui-swatch" type="button" data-demo-set-theme="light" data-demo-set-palette="mono" id="pile-sw-mono" aria-label="Black and white"><span class="ui-swatch-face" data-theme="light" data-palette="mono" aria-hidden="true"></span></button>
+        <button class="ui-swatch" type="button" data-demo-set-theme="dark" data-demo-set-palette="mono" id="pile-sw-mono-dark" aria-label="Black and white dark"><span class="ui-swatch-face" data-theme="dark" data-palette="mono" aria-hidden="true"></span></button>
+      </div><span class="swatch-note">Theme the pile</span></div>
     </div>
     <p class="pile-note">These are the real components, not pictures. Type in one.</p>
   </div>

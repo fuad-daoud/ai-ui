@@ -23,6 +23,29 @@
     });
   });
 
+  // A theme picker demo themes only its own box (the demo, or the pile): a
+  // palette and a mode apply on any element. The site itself stays dark.
+  document.querySelectorAll("[data-demo-theme]").forEach(function (row) {
+    var demo = row.closest(".demo, [data-demo-scope]");
+    var mark = function () {
+      row.querySelectorAll(".ui-swatch").forEach(function (b) {
+        var on = b.getAttribute("data-demo-set-theme") === (demo.getAttribute("data-theme") || "dark") &&
+          b.getAttribute("data-demo-set-palette") === (demo.getAttribute("data-palette") || "blue");
+        b.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+    };
+    row.hidden = false;
+    mark();
+    row.addEventListener("click", function (e) {
+      var b = e.target.closest(".ui-swatch");
+      if (!b) return;
+      demo.setAttribute("data-theme", b.getAttribute("data-demo-set-theme"));
+      demo.setAttribute("data-palette", b.getAttribute("data-demo-set-palette"));
+      demo.style.color = "var(--ink)";
+      mark();
+    });
+  });
+
   var pile = document.getElementById("pile");
   var drop = document.getElementById("drop");
   if (pile && drop) {

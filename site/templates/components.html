@@ -176,3 +176,55 @@
   </div>
 </div>
 {{- end}}
+
+{{define "demo Menu" -}}
+<div class="ui-cluster">
+  <button class="ui-btn" type="button" data-variant="secondary" popovertarget="demo-menu" aria-haspopup="menu">Invoice 1042</button>
+  <div class="ui-menu" id="demo-menu" popover role="menu" aria-label="Invoice 1042" data-align="start" data-sheet="phone">
+    <div class="ui-menu-head" role="none"><span class="ui-menu-title">Invoice 1042</span><button class="ui-menu-x" type="button" role="menuitem" popovertarget="demo-menu" popovertargetaction="hide" aria-label="Close">×</button></div>
+    <p class="ui-menu-label" role="none">Acme GmbH · due 30 November</p>
+    <button class="ui-menu-item" role="menuitem" type="button">Send a reminder</button>
+    <button class="ui-menu-item" role="menuitem" type="button">Download PDF</button>
+    <hr class="ui-menu-sep">
+    <button class="ui-menu-item" role="menuitem" type="button" data-variant="danger">Void invoice</button>
+  </div>
+</div>
+{{- end}}
+
+{{define "demo Sheet" -}}
+<div class="ui-cluster">
+  {{template "ui.button" (dict "Label" "Show payments" "Variant" "secondary" "Command" "show-modal" "CommandFor" "demo-sheet")}}
+  {{template "ui.button" (dict "Label" "Open the email" "Variant" "secondary" "Command" "show-modal" "CommandFor" "demo-drawer")}}
+</div>
+<dialog class="ui-sheet" id="demo-sheet" aria-labelledby="demo-sheet-title" closedby="any">
+  <header class="ui-sheet-head">
+    <h3 class="ui-sheet-title" id="demo-sheet-title">Payments on invoice 1042</h3>
+    <button class="ui-sheet-x" type="button" command="close" commandfor="demo-sheet" aria-label="Close">×</button>
+  </header>
+  <div class="ui-sheet-body"><p>Two payments: EUR 400 on 2 November and EUR 240 on 9 November.</p></div>
+</dialog>
+<dialog class="ui-sheet" id="demo-drawer" aria-labelledby="demo-drawer-title" data-side="end" closedby="any">
+  <header class="ui-sheet-head">
+    <h3 class="ui-sheet-title" id="demo-drawer-title">Re: invoice 1042</h3>
+    <button class="ui-sheet-x" type="button" command="close" commandfor="demo-drawer" aria-label="Close">×</button>
+  </header>
+  <div class="ui-sheet-body"><p>Thanks, the rest goes out on Friday.</p></div>
+</dialog>
+{{- end}}
+
+{{define "demo Theme picker" -}}
+<div class="ui-stack" id="demo-theme">
+  <p class="ui-muted" id="demo-theme-note">Here a pick themes only this box, so the rest of the site stays dark.</p>
+  <div class="ui-swatches" role="group" aria-label="Theme for this box" style="max-inline-size: 16rem" data-demo-theme hidden>
+    <button class="ui-swatch" type="button" data-demo-set-theme="system" data-demo-set-palette="blue" aria-label="System"><span class="ui-swatch-face" data-theme="system" data-palette="blue" aria-hidden="true"></span></button>
+    <button class="ui-swatch" type="button" data-demo-set-theme="light" data-demo-set-palette="blue" aria-label="Blue"><span class="ui-swatch-face" data-theme="light" data-palette="blue" aria-hidden="true"></span></button>
+    <button class="ui-swatch" type="button" data-demo-set-theme="dark" data-demo-set-palette="blue" aria-label="Blue dark"><span class="ui-swatch-face" data-theme="dark" data-palette="blue" aria-hidden="true"></span></button>
+    <button class="ui-swatch" type="button" data-demo-set-theme="light" data-demo-set-palette="mono" aria-label="Black and white"><span class="ui-swatch-face" data-theme="light" data-palette="mono" aria-hidden="true"></span></button>
+    <button class="ui-swatch" type="button" data-demo-set-theme="dark" data-demo-set-palette="mono" aria-label="Black and white dark"><span class="ui-swatch-face" data-theme="dark" data-palette="mono" aria-hidden="true"></span></button>
+  </div>
+  <div class="ui-cluster">
+    {{template "ui.button" (dict "Label" "Save")}}
+    {{template "ui.pill" (dict "Label" "Paid" "Variant" "good")}}
+  </div>
+</div>
+{{- end}}

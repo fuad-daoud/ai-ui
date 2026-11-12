@@ -67,6 +67,9 @@ var components = []component{
 	{"Check", "Check: .ui-check"},
 	{"Pill", "Pill: .ui-pill"},
 	{"Dialog", "Dialog: .ui-dialog"},
+	{"Menu", "Menu: .ui-menu"},
+	{"Sheet", "Sheet: .ui-sheet"},
+	{"Theme picker", "Theme picker: .ui-swatches"},
 	{"Containers", "Containers (plain markup in Go and React)"},
 	{"Utilities", "Utilities"},
 }
@@ -182,6 +185,9 @@ func build(out, repo string) error {
 	}
 
 	if files["assets/ui.css"], err = fs.ReadFile(ui.Assets, "ui.css"); err != nil {
+		return err
+	}
+	if files["assets/ui.js"], err = fs.ReadFile(ui.Assets, "ui.js"); err != nil {
 		return err
 	}
 	err = fs.WalkDir(assets, "assets", func(p string, d fs.DirEntry, err error) error {
