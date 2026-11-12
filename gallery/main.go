@@ -52,12 +52,13 @@ type page struct {
 }
 
 // icons are the app's own markup for the partials' Icon argument.
-type icons struct{ Download, Theme, Search template.HTML }
+type icons struct{ Download, Theme, Search, Avatar template.HTML }
 
 var galleryIcons = icons{
 	Download: `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v8m-3.5-3.5L8 10l3.5-3.5M3 13h10"/></svg>`,
 	Theme:    `<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 2a6 6 0 0 1 0 12z" fill="currentColor"/></svg>`,
 	Search:   `<svg class="ui-input-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg>`,
+	Avatar:   `<span class="ui-avatar" aria-hidden="true">G</span>`,
 }
 
 func main() {
