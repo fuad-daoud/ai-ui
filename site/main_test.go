@@ -273,7 +273,7 @@ func componentClasses(t *testing.T) []string {
 	if err != nil || len(files) == 0 {
 		t.Fatalf("no component CSS found: %v", err)
 	}
-	first := regexp.MustCompile(`(?m)^\.(ui-[a-z]+)`)
+	first := regexp.MustCompile(`(?m)^\.(ui-[a-z]+(?:-[a-z]+)*)`)
 	var classes []string
 	for _, f := range files {
 		if filepath.Base(f) == "density.css" {

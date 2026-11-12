@@ -70,6 +70,9 @@ var components = []component{
 	{"Menu", "Menu: .ui-menu"},
 	{"Sheet", "Sheet: .ui-sheet"},
 	{"Theme picker", "Theme picker: .ui-swatches"},
+	{"Page parts", "Page parts: .ui-page-head"},
+	{"Chips", "Chips: .ui-chips"},
+	{"Meter", "Meter: .ui-meter"},
 	{"Containers", "Containers (plain markup in Go and React)"},
 	{"Utilities", "Utilities"},
 }

@@ -40,7 +40,7 @@ body { overflow-x: clip; }
 
 /* The clip reaches far above the pile so components fall in over the headline,
    and stops at the floor so they rest on it. */
-.pile { position: relative; height: 26.5rem; margin-block-start: var(--space-5); clip-path: inset(-200rem 0 0 0); border-block-end: 3px solid var(--rule); }
+.pile { position: relative; height: 31rem; margin-block-start: var(--space-5); clip-path: inset(-200rem 0 0 0); border-block-end: 3px solid var(--rule); }
 .pile-note { padding-block-start: var(--space-3); text-align: center; color: var(--ink-3); font-size: var(--text-sm); }
 
 .it {
@@ -106,11 +106,17 @@ body { overflow-x: clip; }
 .i-menu .ui-menu { position: static; inline-size: 100%; margin: 0; }
 .i-sheet .ui-sheet { position: static; border-radius: var(--radius-lg); border: 1px solid var(--rule); --ui-sheet-shadow: 0 1px 2px var(--shadow); }
 .i-swatches:not([hidden]) { display: flex; flex-direction: column; gap: var(--space-2); }
+.i-head { --x: 31%; --y: 25.25rem; --r: 1.5deg; --spin: 35deg; --d: 1140ms; --w: 17rem; --z: 7; }
+.i-chips { --x: 4%; --y: 27rem; --r: -2deg; --spin: -40deg; --d: 1200ms; --z: 7; }
+.i-meter { --x: 84%; --y: 19.75rem; --r: 3deg; --spin: 50deg; --d: 1260ms; --w: 9.5rem; --z: 6; }
+.i-head .ui-page-head { --ui-page-title-size: 1.5rem; padding-block-end: var(--space-2); }
+.i-meter { display: flex; flex-direction: column; gap: var(--space-2); }
+.i-meter .meter-note { color: var(--ink-3); font-size: var(--text-sm); }
 .i-swatches .swatch-note { color: var(--ink-3); font-size: var(--text-sm); }
 
 /* Narrow: a tall heap with its own places, rather than the desktop one shrunk. */
 @media (max-width: 71.99rem) {
-  .pile { height: 67.5rem; max-inline-size: 24rem; margin-inline: auto; }
+  .pile { height: 82rem; max-inline-size: 24rem; margin-inline: auto; }
   .i-table { --x: 0%; --y: 0rem; --r: -1deg; --w: 100%; }
   .i-field { --x: 0%; --y: 8.25rem; --r: 1deg; --w: 100%; }
   .i-callout { --x: 0%; --y: 17.75rem; --r: -1deg; --w: 100%; }
@@ -133,6 +139,9 @@ body { overflow-x: clip; }
   .i-swatches { --x: 59%; --y: 60rem; --r: 3deg; --w: 41%; padding-inline: var(--space-3); }
   .i-swatches .ui-swatches { gap: var(--space-1); }
   .i-swatches .ui-swatch { min-inline-size: 1.25rem; }
+  .i-meter { --x: 0%; --y: 67.75rem; --r: -1deg; --w: 60%; }
+  .i-chips { --x: 0%; --y: 72.25rem; --r: 2deg; --w: auto; }
+  .i-head { --x: 0%; --y: 75.5rem; --r: -1deg; --w: 100%; }
 }
 
 .hand-over { padding-block: var(--space-7) var(--space-5); }
