@@ -6,8 +6,12 @@
 
    API:    window.aiui.theme.get()   -> { theme: "light"|"dark"|"system", palette: string }
            window.aiui.theme.set({ theme, palette })   null clears a choice
+           window.aiui.theme.sync(root?)   re-marks the choice buttons under root
    Markup: <button data-ui-set-theme="dark">   <button data-ui-set-palette="mono">
-           an empty value clears that choice */
+           an empty value clears that choice. Each such element is marked
+           aria-pressed (aria-checked for a radio role) when it matches.
+   Event:  "aiui:themechange" on document, detail = get(), after every set()
+           and when the OS flips light/dark while the mode follows it. */
 (function () {
   "use strict";
   var KEY = "ai-ui:theme";
@@ -67,6 +71,38 @@
     };
   }
 
+  // matches says whether a choice element names the current theme and palette.
+  // An empty value means system, or the page's default palette.
+  function matches(el, now) {
+    if (el.hasAttribute("data-ui-set-theme") && (el.getAttribute("data-ui-set-theme") || "system") !== now.theme) return false;
+    if (el.hasAttribute("data-ui-set-palette") && (el.getAttribute("data-ui-set-palette") || server.palette || "blue") !== now.palette) return false;
+    return true;
+  }
+
+  var CHECKED = /^(menuitemradio|menuitemcheckbox|radio)$/;
+
+  function sync(scope) {
+    var now = get();
+    var els = (scope || document).querySelectorAll("[data-ui-set-theme],[data-ui-set-palette]");
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      el.setAttribute(CHECKED.test(el.getAttribute("role") || "") ? "aria-checked" : "aria-pressed", matches(el, now) ? "true" : "false");
+    }
+  }
+
+  function announce() {
+    sync();
+    var detail = get();
+    var e;
+    try {
+      e = new CustomEvent("aiui:themechange", { detail: detail });
+    } catch (err) {
+      e = document.createEvent("CustomEvent");
+      e.initCustomEvent("aiui:themechange", false, false, detail);
+    }
+    document.dispatchEvent(e);
+  }
+
   function set(patch) {
     if (!patch || typeof patch !== "object") return get();
     if (patch.theme === null) delete choice.theme;
@@ -75,10 +111,24 @@
     else if (validPalette(patch.palette)) choice.palette = patch.palette;
     apply();
     write();
+    announce();
     return get();
   }
 
   apply();
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () { sync(); });
+  else sync();
+
+  // A page that follows the OS changes look when the OS does; say so.
+  if (window.matchMedia) {
+    var dark = window.matchMedia("(prefers-color-scheme: dark)");
+    var onFlip = function () {
+      if (get().theme === "system") announce();
+    };
+    if (dark.addEventListener) dark.addEventListener("change", onFlip);
+    else if (dark.addListener) dark.addListener(onFlip);
+  }
 
   document.addEventListener("click", function (e) {
     var t = e.target;
@@ -91,5 +141,5 @@
   });
 
   window.aiui = window.aiui || {};
-  window.aiui.theme = { get: get, set: set };
+  window.aiui.theme = { get: get, set: set, sync: sync };
 })();
