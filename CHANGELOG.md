@@ -4,6 +4,17 @@ Breaking changes come first in each entry. Renaming or removing a token,
 class, data-attribute value, knob, partial name or argument, or React prop
 is breaking.
 
+## 0.5.0 (2026-11-12)
+
+No breaking changes.
+
+New, all plain markup in Go and React:
+
+- Page parts: `.ui-page-head` (with `.ui-page-title`, `.ui-page-sub`, `.ui-page-aside`), `.ui-eyebrow`, `.ui-section-head` (with `.ui-section-index`, `.ui-section-title`, `.ui-section-count`, `.ui-section-aside`), stat tiles (`.ui-stats`, `.ui-stat`, `.ui-stat-value`, `.ui-stat-note`, `data-variant`, `data-frame="none"`), and the empty state (`.ui-empty`, `.ui-empty-title`, `data-frame="none"`). Knobs `--ui-page-title-size`, `--ui-page-head-rule`, `--ui-eyebrow-fg`, `--ui-eyebrow-case`, `--ui-section-rule`, `--ui-section-title-size`, `--ui-section-index-fg`, `--ui-stats-min`, `--ui-stat-value-size`, `--ui-stat-label-case`.
+- Chips (`.ui-chips`, `.ui-chip`, current by `aria-current` or `aria-pressed`), the count badge (`.ui-badge`), the segmented control (`.ui-segmented`, `.ui-segment`) and the avatar (`.ui-avatar`, which fills a square button). Knobs `--ui-chip-height`, `--ui-badge-bg`, `--ui-badge-fg`, `--ui-segment-height`, `--ui-avatar-size`.
+- Meter (`.ui-meter` on `<progress>`): a fill, `data-variant`, and a sliding segment when indeterminate. Knobs `--ui-meter-height`, `--ui-meter-track`, `--ui-meter-fill`.
+- Table: the current row (`aria-current`, or `aria-selected` in a grid) keeps a `--ui-table-selected` tint.
+
 ## 0.4.0 (2026-11-12)
 
 No breaking changes. One look can change:

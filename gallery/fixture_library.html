@@ -81,6 +81,29 @@
     <div class="ui-dialog-head"><h2 class="ui-dialog-title" id="dialog-long-title">Remove grace.hopper.long.address@subdomain.example.com?</h2><button class="ui-dialog-x" id="dialog-long-x" aria-label="Close">x</button></div>
     <div class="ui-dialog-body"><p>Body</p></div>
   </dialog>
+  <header class="ui-page-head" id="ph">
+    <div id="ph-main"><span class="ui-eyebrow" id="ph-eyebrow">Settings</span><h2 class="ui-page-title" id="ph-title">Account</h2><p class="ui-page-sub">Your sign-in and your theme.</p></div>
+    <div class="ui-page-aside" id="ph-aside">Basis: 12 months <button class="ui-btn" id="avatar-btn" type="button" data-variant="secondary" data-shape="square" aria-label="Account: Grace"><span class="ui-avatar" id="avatar-in" aria-hidden="true">G</span></button></div>
+  </header>
+  <div class="ui-section-head" id="sh"><span class="ui-section-index">01</span><h2 class="ui-section-title">Cash</h2><span class="ui-section-count">4 accounts</span><div class="ui-section-aside" id="sh-aside"><button class="ui-btn" data-size="sm">Add</button></div></div>
+  <dl class="ui-stats" id="stats">
+    <div class="ui-stat" id="stat-a"><dt>Spent</dt><dd class="ui-stat-value" id="stat-a-value">1,234.56</dd><dd class="ui-stat-note" id="stat-a-note" data-variant="bad">+412.86 vs usual</dd></div>
+    <div class="ui-stat" id="stat-b"><dt>Earned</dt><dd class="ui-stat-value">3,100.00</dd></div>
+    <div class="ui-stat" id="stat-c" data-variant="good"><dt>Left</dt><dd class="ui-stat-value" id="stat-c-value">1,865.44</dd></div>
+  </dl>
+  <dl class="ui-stats" id="stats-plain" data-frame="none"><div class="ui-stat"><dt>accounts</dt><dd class="ui-stat-value">12</dd></div><div class="ui-stat" id="stat-plain-2"><dt>invites</dt><dd class="ui-stat-value">2</dd></div></dl>
+  <nav class="ui-chips" aria-label="Scope">
+    <a class="ui-chip" id="chip-current" href="#library" aria-current="page">All <span class="ui-badge" id="badge">23</span></a>
+    <a class="ui-chip" id="chip-off" href="#library">acme-lead</a>
+    <button class="ui-chip" id="chip-pressed" type="button" aria-pressed="true">Needs review</button>
+  </nav>
+  <div class="ui-segmented" role="group" aria-label="Month or year"><button class="ui-segment" id="seg-on" type="button" aria-pressed="true">Month</button><button class="ui-segment" id="seg-off" type="button" aria-pressed="false">Year</button><button class="ui-segment" id="seg-disabled" type="button" aria-pressed="false" aria-disabled="true">All</button></div>
+  <span class="ui-avatar" id="avatar" aria-hidden="true">F</span>
+  <progress class="ui-meter" id="meter" value="40" max="100" aria-label="Import">40%</progress>
+  <progress class="ui-meter" id="meter-ind" aria-label="Waiting"></progress>
+  <div class="ui-empty" id="empty"><p class="ui-empty-title">No archived resumes</p><p>Archive one and it waits here.</p></div>
+  <div class="ui-empty" id="empty-plain" data-frame="none"><p class="ui-empty-title">Nothing here yet</p></div>
+  <div class="ui-table-wrap"><table class="ui-table"><tbody><tr><td id="row-plain">a</td></tr><tr aria-current="true"><td id="row-current">b</td></tr></tbody></table></div>
   <div class="ui-cluster" style="justify-content: flex-end">
     <button class="ui-btn" id="edge-btn" type="button" popovertarget="edge-menu">Edge</button>
     <div class="ui-menu" id="edge-menu" popover role="menu" aria-label="Edge">

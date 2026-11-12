@@ -16,7 +16,9 @@ What the library gives you:
 - **Components with a React component whose markup Go writes from the contract:** dialog, menu,
   sheet (a bottom sheet or a side drawer), and the theme picker (swatches).
 - **Plain markup** you write yourself in both stacks, with the classes the contract shows: callout,
-  table, card, disclosure, and the utilities (`ui-stack`, `ui-cluster`, `ui-vh`, …).
+  table, card, disclosure, page parts (page head, eyebrow, section head, stat tiles, empty state),
+  chips (with the segmented control, badge and avatar), meter, and the utilities (`ui-stack`,
+  `ui-cluster`, `ui-vh`, …).
 - **Nothing for page layout.** A page's width, gutters and section spacing are the app's own CSS.
 
 Before deciding the library can't do something, check its partials in `templates/` and its
@@ -29,7 +31,7 @@ Check which stack this project uses, then follow one of these.
 ### Go with `html/template`
 
 ```bash
-go get github.com/fuad-daoud/ai-ui@v0.4.0
+go get github.com/fuad-daoud/ai-ui@v0.5.0
 ```
 
 It needs Go 1.25, and `go get` raises the `go` line in an older `go.mod` to match.
@@ -64,13 +66,13 @@ read it too, then install:
 
 ```bash
 echo "allow-git=root" >> .npmrc
-npm install github:fuad-daoud/ai-ui#v0.4.0
+npm install github:fuad-daoud/ai-ui#v0.5.0
 ```
 
 That leaves this in `package.json`:
 
 ```json
-"dependencies": { "ai-ui": "github:fuad-daoud/ai-ui#v0.4.0" }
+"dependencies": { "ai-ui": "github:fuad-daoud/ai-ui#v0.5.0" }
 ```
 
 ```ts

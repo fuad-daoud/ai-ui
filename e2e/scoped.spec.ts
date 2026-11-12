@@ -7,6 +7,8 @@ const PAGE_LEVEL = ["text-size-adjust", "-webkit-font-smoothing"];
 async function library(page: Page, sheet: string, query = ""): Promise<Snapshot> {
   await page.goto(`/fixture/library/${sheet}${query}`);
   await page.locator("#dialog").evaluate((d: HTMLDialogElement) => d.showModal());
+  // Freeze what moves (an indeterminate meter), so the two snapshots see the same frame.
+  await page.evaluate(() => document.getAnimations().forEach((a) => { a.pause(); a.currentTime = 0; }));
   return snapshot(page, "#library");
 }
 

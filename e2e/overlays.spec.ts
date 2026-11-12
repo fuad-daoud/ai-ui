@@ -16,6 +16,12 @@ const css = (page: Page, sel: string, prop: string, pseudo: string | null = null
 const settle = (page: Page, sel: string) =>
   page.locator(sel).evaluate((el) => Promise.all(el.getAnimations().map((a) => a.finished)).then(() => undefined));
 
+// open centres an opener in the viewport, so its menu has room below, then clicks it.
+const open = async (page: Page, sel: string) => {
+  await page.locator(sel).evaluate((el) => el.scrollIntoView({ block: "center" }));
+  await page.click(sel);
+};
+
 const focused = (page: Page) => page.evaluate(() => document.activeElement?.id ?? "");
 const isOpen = (page: Page, sel: string) => page.locator(sel).evaluate((el) => el.matches(":popover-open, [open]"));
 
@@ -23,7 +29,7 @@ test.describe("menu", () => {
   test.beforeEach(async ({ page }) => page.goto("/fixture/library/ui.css"));
 
   test("opens under its opener, end edges lined up, and focuses its first item", async ({ page }) => {
-    await page.click("#edge-btn");
+    await open(page, "#edge-btn");
     const edge = await rect(page, "#edge-btn");
     const edgeMenu = await rect(page, "#edge-menu");
     expect(Math.abs(edgeMenu.top - (edge.bottom + 4))).toBeLessThan(1);
@@ -31,7 +37,7 @@ test.describe("menu", () => {
     expect(edgeMenu.width).toBe(256);
     await page.keyboard.press("Escape");
     // Near the start edge there's no room to end-align it: it flips to start-aligned.
-    await page.click("#menu-btn");
+    await open(page, "#menu-btn");
     expect(await isOpen(page, "#menu")).toBe(true);
     const btn = await rect(page, "#menu-btn");
     const menu = await rect(page, "#menu");
@@ -45,7 +51,7 @@ test.describe("menu", () => {
   });
 
   test("arrows, Home and End move through the items and wrap", async ({ page }) => {
-    await page.click("#menu-btn");
+    await open(page, "#menu-btn");
     await expect.poll(() => focused(page)).toBe("mi-account");
     const steps: [string, string][] = [
       ["ArrowDown", "mi-rename"],
@@ -61,10 +67,10 @@ test.describe("menu", () => {
   });
 
   test("a menuitem closes it; Escape closes it and returns focus to the opener", async ({ page }) => {
-    await page.click("#menu-btn");
+    await open(page, "#menu-btn");
     await page.click("#mi-rename");
     await expect.poll(() => isOpen(page, "#menu")).toBe(false);
-    await page.click("#menu-btn");
+    await open(page, "#menu-btn");
     await expect.poll(() => focused(page)).toBe("mi-account");
     await page.keyboard.press("Escape");
     expect(await isOpen(page, "#menu")).toBe(false);
@@ -72,7 +78,7 @@ test.describe("menu", () => {
   });
 
   test("Tab closes it and moves on from the opener", async ({ page }) => {
-    await page.click("#menu-btn");
+    await open(page, "#menu-btn");
     await expect.poll(() => focused(page)).toBe("mi-account");
     await page.keyboard.press("Tab");
     expect(await isOpen(page, "#menu")).toBe(false);
@@ -85,7 +91,7 @@ test.describe("menu", () => {
     expect(await page.locator("#tm-blue").getAttribute("aria-checked")).toBe("false");
     expect(await css(page, "#tm-system", "visibility", "::after")).toBe("visible");
     expect(await css(page, "#tm-blue", "visibility", "::after")).toBe("hidden");
-    await page.click("#theme-btn");
+    await open(page, "#theme-btn");
     await expect.poll(() => focused(page)).toBe("tm-system");
     await page.click("#tm-mono-dark");
     expect(await page.evaluate(() => [document.documentElement.dataset.theme, document.documentElement.dataset.palette])).toEqual(["dark", "mono"]);
@@ -94,7 +100,7 @@ test.describe("menu", () => {
   });
 
   test("data-align=start lines up the start edges; the sheet head is hidden at desktop width", async ({ page }) => {
-    await page.click("#theme-btn");
+    await open(page, "#theme-btn");
     const btn = await rect(page, "#theme-btn");
     const menu = await rect(page, "#theme-menu");
     expect(Math.abs(menu.left - btn.left)).toBeLessThan(1);
@@ -112,7 +118,7 @@ test.describe("menu", () => {
   test("still opens and closes without ui.js", async ({ page }) => {
     await page.route("**/_ui/ui.js*", (r) => r.fulfill({ status: 200, contentType: "text/javascript", body: "" }));
     await page.goto("/fixture/library/ui.css");
-    await page.click("#edge-btn");
+    await open(page, "#edge-btn");
     expect(await isOpen(page, "#edge-menu")).toBe(true);
     const btn = await rect(page, "#edge-btn");
     expect(Math.abs((await rect(page, "#edge-menu")).right - btn.right)).toBeLessThan(1);
@@ -122,7 +128,7 @@ test.describe("menu", () => {
 
   test("axe passes with each menu open", async ({ page }) => {
     for (const [btn, menu] of [["#menu-btn", "#menu"], ["#theme-btn", "#theme-menu"]]) {
-      await page.click(btn);
+      await open(page, btn);
       const { violations } = await new AxeBuilder({ page }).include(menu).analyze();
       expect(violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).join(", ")}`), menu).toEqual([]);
       await page.keyboard.press("Escape");
@@ -135,7 +141,7 @@ test.describe("menu on a phone", () => {
 
   test("data-sheet=phone makes a bottom sheet with its head and a scrim; × closes it", async ({ page }) => {
     await page.goto("/fixture/library/ui.css");
-    await page.click("#theme-btn");
+    await open(page, "#theme-btn");
     const menu = await rect(page, "#theme-menu");
     expect(menu.left).toBe(0);
     expect(menu.width).toBe(390);
@@ -149,7 +155,7 @@ test.describe("menu on a phone", () => {
 
   test("a menu without data-sheet stays anchored, inside the viewport", async ({ page }) => {
     await page.goto("/fixture/library/ui.css");
-    await page.click("#menu-btn");
+    await open(page, "#menu-btn");
     const menu = await rect(page, "#menu");
     expect(menu.left).toBeGreaterThanOrEqual(0);
     expect(menu.right).toBeLessThanOrEqual(390);
@@ -211,7 +217,7 @@ test.describe("sheet", () => {
     await page.click("#sheet-btn");
     expect(await css(page, "#sheet", "box-shadow")).toBe("none");
     await page.keyboard.press("Escape");
-    await page.click("#menu-btn");
+    await open(page, "#menu-btn");
     expect(await css(page, "#menu", "box-shadow")).not.toBe("none");
     expect((await rect(page, "#mi-account")).height).toBe(34);
   });

@@ -121,7 +121,7 @@
         <thead><tr><th scope="col">Category</th><th scope="col">Status</th><th scope="col" class="ui-num">Amount</th></tr></thead>
         <tbody>
           <tr><td>Groceries</td><td>{{template "ui.pill" (dict "Label" "On budget" "Variant" "good")}}</td><td class="ui-num">212.40</td></tr>
-          <tr><td>Dining</td><td>{{template "ui.pill" (dict "Label" "Over" "Variant" "bad")}}</td><td class="ui-num">96.15</td></tr>
+          <tr aria-current="true"><td>Dining</td><td>{{template "ui.pill" (dict "Label" "Over" "Variant" "bad")}}</td><td class="ui-num">96.15</td></tr>
           <tr><td>Transport</td><td>{{template "ui.pill" (dict "Label" "Watch" "Variant" "warning")}}</td><td class="ui-num">58.00</td></tr>
         </tbody>
       </table>
@@ -181,6 +181,41 @@
         </form>
       </div>
     </dialog>
+  </section>
+
+  <section aria-labelledby="s-page">
+    <h2 id="s-page">Page parts</h2>
+    <div class="ui-stack">
+      <header class="ui-page-head">
+        <div><span class="ui-eyebrow">Settings</span><h3 class="ui-page-title">Account</h3><p class="ui-page-sub">Your sign-in, your theme and what we keep.</p></div>
+        <div class="ui-page-aside">Basis: last 12 months {{template "ui.button" (dict "Label" "Account: Grace" "Variant" "secondary" "Shape" "square" "Icon" .Icons.Avatar)}}</div>
+      </header>
+      <div class="ui-section-head"><span class="ui-section-index">01</span><h3 class="ui-section-title">Cash, card and what is left</h3><span class="ui-section-count">4 accounts</span><div class="ui-section-aside">{{template "ui.button" (dict "Label" "Add" "Variant" "secondary" "Size" "sm")}}</div></div>
+      <dl class="ui-stats">
+        <div class="ui-stat"><dt>Spent</dt><dd class="ui-stat-value">1,234.56</dd><dd class="ui-stat-note" data-variant="bad">+412.86 vs usual</dd></div>
+        <div class="ui-stat"><dt>Earned</dt><dd class="ui-stat-value">3,100.00</dd><dd class="ui-stat-note">as usual</dd></div>
+        <div class="ui-stat" data-variant="good"><dt>Left</dt><dd class="ui-stat-value">1,865.44</dd></div>
+        <div class="ui-stat" data-variant="muted"><dt>Owed</dt><dd class="ui-stat-value">0.00</dd></div>
+      </dl>
+      <dl class="ui-stats" data-frame="none">
+        <div class="ui-stat"><dt>accounts</dt><dd class="ui-stat-value">12</dd></div>
+        <div class="ui-stat"><dt>sign-ins today</dt><dd class="ui-stat-value">31</dd></div>
+        <div class="ui-stat"><dt>invites</dt><dd class="ui-stat-value">2</dd></div>
+      </dl>
+      <nav class="ui-chips" aria-label="Scope">
+        <a class="ui-chip" href="#s-page" aria-current="page">All resumes <span class="ui-badge">23</span></a>
+        <a class="ui-chip" href="#s-page">acme-lead</a>
+        <button class="ui-chip" type="button" aria-pressed="false">Needs review <span class="ui-badge">4</span></button>
+      </nav>
+      <div class="ui-cluster">
+        <div class="ui-segmented" role="group" aria-label="Month or year"><button class="ui-segment" type="button" aria-pressed="true">Month</button><button class="ui-segment" type="button" aria-pressed="false">Year</button><button class="ui-segment" type="button" aria-pressed="false" aria-disabled="true">All</button></div>
+        <span class="ui-avatar" aria-hidden="true">F</span>
+      </div>
+      <progress class="ui-meter gallery-narrow" value="40" max="100" aria-label="Import">40%</progress>
+      <progress class="ui-meter gallery-narrow" data-variant="good" value="100" max="100" aria-label="Upload">100%</progress>
+      <div class="ui-empty"><p class="ui-empty-title">No archived resumes</p><p>Archive one from its menu and it waits here.</p>{{template "ui.button" (dict "Label" "Go to your resumes" "Variant" "secondary")}}</div>
+      <div class="ui-empty" data-frame="none"><p class="ui-empty-title">Nothing here yet</p><p>Add a statement and this fills in.</p></div>
+    </div>
   </section>
 
   <section aria-labelledby="s-menu">

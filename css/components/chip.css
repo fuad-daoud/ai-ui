@@ -1,0 +1,101 @@
+/* Chips: a wrapping row of filters or scopes. A chip is a link or a button; the
+   current one carries aria-current (links) or aria-pressed (toggles). Also the
+   segmented control, the count badge and the avatar (DESIGN.md). */
+.ui-chips { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.ui-chip {
+  --ui-chip-height: 1.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-block-size: var(--ui-chip-height);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  background: var(--sheet);
+  color: var(--ink-2);
+  font: inherit;
+  font-size: var(--text-sm);
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.ui-chip:hover { border-color: var(--rule-field); color: var(--ink); }
+.ui-chip:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.ui-chip:is([aria-current]:not([aria-current="false"]), [aria-pressed="true"]) {
+  border-color: var(--primary);
+  background: var(--mark-bg);
+  color: var(--ink);
+  font-weight: 600;
+}
+.ui-chip:is(:disabled, [aria-disabled="true"]) { color: var(--ink-3); cursor: not-allowed; }
+.ui-chip > svg { flex: none; inline-size: 1em; block-size: 1em; }
+
+/* A count beside a label: on a chip, a tab or a nav link. */
+.ui-badge {
+  --ui-badge-bg: var(--band);
+  --ui-badge-fg: var(--ink-2);
+  display: inline-block;
+  min-inline-size: 1.5em;
+  padding: 0 0.4em;
+  border-radius: 999px;
+  background: var(--ui-badge-bg);
+  color: var(--ui-badge-fg);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Segmented control: one choice of a few, as pressed buttons or current links. */
+.ui-segmented {
+  --ui-segment-height: 1.75rem;
+  display: inline-flex;
+  overflow: hidden;
+  border: 1px solid var(--rule-field);
+  border-radius: var(--radius-sm);
+  background: var(--sheet);
+}
+.ui-segment {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--ui-segment-height);
+  padding: 0 var(--space-3);
+  border: 0;
+  background: transparent;
+  color: var(--ink-2);
+  font: inherit;
+  font-size: var(--text-sm);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.ui-segment + .ui-segment { border-inline-start: 1px solid var(--rule-soft); }
+.ui-segment:hover { color: var(--ink); background: var(--band); }
+.ui-segment:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.ui-segment:is([aria-pressed="true"], [aria-current]:not([aria-current="false"])) { background: var(--primary); color: var(--on-primary); font-weight: 600; }
+.ui-segment:is(:disabled, [aria-disabled="true"]) { background: var(--band); color: var(--ink-3); cursor: not-allowed; }
+
+/* An initial, a person's mark. Inside a square button it fills the button. */
+.ui-avatar {
+  --ui-avatar-size: 2rem;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  inline-size: var(--ui-avatar-size);
+  block-size: var(--ui-avatar-size);
+  border-radius: 50%;
+  background: var(--mark-bg);
+  color: var(--ink);
+  font-size: calc(var(--ui-avatar-size) * 0.45);
+  font-weight: 600;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.ui-btn[data-shape="square"] > .ui-avatar { --ui-avatar-size: 100%; background: transparent; font-size: var(--text-sm); }
+
+@media (pointer: coarse) {
+  .ui-chip { --ui-chip-height: 2.5rem; }
+  .ui-segment { min-block-size: 2.5rem; }
+}

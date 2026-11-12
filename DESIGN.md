@@ -498,6 +498,72 @@ React: `<Swatches label="Theme"><Swatch theme="dark" palette="mono" label="Black
 - In a menu, a face can lead a `menuitemradio` row instead (React `<MenuItem checked icon={<SwatchFace … />}>`),
   with `data-ui-set-*` on the row.
 
+### Page parts: `.ui-page-head`
+
+Plain markup in Go and React: a page's head, eyebrows, section heads, stat tiles and empty states.
+The page's width, gutters and the space between sections stay the app's.
+
+```html
+<header class="ui-page-head">
+  <div><span class="ui-eyebrow">Settings</span><h1 class="ui-page-title">Account</h1><p class="ui-page-sub">Your sign-in and your theme.</p></div>
+  <div class="ui-page-aside">Basis: 12 months …</div>
+</header>
+<div class="ui-section-head"><span class="ui-section-index">01</span><h2 class="ui-section-title">Cash</h2><span class="ui-section-count">4 accounts</span><div class="ui-section-aside">…</div></div>
+<dl class="ui-stats">
+  <div class="ui-stat"><dt>Spent</dt><dd class="ui-stat-value">1,234.56</dd><dd class="ui-stat-note" data-variant="bad">+412.86 vs usual</dd></div>
+  <div class="ui-stat" data-variant="good"><dt>Left</dt><dd class="ui-stat-value">1,865.44</dd></div>
+</dl>
+<div class="ui-empty"><p class="ui-empty-title">No archived resumes</p><p>Archive one from its menu and it waits here.</p></div>
+```
+
+| Page part | What it is |
+|---|---|
+| `.ui-page-head` | The page's title row: its first child (eyebrow, `.ui-page-title`, `.ui-page-sub`) and an `.ui-page-aside` at the end, on the title's last line, with a `--rule` under both. The aside wraps under the title when there's no room. |
+| `.ui-eyebrow` | A small uppercase `--ink-3` label above a title. Knobs `--ui-eyebrow-fg`, `--ui-eyebrow-case`. |
+| `.ui-section-head` | A section's title row: `.ui-section-index` ("01", `--primary`), `.ui-section-title`, `.ui-section-count`, and `.ui-section-aside` pushed to the end. |
+| `.ui-stats` | A `<dl>` of equal tiles with hairlines between them. Each `.ui-stat` holds a `<dt>` label, a `.ui-stat-value` (tabular) and an optional `.ui-stat-note`. `data-variant="good|warning|bad|muted"` on a tile colours its value; on a note, the note. `data-frame="none"` drops the frame, leaving hairlines between tiles. |
+| `.ui-empty` | Nothing here yet: a dashed frame, centred, with `.ui-empty-title`, a sentence and maybe a button. `data-frame="none"` makes it flush and start-aligned. |
+
+Knobs: `--ui-page-title-size` (28px on a phone to 38px wide), `--ui-page-head-rule`;
+`--ui-section-rule`, `--ui-section-title-size`, `--ui-section-index-fg`; `--ui-stats-min` (a tile's
+narrowest, 9rem), `--ui-stat-value-size`, `--ui-stat-label-case`.
+
+### Chips: `.ui-chips`
+
+Plain markup in Go and React: a row of chips, the segmented control, the count badge and the avatar.
+
+```html
+<nav class="ui-chips" aria-label="Scope">
+  <a class="ui-chip" href="/claims/" aria-current="page">All resumes <span class="ui-badge">23</span></a>
+  <a class="ui-chip" href="/claims/?r=acme">acme-lead</a>
+  <button class="ui-chip" type="button" aria-pressed="false">Needs review</button>
+</nav>
+<div class="ui-segmented" role="group" aria-label="Month or year">
+  <button class="ui-segment" type="button" aria-pressed="true">Month</button>
+  <button class="ui-segment" type="button" aria-pressed="false" aria-disabled="true">Year</button>
+</div>
+```
+
+| Control | What it is |
+|---|---|
+| `.ui-chip` | A filter or scope, a link or a button, 28px (40px on a coarse pointer). The current one, `aria-current` on a link or `aria-pressed="true"` on a toggle, gets a `--primary` border on `--mark-bg`. A leading `svg` is 1em. Knob `--ui-chip-height`. |
+| `.ui-badge` | A count beside a label, on a chip, a tab or a link. Knobs `--ui-badge-bg`, `--ui-badge-fg`. |
+| `.ui-segmented`, `.ui-segment` | One choice of a few: buttons with `aria-pressed`, or links with `aria-current`. The chosen one is filled `--primary`; `aria-disabled="true"` greys one and keeps it focusable. Knob `--ui-segment-height`. |
+| `.ui-avatar` | A person's initial in a `--mark-bg` circle. Inside a square button (Go `Shape "square"` with `Icon` set to the avatar's markup) it fills the button with no circle. Knob `--ui-avatar-size`. |
+
+### Meter: `.ui-meter`
+
+A native `<progress>`, so it is a progressbar to assistive tech. Give it a name.
+
+```html
+<progress class="ui-meter" value="40" max="100" aria-label="Import">40%</progress>
+<progress class="ui-meter" aria-label="Waiting for the server"></progress>
+```
+
+With no `value` it is indeterminate: a segment slides along it, unless reduced motion is asked for.
+`data-variant="good|warning|bad"` colours the fill. Knobs: `--ui-meter-height` (0.5rem),
+`--ui-meter-track` (`--band`), `--ui-meter-fill` (`--primary`).
+
 ### Containers (plain markup in Go and React)
 
 ```html
@@ -539,8 +605,10 @@ card flat.
 Table knobs, on `.ui-table`: `--ui-table-head-bg`, `--ui-table-head-fg`, `--ui-table-head-size`,
 `--ui-table-head-case` (`text-transform`), `--ui-table-head-rule` (the line under the header),
 `--ui-table-hover` (`transparent` turns the row tint off), `--ui-table-sticky-bg` (default
-`--sheet`; set it to whatever is behind the table), `--ui-table-label-width` (default 8rem). On
-`.ui-table-wrap`: `--ui-table-max-height`. A row is tinted on hover only where the pointer can hover.
+`--sheet`; set it to whatever is behind the table), `--ui-table-label-width` (default 8rem),
+`--ui-table-selected` (default `--mark-bg`). On `.ui-table-wrap`: `--ui-table-max-height`. A row is
+tinted on hover only where the pointer can hover. The current row, `<tr aria-current="true">` (or
+`aria-selected="true"` in a grid), keeps a `--ui-table-selected` tint, under the pointer too.
 
 A stacked table labels each cell from its `data-label`. A cell without one, such as the row's name,
 spans the row, and so does a row header (`<th scope="row">`). The header row is hidden from sight
